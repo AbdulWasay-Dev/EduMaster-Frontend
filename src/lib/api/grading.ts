@@ -17,19 +17,35 @@ export interface GradeMultiplePayload {
   strictness?: GradingStrictness
 }
 
+/** Convert a File to a base64-encoded string (data URI prefix stripped) */
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => {
+      const result = reader.result as string
+      // Strip the "data:image/...;base64," prefix so backend gets pure base64
+      resolve(result.includes(',') ? result.split(',')[1] : result)
+    }
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
+
 export async function gradeAnswerSheet(payload: GradeAnswerSheetPayload): Promise<Submission> {
+  let imageData: string
   if (payload.answer_sheet_image instanceof File) {
-    const form = new FormData()
-    form.append('paper_id', payload.paper_id)
-    if (payload.student_id) form.append('student_id', payload.student_id)
-    form.append('answer_sheet_image', payload.answer_sheet_image)
-    if (payload.grading_mode) form.append('grading_mode', payload.grading_mode)
-    const { data } = await api.post<Submission>('/grading/upload-answer-sheet', form, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    })
-    return data
+    imageData = await fileToBase64(payload.answer_sheet_image)
+  } else {
+    imageData = payload.answer_sheet_image
   }
-  const { data } = await api.post<Submission>('/grading/upload-answer-sheet', payload)
+  const body = {
+    paper_id: payload.paper_id,
+    student_id: payload.student_id,
+    answer_sheet_image: imageData,
+    grading_mode: payload.grading_mode ?? 'auto',
+    strictness: payload.strictness ?? 'medium',
+  }
+  const { data } = await api.post<Submission>('/grading/upload-answer-sheet', body)
   return data
 }
 

@@ -89,16 +89,19 @@ export type DifficultyLevel = 'easy' | 'medium' | 'hard' | 'mixed'
 export type Difficulty = DifficultyLevel   // alias for convenience
 export type QuestionType = 'mcq' | 'short_answer' | 'long_answer' | 'true_false' | 'fill_blank'
 export type PaperStatus = 'draft' | 'published'
+export type PaperTemplate = 'classic' | 'university' | 'school' | 'minimalist'
 
 export interface Question {
   id: string
   question_text: string
   question_type: QuestionType
   marks: number
+  max_score?: number
   difficulty?: DifficultyLevel
   options?: string[]
   correct_answer?: string
   explanation?: string
+  question_number?: number
 }
 
 export interface Paper {
@@ -118,6 +121,13 @@ export interface Paper {
   is_published: boolean
   teacher_id: string
   created_at: string
+  // Advanced metadata
+  template?: PaperTemplate
+  institution_name?: string
+  course_name?: string
+  exam_date?: string
+  duration?: string
+  student_fields?: string[]
 }
 
 export interface PaperGenerationRequest {
@@ -127,17 +137,25 @@ export interface PaperGenerationRequest {
   description?: string
   question_count?: number
   num_questions?: number
-  question_types: QuestionType[]
+  question_types?: QuestionType[]
+  question_type_counts?: Record<string, number>
   difficulty_level?: DifficultyLevel
   difficulty?: DifficultyLevel
   time_limit?: number
   duration_minutes?: number
-  instructions?: string
   total_marks?: number
   chapter_keywords?: string[]
   document_ids?: string[]
   content_filter?: string
   topic_focus?: string
+  // Template & metadata
+  template?: PaperTemplate
+  institution_name?: string
+  course_name?: string
+  exam_date?: string
+  duration?: string
+  instructions?: string
+  student_fields?: string[]
 }
 
 // ─── Grading ─────────────────────────────────────────────────────────────────

@@ -25,6 +25,7 @@ const DocumentDetailPage   = lazy(() => import('./pages/documents/DocumentDetail
 const PapersListPage    = lazy(() => import('./pages/papers/PapersListPage'))
 const GeneratePaperPage = lazy(() => import('./pages/papers/GeneratePaperPage'))
 const PaperDetailPage   = lazy(() => import('./pages/papers/PaperDetailPage'))
+const PaperEditorPage   = lazy(() => import('./pages/papers/PaperEditorPage'))
 const GradingOverviewPage = lazy(() => import('./pages/grading/GradingOverviewPage'))
 const UploadGradingPage   = lazy(() => import('./pages/grading/UploadGradingPage'))
 const GradingResultDetailPage = lazy(() => import('./pages/grading/GradingResultDetailPage'))
@@ -72,6 +73,7 @@ export default function App() {
               <Route path="/papers"           element={<PapersListPage />} />
               <Route path="/papers/generate"  element={<GeneratePaperPage />} />
               <Route path="/papers/:id"       element={<PaperDetailPage />} />
+              <Route path="/papers/:id/edit"  element={<PaperEditorPage />} />
 
               <Route path="/grading"          element={<GradingOverviewPage />} />
               <Route path="/grading/new"      element={<UploadGradingPage />} />
