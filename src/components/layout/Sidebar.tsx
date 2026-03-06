@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { to: '/dashboard',    icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/subjects',     icon: BookOpen,        label: 'Subjects' },
   { to: '/classes',      icon: Users,           label: 'Classes' },
+  { to: '/assignments',  icon: ScrollText,      label: 'Assignments' },
   { to: '/documents',    icon: FileText,        label: 'Documents' },
   { to: '/papers',       icon: ScrollText,      label: 'Papers' },
   { to: '/grading',      icon: CheckSquare,     label: 'Grading' },

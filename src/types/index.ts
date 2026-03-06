@@ -42,6 +42,9 @@ export interface Class {
   teacher_id: string
   created_at: string
   student_count?: number
+  class_code?: string
+  max_students?: number
+  allow_student_signup?: boolean
 }
 
 // ─── Student ─────────────────────────────────────────────────────────────────
@@ -266,4 +269,102 @@ export interface PaginatedResponse<T> {
 export interface ApiError {
   detail: string | { msg: string; loc: string[] }[]
   status_code?: number
+}
+
+// ─── Student Account (self-service portal) ───────────────────────────────────
+export interface StudentAccount {
+  id: string
+  full_name: string
+  email: string
+  class_id: string
+  class_name?: string
+  is_verified: boolean
+  is_active: boolean
+  student_record_id?: string
+  created_at: string
+}
+
+export interface StudentAuthTokens {
+  access_token: string
+  token_type: string
+  student: StudentAccount
+}
+
+// ─── Assignment ──────────────────────────────────────────────────────────────
+export type AssignmentStatus = 'draft' | 'published' | 'closed'
+
+export interface Assignment {
+  id: string
+  title: string
+  instructions?: string
+  subject_id: string
+  class_id: string
+  total_marks: number
+  due_date?: string
+  status: AssignmentStatus
+  grading_rubric?: string
+  attachment_url?: string
+  created_at: string
+  updated_at?: string
+}
+
+// ─── Assignment Submission ───────────────────────────────────────────────────
+export type SubmissionStatus = 'submitted' | 'graded' | 'late'
+
+export interface AssignmentSubmission {
+  id: string
+  assignment_id: string
+  student_account_id: string
+  student_name?: string
+  submission_text: string
+  attachment_url?: string
+  status: SubmissionStatus | string
+  submitted_at?: string
+  marks_obtained?: number
+  percentage?: number
+  grade?: string
+  ai_feedback?: string
+  graded_at?: string
+}
+
+// ─── Student Portal specific ─────────────────────────────────────────────────
+export interface StudentDashboard {
+  student_name: string
+  class_name: string
+  class_id: string
+  pending_assignments: number
+  completed_assignments: number
+  average_score: number | null
+}
+
+export interface StudentAssignmentListItem {
+  id: string
+  title: string
+  subject_name: string
+  due_date?: string
+  total_marks: number
+  status: string
+  submission_status: 'not_submitted' | 'submitted' | 'graded'
+}
+
+export interface StudentScore {
+  id: string
+  assignment_title: string
+  subject_name: string
+  marks_obtained: number
+  total_marks: number
+  percentage: number
+  grade: string
+  graded_at?: string
+}
+
+export interface AssignmentAnalytics {
+  total_submissions: number
+  graded_count: number
+  average_score: number | null
+  highest_score: number | null
+  lowest_score: number | null
+  submission_rate: number
+  pass_rate: number
+  grade_distribution: Record<string, number>
 }

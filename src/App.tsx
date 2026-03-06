@@ -2,7 +2,9 @@ import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import AuthGuard from './components/layout/AuthGuard'
+import StudentAuthGuard from './components/layout/StudentAuthGuard'
 import AppShell from './components/layout/AppShell'
+import StudentPortalShell from './components/layout/StudentPortalShell'
 import LoadingSpinner from './components/feedback/LoadingSpinner'
 
 // Public pages
@@ -11,7 +13,11 @@ const LoginPage         = lazy(() => import('./pages/auth/LoginPage'))
 const RegisterPage      = lazy(() => import('./pages/auth/RegisterPage'))
 const ForgotPasswordPage = lazy(() => import('./pages/auth/ForgotPasswordPage'))
 
-// Protected pages
+// Student auth pages (public)
+const StudentLoginPage  = lazy(() => import('./pages/auth/StudentLoginPage'))
+const StudentSignupPage = lazy(() => import('./pages/auth/StudentSignupPage'))
+
+// Protected teacher pages
 const DashboardPage     = lazy(() => import('./pages/dashboard/DashboardPage'))
 const SubjectsListPage  = lazy(() => import('./pages/subjects/SubjectsListPage'))
 const CreateSubjectPage = lazy(() => import('./pages/subjects/CreateSubjectPage'))
@@ -36,6 +42,19 @@ const ProfileSettingsPage  = lazy(() => import('./pages/settings/ProfileSettings
 const SecuritySettingsPage = lazy(() => import('./pages/settings/SecuritySettingsPage'))
 const BillingPage          = lazy(() => import('./pages/settings/BillingPage'))
 
+// Teacher assignment pages
+const AssignmentsListPage   = lazy(() => import('./pages/assignments/AssignmentsListPage'))
+const CreateAssignmentPage  = lazy(() => import('./pages/assignments/CreateAssignmentPage'))
+const AssignmentDetailPage  = lazy(() => import('./pages/assignments/AssignmentDetailPage'))
+
+// Student portal pages
+const StudentDashboardPage        = lazy(() => import('./pages/student/StudentDashboardPage'))
+const StudentAssignmentsPage      = lazy(() => import('./pages/student/StudentAssignmentsPage'))
+const StudentAssignmentDetailPage = lazy(() => import('./pages/student/StudentAssignmentDetailPage'))
+const StudentScoresPage           = lazy(() => import('./pages/student/StudentScoresPage'))
+const StudentSubjectsPage         = lazy(() => import('./pages/student/StudentSubjectsPage'))
+const StudentAskAIPage            = lazy(() => import('./pages/student/StudentAskAIPage'))
+
 const Fallback = () => (
   <div className="flex items-center justify-center h-screen bg-[#FFFAF5]">
     <LoadingSpinner size="lg" />
@@ -53,7 +72,11 @@ export default function App() {
           <Route path="/register"       element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
-          {/* Protected — wrapped in AuthGuard + AppShell */}
+          {/* Student auth (public) */}
+          <Route path="/student/login"  element={<StudentLoginPage />} />
+          <Route path="/student/signup" element={<StudentSignupPage />} />
+
+          {/* Protected — Teacher — wrapped in AuthGuard + AppShell */}
           <Route element={<AuthGuard />}>
             <Route element={<AppShell />}>
               <Route path="/dashboard"        element={<DashboardPage />} />
@@ -65,6 +88,10 @@ export default function App() {
               <Route path="/classes"          element={<ClassesListPage />} />
               <Route path="/classes/new"      element={<CreateClassPage />} />
               <Route path="/classes/:id"      element={<ClassDetailPage />} />
+
+              <Route path="/assignments"          element={<AssignmentsListPage />} />
+              <Route path="/assignments/new"      element={<CreateAssignmentPage />} />
+              <Route path="/assignments/:id"      element={<AssignmentDetailPage />} />
 
               <Route path="/documents"        element={<DocumentsLibraryPage />} />
               <Route path="/documents/upload" element={<UploadDocumentPage />} />
@@ -89,6 +116,19 @@ export default function App() {
               <Route path="/settings/billing"  element={<BillingPage />} />
 
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Route>
+          </Route>
+
+          {/* Protected — Student — wrapped in StudentAuthGuard + StudentPortalShell */}
+          <Route element={<StudentAuthGuard />}>
+            <Route element={<StudentPortalShell />}>
+              <Route path="/student/dashboard"          element={<StudentDashboardPage />} />
+              <Route path="/student/assignments"        element={<StudentAssignmentsPage />} />
+              <Route path="/student/assignments/:id"    element={<StudentAssignmentDetailPage />} />
+              <Route path="/student/scores"             element={<StudentScoresPage />} />
+              <Route path="/student/subjects"           element={<StudentSubjectsPage />} />
+              <Route path="/student/ask-ai"             element={<StudentAskAIPage />} />
+              <Route path="/student/*" element={<Navigate to="/student/dashboard" replace />} />
             </Route>
           </Route>
         </Routes>
