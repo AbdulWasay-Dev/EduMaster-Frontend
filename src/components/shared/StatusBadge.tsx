@@ -7,13 +7,14 @@ interface StatusBadgeProps {
 }
 
 export default function StatusBadge({ status, className }: StatusBadgeProps) {
-  const cls = statusBadgeClass(status)
-  const isProcessing = status.toLowerCase() === 'processing'
+  const safeStatus = status || 'pending';
+  const cls = statusBadgeClass(safeStatus)
+  const isProcessing = safeStatus.toLowerCase() === 'processing'
 
   return (
     <span className={cn('badge', cls, className)}>
       {isProcessing && <LoadingSpinner size="sm" />}
-      {capitalize(status)}
+      {capitalize(safeStatus)}
     </span>
   )
 }

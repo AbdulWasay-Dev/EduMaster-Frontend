@@ -29,14 +29,14 @@ export default function TopNav() {
   }
 
   return (
-    <header className="flex items-center justify-between h-14 px-4 lg:px-6 bg-white border-b border-brand-100 shrink-0 z-20">
+    <header className="flex items-center justify-between h-14 px-4 lg:px-6 bg-white dark:bg-gray-900 border-b border-brand-100 dark:border-gray-800 shrink-0 z-20">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-1.5 text-sm">
         {breadcrumbs.map((crumb, i) => (
           <span key={crumb.to} className="flex items-center gap-1.5">
             {i > 0 && <span className="text-brand-300">/</span>}
             {crumb.isLast ? (
-              <span className="font-semibold text-[#1C0A00]">{crumb.label}</span>
+              <span className="font-semibold text-[#1C0A00] dark:text-gray-100">{crumb.label}</span>
             ) : (
               <Link to={crumb.to} className="text-brand-700 hover:text-brand-500 transition-colors">
                 {crumb.label}
@@ -49,12 +49,12 @@ export default function TopNav() {
       {/* Right actions */}
       <div className="flex items-center gap-2">
         {/* Search */}
-        <div className="hidden md:flex items-center gap-2 bg-brand-50 border border-brand-200 rounded-lg px-3 py-1.5 w-48 lg:w-64">
-          <Search className="w-3.5 h-3.5 text-brand-400 shrink-0" />
+        <div className="hidden md:flex items-center gap-2 bg-brand-50 dark:bg-gray-800 border border-brand-200 dark:border-gray-700 rounded-lg px-3 py-1.5 w-48 lg:w-64">
+          <Search className="w-3.5 h-3.5 text-brand-400 dark:text-gray-400 shrink-0" />
           <input
             type="text"
             placeholder="Search…"
-            className="bg-transparent text-sm text-[#1C0A00] placeholder-brand-400 outline-none flex-1 min-w-0"
+            className="bg-transparent text-sm text-[#1C0A00] dark:text-gray-100 placeholder-brand-400 dark:placeholder-gray-500 outline-none flex-1 min-w-0"
           />
         </div>
 
@@ -83,7 +83,7 @@ export default function TopNav() {
               {getInitials(user.name)}
             </div>
             <div className="hidden lg:block">
-              <p className="text-xs font-semibold text-[#1C0A00] leading-tight">{user.name}</p>
+              <p className="text-xs font-semibold text-[#1C0A00] dark:text-gray-100 leading-tight">{user.name}</p>
               <p className="text-[10px] text-brand-700 capitalize">{user.role}</p>
             </div>
             <button

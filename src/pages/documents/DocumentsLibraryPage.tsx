@@ -18,7 +18,16 @@ export default function DocumentsLibraryPage() {
   const [view, setView] = useState<'grid' | 'list'>('grid')
   const qc = useQueryClient()
 
-  const { data: docs = [], isLoading } = useQuery({ queryKey: ['documents'], queryFn: () => listDocuments() })
+  const { data: docs = [], isLoading } = useQuery({ 
+    queryKey: ['documents'], 
+    queryFn: () => listDocuments(),
+    refetchInterval: (query) => {
+      // Automatically poll every 5 seconds if any document is 'pending' or 'processing'
+      const docsData = query.state?.data || []
+      const hasPending = docsData.some((d: Document) => d.processing_status === 'pending' || d.processing_status === 'processing')
+      return hasPending ? 5000 : false
+    }
+  })
 
   const deleteMut = useMutation({
     mutationFn: deleteDocument,
@@ -100,6 +109,17 @@ export default function DocumentsLibraryPage() {
                 <h3 className="font-medium text-sm text-[#1C0A00] truncate hover:text-brand-500">{doc.filename || doc.title}</h3>
               </Link>
               <p className="text-xs text-brand-500 mt-0.5">{doc.file_size ? formatBytes(doc.file_size) : ''}</p>
+              
+              {/* Progress bar for pending/processing documents */}
+              {(doc.processing_status === 'pending' || doc.processing_status === 'processing') && (
+                <div className="mt-3 w-full bg-brand-100 rounded-full h-1.5 overflow-hidden">
+                  <div 
+                    className="bg-brand-500 h-1.5 rounded-full transition-all duration-1000 animate-pulse-slow" 
+                    style={{ width: doc.processing_status === 'pending' ? '30%' : '70%' }}
+                  />
+                </div>
+              )}
+
               <div className="mt-3 flex items-center justify-between">
                 <StatusBadge status={doc.processing_status} />
                 <span className="text-xs text-brand-400">{formatDate(doc.created_at)}</span>

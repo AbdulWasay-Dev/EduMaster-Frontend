@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import {
-  LayoutDashboard, ClipboardList, Trophy, BookOpen, Bot,
+  LayoutDashboard, ClipboardList, Trophy, BookOpen, Bot, BarChart3,
   LogOut, ChevronLeft, ChevronRight, GraduationCap,
 } from 'lucide-react'
 import { useUIStore } from '@/store/uiStore'
@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { to: '/student/dashboard',    icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/student/assignments',  icon: ClipboardList,   label: 'Assignments' },
   { to: '/student/scores',       icon: Trophy,          label: 'My Scores' },
+  { to: '/student/analytics',    icon: BarChart3,       label: 'Analytics' },
   { to: '/student/subjects',     icon: BookOpen,        label: 'Subjects' },
   { to: '/student/ask-ai',       icon: Bot,             label: 'Ask AI' },
 ]

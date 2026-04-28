@@ -9,7 +9,7 @@ export default function AppShell() {
   const collapsed = useUIStore((s) => s.sidebarCollapsed)
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#FFFAF5]">
+    <div className="flex h-screen overflow-hidden bg-[#FFFAF5] dark:bg-gray-900">
       {/* Sidebar */}
       <Sidebar />
 
