@@ -62,7 +62,7 @@ export interface Student {
 }
 
 // ─── Document ────────────────────────────────────────────────────────────────
-export type DocumentStatus = 'pending' | 'processing' | 'ready' | 'completed' | 'error'
+export type DocumentStatus = 'processing' | 'ready' | 'completed' | 'error'
 export type DocumentType = 'pdf' | 'pptx' | 'docx' | 'png' | 'jpg' | 'jpeg'
 
 export interface Document {
@@ -335,84 +335,6 @@ export interface StudentDashboard {
   pending_assignments: number
   completed_assignments: number
   average_score: number | null
-}
-
-export interface StudentSubjectSummary {
-  id: string
-  name: string
-  description?: string
-  document_count: number
-}
-
-export interface StudentClassSummary {
-  id: string
-  name: string
-  grade_level?: string
-  academic_year?: string
-  class_code?: string
-  subjects: StudentSubjectSummary[]
-}
-
-export interface StudentSubjectDetail {
-  id: string
-  name: string
-  description?: string
-  document_count: number
-  assignment_count: number
-  average_score: number | null
-  documents: {
-    id: string
-    file_name: string
-    file_type: string
-    status: string
-    created_at: string
-  }[]
-  assignments: {
-    id: string
-    title: string
-    due_date?: string | null
-    total_marks: number
-    status: string
-  }[]
-}
-
-export interface StudentPaperResult {
-  id: string
-  paper_title: string
-  subject_name: string
-  total_marks: number
-  marks_obtained: number
-  percentage: number
-  grade?: string | null
-  graded_at?: string | null
-}
-
-export interface StudentAnalyticsPoint {
-  assignment_id: string
-  assignment_title: string
-  subject_name: string
-  percentage: number
-  score: number
-  total_marks: number
-  date: string
-}
-
-export interface StudentAnalyticsSubjectCard {
-  id: string
-  name: string
-  average: number
-  highest: number
-  lowest: number
-  count: number
-}
-
-export interface StudentAnalytics {
-  overall_percentage: number
-  total_graded: number
-  trend: StudentAnalyticsPoint[]
-  recent_trend: StudentAnalyticsPoint[]
-  subject_performance: StudentAnalyticsSubjectCard[]
-  pending_assignments?: number
 }
 
 export interface StudentAssignmentListItem {

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
-import { BookOpen, FileText, TrendingUp } from 'lucide-react'
+import { BookOpen, FileText } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import { getMySubjects } from '@/lib/api/student-portal'
@@ -40,10 +40,6 @@ export default function StudentSubjectsPage() {
               <div className="flex items-center gap-1 text-xs text-slate-400">
                 <FileText className="w-3 h-3" />
                 {s.document_count} document{s.document_count !== 1 ? 's' : ''}
-              </div>
-              <div className="flex items-center gap-1 text-xs text-slate-400 mt-2">
-                <TrendingUp className="w-3 h-3" />
-                Open subject analytics
               </div>
             </Link>
           ))}

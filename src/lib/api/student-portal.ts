@@ -22,26 +22,11 @@ export async function getStudentAssignment(id: string) {
   return data
 }
 
-export async function submitAssignment(id: string, submissionText: string, files?: File[]) {
-  const formData = new FormData()
-  if (submissionText) formData.append('submission_text', submissionText)
-  if (files && files.length > 0) {
-    files.forEach(f => formData.append('files', f))
-  }
-  const { data } = await api.post(`/student/assignments/${id}/submit`, formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
+export async function submitAssignment(id: string, submissionText: string) {
+  const { data } = await api.post(`/student/assignments/${id}/submit`, {
+    submission_text: submissionText,
   })
   return data
-}
-
-export async function getStudentAnalytics() {
-  const { data } = await api.get('/student/analytics')
-  return data
-}
-
-export async function getMyClasses() {
-  const { data } = await api.get('/student/classes')
-  return Array.isArray(data) ? data : []
 }
 
 export async function getMySubmission(assignmentId: string) {
@@ -57,16 +42,6 @@ export async function getMyScores(): Promise<StudentScore[]> {
 export async function getMySubjects() {
   const { data } = await api.get('/student/subjects')
   return Array.isArray(data) ? data : []
-}
-
-export async function getMyPapers() {
-  const { data } = await api.get('/student/papers')
-  return Array.isArray(data) ? data : []
-}
-
-export async function getMySubjectDetail(subjectId: string) {
-  const { data } = await api.get(`/student/subjects/${subjectId}`)
-  return data
 }
 
 export async function getSubjectDocuments(subjectId: string) {

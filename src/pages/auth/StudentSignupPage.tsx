@@ -20,7 +20,6 @@ const codeSchema = z.object({
 const signupSchema = z.object({
   full_name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email'),
-  roll_number: z.string().optional(),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   confirm_password: z.string(),
 }).refine((d) => d.password === d.confirm_password, {
@@ -73,7 +72,6 @@ export default function StudentSignupPage() {
         email: data.email,
         password: data.password,
         class_code: classCode,
-        roll_number: data.roll_number,
       })
       storeLogin(result.access_token, result.student)
       toast.success(`Welcome, ${result.student.full_name}! Your account is pending verification.`)
@@ -191,19 +189,6 @@ export default function StudentSignupPage() {
                   {signupForm.formState.errors.full_name && (
                     <p className="text-xs text-red-500 mt-1">{signupForm.formState.errors.full_name.message}</p>
                   )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Roll Number (optional)</label>
-                  <div className="relative">
-                    <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-sky-400" />
-                    <input
-                      {...signupForm.register('roll_number')}
-                      type="text"
-                      placeholder="e.g. 12-A-014"
-                      className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent uppercase"
-                    />
-                  </div>
                 </div>
 
                 <div>

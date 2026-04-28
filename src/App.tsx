@@ -1,7 +1,6 @@
-import { lazy, Suspense, useEffect } from 'react'
+import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
-import { useUIStore } from './store/uiStore'
 import AuthGuard from './components/layout/AuthGuard'
 import StudentAuthGuard from './components/layout/StudentAuthGuard'
 import AppShell from './components/layout/AppShell'
@@ -54,23 +53,15 @@ const StudentAssignmentsPage      = lazy(() => import('./pages/student/StudentAs
 const StudentAssignmentDetailPage = lazy(() => import('./pages/student/StudentAssignmentDetailPage'))
 const StudentScoresPage           = lazy(() => import('./pages/student/StudentScoresPage'))
 const StudentSubjectsPage         = lazy(() => import('./pages/student/StudentSubjectsPage'))
-const StudentSubjectDetailPage    = lazy(() => import('./pages/student/StudentSubjectDetailPage'))
-const StudentAnalyticsPage        = lazy(() => import('./pages/student/StudentAnalyticsPage'))
 const StudentAskAIPage            = lazy(() => import('./pages/student/StudentAskAIPage'))
 
 const Fallback = () => (
-  <div className="flex items-center justify-center h-screen bg-[#FFFAF5] dark:bg-gray-900">
+  <div className="flex items-center justify-center h-screen bg-[#FFFAF5]">
     <LoadingSpinner size="lg" />
   </div>
 )
 
 export default function App() {
-  const isDarkMode = useUIStore((state) => state.isDarkMode)
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDarkMode)
-  }, [isDarkMode])
-
   return (
     <Suspense fallback={<Fallback />}>
       <AnimatePresence mode="wait">
@@ -136,8 +127,6 @@ export default function App() {
               <Route path="/student/assignments/:id"    element={<StudentAssignmentDetailPage />} />
               <Route path="/student/scores"             element={<StudentScoresPage />} />
               <Route path="/student/subjects"           element={<StudentSubjectsPage />} />
-              <Route path="/student/subjects/:id"        element={<StudentSubjectDetailPage />} />
-              <Route path="/student/analytics"           element={<StudentAnalyticsPage />} />
               <Route path="/student/ask-ai"             element={<StudentAskAIPage />} />
               <Route path="/student/*" element={<Navigate to="/student/dashboard" replace />} />
             </Route>

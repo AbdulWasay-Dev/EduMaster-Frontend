@@ -11,16 +11,12 @@ export interface StudentSignupPayload {
   email: string
   password: string
   class_code: string
-  roll_number?: string
-  student_id?: string
-  phone?: string
 }
 
 export interface ValidateCodeResponse {
   valid: boolean
   class_name?: string
   class_id?: string
-  class_code?: string
 }
 
 export async function validateClassCode(code: string): Promise<ValidateCodeResponse> {
@@ -30,25 +26,11 @@ export async function validateClassCode(code: string): Promise<ValidateCodeRespo
 
 export async function studentSignup(payload: StudentSignupPayload): Promise<StudentAuthTokens> {
   const { data } = await api.post<StudentAuthTokens>('/student-auth/signup', payload)
-  if ((data as unknown as { user?: unknown }).user && !(data as unknown as { student?: unknown }).student) {
-    const response = data as unknown as StudentAuthTokens & { user?: StudentAccount }
-    return {
-      ...response,
-      student: response.user ?? response.student,
-    }
-  }
   return data
 }
 
 export async function studentLogin(payload: StudentLoginPayload): Promise<StudentAuthTokens> {
   const { data } = await api.post<StudentAuthTokens>('/student-auth/login', payload)
-  if ((data as unknown as { user?: unknown }).user && !(data as unknown as { student?: unknown }).student) {
-    const response = data as unknown as StudentAuthTokens & { user?: StudentAccount }
-    return {
-      ...response,
-      student: response.user ?? response.student,
-    }
-  }
   return data
 }
 
