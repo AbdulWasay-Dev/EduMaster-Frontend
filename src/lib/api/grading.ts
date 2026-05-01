@@ -11,8 +11,8 @@ export interface GradeAnswerSheetPayload {
 
 export interface GradeMultiplePayload {
   paper_id: string
-  student_id: string
-  answer_sheet_images: string[]
+  student_id?: string
+  answer_sheet_images: Array<File | string>
   grading_mode?: GradingMode
   strictness?: GradingStrictness
 }
@@ -50,7 +50,16 @@ export async function gradeAnswerSheet(payload: GradeAnswerSheetPayload): Promis
 }
 
 export async function gradeMultipleSheets(payload: GradeMultiplePayload): Promise<Submission> {
-  const { data } = await api.post<Submission>('/grading/upload-multiple-answer-sheets', payload)
+  const answer_sheet_images = await Promise.all(
+    payload.answer_sheet_images.map(image => image instanceof File ? fileToBase64(image) : image)
+  )
+  const body = {
+    ...payload,
+    answer_sheet_images,
+    grading_mode: payload.grading_mode ?? 'auto',
+    strictness: payload.strictness ?? 'medium',
+  }
+  const { data } = await api.post<Submission>('/grading/upload-multiple-answer-sheets', body)
   return data
 }
 

@@ -65,7 +65,7 @@ The frontend provides testing interfaces for all backend features:
 ## Getting Started
 
 ### Prerequisites
-- A running EduMaster backend server (default: `http://localhost:8000`)
+- A running EduMaster backend server (default: `http://localhost:8010`)
 - A modern web browser (Chrome, Firefox, Edge, Safari)
 
 ### Installation
@@ -88,9 +88,9 @@ If you have Python installed:
 ```bash
 # Python 3
 cd frontend
-python -m http.server 8080
+python -m http.server 5174
 
-# Then open http://localhost:8080 in your browser
+# Then open http://localhost:5174 in your browser
 ```
 
 If you have Node.js installed:
@@ -100,9 +100,9 @@ npm install -g http-server
 
 # Run the server
 cd frontend
-http-server -p 8080
+http-server -p 5174
 
-# Then open http://localhost:8080 in your browser
+# Then open http://localhost:5174 in your browser
 ```
 
 **Option 3: Using VS Code Live Server**
@@ -118,13 +118,13 @@ http-server -p 8080
 Make sure your EduMaster backend is running:
 ```bash
 cd backend
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+uvicorn main:app --reload --host 0.0.0.0 --port 8010
 ```
 
 ### 2. Configure Backend URL
 - Open the frontend in your browser
 - Go to the **System** tab
-- Update the "Backend API URL" if your backend is not running on `http://localhost:8000`
+- Update the "Backend API URL" if your backend is not running on `http://localhost:8010`
 - Click "Update URL"
 
 ### 3. Authenticate
@@ -196,7 +196,7 @@ If you see CORS errors in the console:
    ```
    Or specify your frontend URL:
    ```
-   CORS_ORIGINS=["http://localhost:8080"]
+   CORS_ORIGINS=["http://localhost:5174"]
    ```
 
 ### Backend Connection Failed

@@ -3,7 +3,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Flame, Mail, User } from 'lucide-react'
+import {
+  Briefcase, Building2, Flame, GraduationCap, Mail, MapPin, Phone, User,
+} from 'lucide-react'
 import { motion } from 'framer-motion'
 import { toast } from 'sonner'
 import PasswordInput from '@/components/forms/PasswordInput'
@@ -16,12 +18,29 @@ const schema = z.object({
   email:           z.string().email('Invalid email'),
   password:        z.string().min(8, 'Password must be at least 8 characters'),
   confirmPassword: z.string(),
+  school_name:     z.string().min(2, 'Institution name is required'),
+  institution_type: z.string().min(2, 'Institution type is required'),
+  institution_level: z.string().optional(),
+  institution_address: z.string().optional(),
+  institution_city: z.string().optional(),
+  institution_country: z.string().optional(),
+  department:      z.string().min(2, 'Department is required'),
+  designation:     z.string().min(2, 'Designation is required'),
+  qualification:   z.string().optional(),
+  specialization:  z.string().optional(),
+  employee_id:     z.string().optional(),
+  phone:           z.string().optional(),
   terms:           z.boolean().refine(v => v, 'You must accept the terms'),
 }).refine(d => d.password === d.confirmPassword, {
   message: 'Passwords do not match',
   path: ['confirmPassword'],
 })
 type FormData = z.infer<typeof schema>
+
+const emptyToUndefined = (value?: string) => {
+  const trimmed = value?.trim()
+  return trimmed ? trimmed : undefined
+}
 
 export default function RegisterPage() {
   const navigate = useNavigate()
@@ -31,6 +50,9 @@ export default function RegisterPage() {
 
   const { register, handleSubmit, watch, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      institution_type: 'school',
+    },
   })
   const passwordValue = watch('password', '')
 
@@ -38,7 +60,23 @@ export default function RegisterPage() {
     setLoading(true)
     setError(null)
     try {
-      const tokens = await registerApi({ email: data.email, password: data.password, name: data.name })
+      const tokens = await registerApi({
+        email: data.email,
+        password: data.password,
+        name: data.name,
+        school_name: data.school_name,
+        institution_type: data.institution_type,
+        institution_level: emptyToUndefined(data.institution_level),
+        institution_address: emptyToUndefined(data.institution_address),
+        institution_city: emptyToUndefined(data.institution_city),
+        institution_country: emptyToUndefined(data.institution_country),
+        department: data.department,
+        designation: data.designation,
+        qualification: emptyToUndefined(data.qualification),
+        specialization: emptyToUndefined(data.specialization),
+        employee_id: emptyToUndefined(data.employee_id),
+        phone: emptyToUndefined(data.phone),
+      })
       useAuthStore.getState().login(tokens.access_token, { id: '', name: data.name, email: data.email, role: 'teacher' })
       const profile = await getProfile()
       storeLogin(tokens.access_token, profile)
@@ -60,7 +98,7 @@ export default function RegisterPage() {
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative z-10 w-full max-w-md"
+        className="relative z-10 w-full max-w-5xl"
       >
         <div className="card p-8">
           <div className="flex flex-col items-center mb-8">
@@ -79,41 +117,134 @@ export default function RegisterPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-              <label className="label">Full Name</label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-400" />
-                <input {...register('name')} type="text" placeholder="Jane Smith" className="input pl-9" />
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <section className="space-y-4">
+              <div className="flex items-center gap-2 text-[#1C0A00]">
+                <User className="w-4 h-4 text-brand-500" />
+                <h2 className="text-sm font-bold">Account</h2>
               </div>
-              {errors.name && <p className="text-xs text-accent-500 mt-1">{errors.name.message}</p>}
-            </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="label">Full Name</label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-400" />
+                    <input {...register('name')} type="text" placeholder="Jane Smith" className="input pl-9" />
+                  </div>
+                  {errors.name && <p className="text-xs text-accent-500 mt-1">{errors.name.message}</p>}
+                </div>
 
-            <div>
-              <label className="label">Email address</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-400" />
-                <input {...register('email')} type="email" placeholder="you@school.edu" className="input pl-9" />
+                <div>
+                  <label className="label">Email address</label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-400" />
+                    <input {...register('email')} type="email" placeholder="you@school.edu" className="input pl-9" />
+                  </div>
+                  {errors.email && <p className="text-xs text-accent-500 mt-1">{errors.email.message}</p>}
+                </div>
+
+                <div>
+                  <label className="label">Password</label>
+                  <PasswordInput
+                    {...register('password')}
+                    value={passwordValue}
+                    showStrength
+                    placeholder="Min. 8 characters"
+                  />
+                  {errors.password && <p className="text-xs text-accent-500 mt-1">{errors.password.message}</p>}
+                </div>
+
+                <div>
+                  <label className="label">Confirm Password</label>
+                  <PasswordInput {...register('confirmPassword')} placeholder="Repeat password" />
+                  {errors.confirmPassword && <p className="text-xs text-accent-500 mt-1">{errors.confirmPassword.message}</p>}
+                </div>
               </div>
-              {errors.email && <p className="text-xs text-accent-500 mt-1">{errors.email.message}</p>}
-            </div>
+            </section>
 
-            <div>
-              <label className="label">Password</label>
-              <PasswordInput
-                {...register('password')}
-                value={passwordValue}
-                showStrength
-                placeholder="Min. 8 characters"
-              />
-              {errors.password && <p className="text-xs text-accent-500 mt-1">{errors.password.message}</p>}
-            </div>
+            <section className="space-y-4">
+              <div className="flex items-center gap-2 text-[#1C0A00]">
+                <Building2 className="w-4 h-4 text-brand-500" />
+                <h2 className="text-sm font-bold">Institution</h2>
+              </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="label">University / School Name *</label>
+                  <input {...register('school_name')} className="input" placeholder="e.g. City Science College" />
+                  {errors.school_name && <p className="text-xs text-accent-500 mt-1">{errors.school_name.message}</p>}
+                </div>
+                <div>
+                  <label className="label">Institution Type *</label>
+                  <select {...register('institution_type')} className="input">
+                    <option value="school">School</option>
+                    <option value="college">College</option>
+                    <option value="university">University</option>
+                    <option value="academy">Academy / Coaching Center</option>
+                    <option value="other">Other</option>
+                  </select>
+                  {errors.institution_type && <p className="text-xs text-accent-500 mt-1">{errors.institution_type.message}</p>}
+                </div>
+                <div>
+                  <label className="label">Academic Level</label>
+                  <input {...register('institution_level')} className="input" placeholder="e.g. Secondary, Undergraduate, A Levels" />
+                </div>
+                <div>
+                  <label className="label">Country</label>
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-400" />
+                    <input {...register('institution_country')} className="input pl-9" placeholder="e.g. Pakistan" />
+                  </div>
+                </div>
+                <div>
+                  <label className="label">City</label>
+                  <input {...register('institution_city')} className="input" placeholder="e.g. Karachi" />
+                </div>
+                <div>
+                  <label className="label">Address</label>
+                  <input {...register('institution_address')} className="input" placeholder="Campus, block, area" />
+                </div>
+              </div>
+            </section>
 
-            <div>
-              <label className="label">Confirm Password</label>
-              <PasswordInput {...register('confirmPassword')} placeholder="Repeat password" />
-              {errors.confirmPassword && <p className="text-xs text-accent-500 mt-1">{errors.confirmPassword.message}</p>}
-            </div>
+            <section className="space-y-4">
+              <div className="flex items-center gap-2 text-[#1C0A00]">
+                <Briefcase className="w-4 h-4 text-brand-500" />
+                <h2 className="text-sm font-bold">Teaching Profile</h2>
+              </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="label">Department / Faculty *</label>
+                  <input {...register('department')} className="input" placeholder="e.g. Computer Science" />
+                  {errors.department && <p className="text-xs text-accent-500 mt-1">{errors.department.message}</p>}
+                </div>
+                <div>
+                  <label className="label">Designation *</label>
+                  <input {...register('designation')} className="input" placeholder="e.g. Lecturer, Teacher, Professor" />
+                  {errors.designation && <p className="text-xs text-accent-500 mt-1">{errors.designation.message}</p>}
+                </div>
+                <div>
+                  <label className="label">Qualification</label>
+                  <div className="relative">
+                    <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-400" />
+                    <input {...register('qualification')} className="input pl-9" placeholder="e.g. MS Mathematics" />
+                  </div>
+                </div>
+                <div>
+                  <label className="label">Specialization</label>
+                  <input {...register('specialization')} className="input" placeholder="e.g. Artificial Intelligence" />
+                </div>
+                <div>
+                  <label className="label">Employee / Faculty ID</label>
+                  <input {...register('employee_id')} className="input" placeholder="Optional" />
+                </div>
+                <div>
+                  <label className="label">Phone</label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-400" />
+                    <input {...register('phone')} className="input pl-9" placeholder="+92..." />
+                  </div>
+                </div>
+              </div>
+            </section>
 
             <div className="flex items-start gap-2">
               <input

@@ -20,20 +20,27 @@ export default function GradingOverviewPage() {
       <span className="font-medium text-[#1C0A00]">{getValue() as string || '—'}</span>
     )},
     { id: 'score', header: 'Score', cell: ({ row }) => {
-      const pct = row.original.total_marks ? Math.round(((row.original.score ?? 0) / row.original.total_marks) * 100) : 0
+      const score = row.original.score ?? row.original.total_score ?? 0
+      const totalMarks = row.original.total_marks ?? row.original.max_score ?? 0
+      const pct = totalMarks ? Math.round((score / totalMarks) * 100) : Math.round(row.original.grade_percentage ?? 0)
       return (
         <div className="flex items-center gap-2">
-          <span className="font-medium text-[#1C0A00]">{row.original.score ?? 0}/{row.original.total_marks}</span>
+          <span className="font-medium text-[#1C0A00]">{score}/{totalMarks}</span>
           <span className="text-xs text-brand-500">({pct}%)</span>
         </div>
       )
     }},
     { id: 'grade_circle', header: '%', cell: ({ row }) => {
-      const pct = row.original.total_marks ? Math.round(((row.original.score ?? 0) / row.original.total_marks) * 100) : 0
+      const score = row.original.score ?? row.original.total_score ?? 0
+      const totalMarks = row.original.total_marks ?? row.original.max_score ?? 0
+      const pct = totalMarks ? Math.round((score / totalMarks) * 100) : Math.round(row.original.grade_percentage ?? 0)
       return <GradeCircle percentage={pct} size={40} />
     }},
     { id: 'status', header: 'Status', cell: ({ row }) => <StatusBadge status={row.original.status} /> },
-    { accessorKey: 'created_at', header: 'Graded', cell: ({ getValue }) => formatDate(getValue() as string) },
+    { id: 'graded_at', header: 'Graded', cell: ({ row }) => {
+      const gradedAt = row.original.created_at ?? row.original.graded_at ?? row.original.submitted_at
+      return gradedAt ? formatDate(gradedAt) : '—'
+    } },
     { id: 'actions', header: '', cell: ({ row }) => (
       <Link to={`/grading/${row.original.id}`} className="p-1.5 rounded hover:bg-brand-100 text-brand-500 transition-colors inline-flex">
         <Eye className="w-3.5 h-3.5" />

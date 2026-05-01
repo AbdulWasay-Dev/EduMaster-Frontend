@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
@@ -14,9 +14,10 @@ import DifficultyPicker from '@/components/forms/DifficultyPicker'
 import { listSubjects } from '@/lib/api/subjects'
 import { listDocuments } from '@/lib/api/documents'
 import { generatePaper } from '@/lib/api/papers'
+import { useAuthStore } from '@/store/authStore'
 import {
   type PaperGenerationRequest, type QuestionType,
-  type Difficulty, type PaperTemplate,
+  type Difficulty, type PaperTemplate, type User,
 } from '@/types'
 
 const STEPS = ['Source', 'Questions', 'Template', 'Details', 'Review']
@@ -86,6 +87,7 @@ type WizardState = {
   // Details step
   title: string
   institution_name: string
+  teacher_name: string
   course_name: string
   exam_date: string
   duration: string
@@ -93,7 +95,7 @@ type WizardState = {
   student_fields: string[]
 }
 
-const DEFAULT: WizardState = {
+const createDefaultForm = (user?: User | null): WizardState => ({
   subject_id: '',
   document_ids: [],
   topic_focus: '',
@@ -102,21 +104,40 @@ const DEFAULT: WizardState = {
   total_count: 10,
   question_types: ['mcq', 'short_answer'],
   difficulty: 'medium',
-  template: 'classic',
+  template: user?.default_paper_template ?? 'classic',
   title: '',
-  institution_name: '',
-  course_name: '',
+  institution_name: user?.school_name ?? '',
+  teacher_name: user?.name ?? '',
+  course_name: user?.default_course_name ?? '',
   exam_date: new Date().toISOString().split('T')[0],
-  duration: '3 Hours',
-  instructions: 'Answer ALL questions. Marks are indicated against each question.',
-  student_fields: ['name', 'roll_number'],
-}
+  duration: user?.default_exam_duration ?? '3 Hours',
+  instructions: user?.default_exam_instructions ?? 'Answer ALL questions. Marks are indicated against each question.',
+  student_fields: user?.default_student_fields?.length ? user.default_student_fields : ['name', 'roll_number'],
+})
 
 export default function GeneratePaperPage() {
   const navigate = useNavigate()
+  const user = useAuthStore(s => s.user)
   const [step, setStep] = useState(0)
-  const [form, setForm] = useState<WizardState>(DEFAULT)
+  const [form, setForm] = useState<WizardState>(() => createDefaultForm(user))
   const [generated, setGenerated] = useState<string | null>(null)
+
+  useEffect(() => {
+    setForm(current => ({
+      ...current,
+      template: current.template || user?.default_paper_template || 'classic',
+      institution_name: current.institution_name || user?.school_name || '',
+      teacher_name: current.teacher_name || user?.name || '',
+      course_name: current.course_name || user?.default_course_name || '',
+      duration: current.duration || user?.default_exam_duration || '3 Hours',
+      instructions: current.instructions || user?.default_exam_instructions || 'Answer ALL questions. Marks are indicated against each question.',
+      student_fields: current.student_fields.length
+        ? current.student_fields
+        : user?.default_student_fields?.length
+          ? user.default_student_fields
+          : ['name', 'roll_number'],
+    }))
+  }, [user])
 
   const { data: subjects = [] } = useQuery({ queryKey: ['subjects'], queryFn: listSubjects })
   const { data: docs = [] } = useQuery({
@@ -154,13 +175,36 @@ export default function GeneratePaperPage() {
   }
 
   const handleGenerate = () => {
+    let subjectError: string | null = null
+    const resolvedSubjectId = (() => {
+      if (form.subject_id) return form.subject_id
+      if (!form.document_ids.length) return undefined
+
+      const selectedDocs = docs.filter(d => form.document_ids.includes(d.id))
+      const subjectIds = Array.from(
+        new Set(selectedDocs.map(d => d.subject_id).filter(Boolean)),
+      )
+
+      if (subjectIds.length === 1) return subjectIds[0]
+      if (subjectIds.length > 1) {
+        subjectError = 'Select documents from one subject or choose a subject.'
+      }
+      return undefined
+    })()
+
+    if (!resolvedSubjectId) {
+      toast.error(subjectError ?? 'Please select a subject to generate the paper.')
+      return
+    }
+
     const req: PaperGenerationRequest = {
-      subject_id: form.subject_id || undefined,
+      subject_id: resolvedSubjectId,
       document_ids: form.document_ids,
       title: form.title,
       difficulty_level: form.difficulty,
       template: form.template,
       institution_name: form.institution_name || undefined,
+      teacher_name: form.teacher_name || undefined,
       course_name: form.course_name || undefined,
       exam_date: form.exam_date || undefined,
       duration: form.duration || undefined,
@@ -386,6 +430,10 @@ export default function GeneratePaperPage() {
                   <input value={form.institution_name} onChange={e => update('institution_name', e.target.value)} className="input" placeholder="e.g. City High School" />
                 </div>
                 <div>
+                  <label className="label">Teacher Name</label>
+                  <input value={form.teacher_name} onChange={e => update('teacher_name', e.target.value)} className="input" placeholder="e.g. Jane Smith" />
+                </div>
+                <div>
                   <label className="label">Course / Subject Name</label>
                   <input value={form.course_name} onChange={e => update('course_name', e.target.value)} className="input" placeholder="e.g. Biology Grade 10" />
                 </div>
@@ -431,7 +479,7 @@ export default function GeneratePaperPage() {
                   <div className="flex justify-center gap-3">
                     <button onClick={() => navigate(`/papers/${generated}/edit`)} className="btn-primary">Open Editor</button>
                     <button onClick={() => navigate(`/papers/${generated}`)} className="btn-ghost">View Paper</button>
-                    <button onClick={() => { setForm(DEFAULT); setStep(0); setGenerated(null) }} className="btn-ghost">Generate Another</button>
+                    <button onClick={() => { setForm(createDefaultForm(user)); setStep(0); setGenerated(null) }} className="btn-ghost">Generate Another</button>
                   </div>
                 </div>
               ) : genMut.isPending ? (
@@ -452,6 +500,7 @@ export default function GeneratePaperPage() {
                         ? ['Questions', Object.entries(form.question_type_counts).filter(([, v]) => v > 0).map(([k, v]) => `${v} ${k.replace('_', ' ')}`).join(', ') || '(none)']
                         : ['Questions', `${form.total_count} · ${form.question_types.join(', ')}`],
                       ['Institution', form.institution_name || '—'],
+                      ['Teacher', form.teacher_name || '—'],
                       ['Course', form.course_name || '—'],
                       ['Date', form.exam_date || '—'],
                       ['Duration', form.duration],

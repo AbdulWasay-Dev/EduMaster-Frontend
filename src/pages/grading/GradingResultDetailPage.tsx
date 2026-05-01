@@ -19,9 +19,11 @@ export default function GradingResultDetailPage() {
     queryFn: () => getSubmission(id!),
   })
 
-  const pct = submission?.total_marks
-    ? Math.round(((submission.score ?? 0) / submission.total_marks) * 100)
-    : 0
+  const score = submission ? (submission.score ?? submission.total_score ?? 0) : 0
+  const totalMarks = submission ? (submission.total_marks ?? submission.max_score ?? 0) : 0
+  const pct = totalMarks
+    ? Math.round((score / totalMarks) * 100)
+    : Math.round(submission?.grade_percentage ?? 0)
 
   useEffect(() => {
     if (pct >= 90) {
@@ -32,7 +34,8 @@ export default function GradingResultDetailPage() {
   if (isLoading) return <div className="flex justify-center py-20"><LoadingSpinner size="lg" /></div>
   if (!submission) return <div className="py-20 text-center text-brand-500">Submission not found</div>
 
-  const details = submission.grading_details ?? []
+  const details = submission.grading_details ?? submission.question_details ?? []
+  const feedback = submission.ai_feedback ?? submission.feedback
 
   return (
     <div className="space-y-6">
@@ -52,7 +55,7 @@ export default function GradingResultDetailPage() {
         <div className="text-center sm:text-left">
           <div className={`text-4xl font-black ${gradeColor(pct)}`}>{gradeLabel(pct)}</div>
           <p className="text-2xl font-bold text-[#1C0A00] mt-1">
-            {submission.score} / {submission.total_marks}
+            {score} / {totalMarks}
           </p>
           <p className="text-brand-500 text-sm mt-1">{pct}% correct</p>
           {pct >= 90 && <p className="text-amber-500 font-semibold mt-2">🎉 Excellent performance!</p>}
@@ -80,10 +83,10 @@ export default function GradingResultDetailPage() {
       </div>
 
       {/* AI feedback summary */}
-      {submission.ai_feedback && (
+      {feedback && (
         <div className="card p-5 border-l-4 border-brand-400">
           <p className="text-xs font-semibold text-brand-600 mb-1">AI Feedback Summary</p>
-          <p className="text-sm text-[#1C0A00] leading-relaxed">{submission.ai_feedback}</p>
+          <p className="text-sm text-[#1C0A00] leading-relaxed">{feedback}</p>
         </div>
       )}
 
@@ -112,6 +115,12 @@ export default function GradingResultDetailPage() {
                     <div className="mt-2 p-2 bg-brand-50 rounded-lg">
                       <p className="text-xs text-brand-600 font-medium">Student answer:</p>
                       <p className="text-sm text-[#1C0A00]">{d.student_answer}</p>
+                    </div>
+                  )}
+                  {d.evidence_quote && (
+                    <div className="mt-2 p-2 bg-white rounded-lg border border-brand-100">
+                      <p className="text-xs text-brand-600 font-medium">OCR evidence:</p>
+                      <p className="text-sm text-[#1C0A00]">{d.evidence_quote}</p>
                     </div>
                   )}
                   {d.ai_comment && (

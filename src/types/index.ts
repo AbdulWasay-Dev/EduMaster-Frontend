@@ -5,6 +5,24 @@ export interface User {
   email: string
   role: 'teacher' | 'admin'
   avatar?: string
+  profile_image_url?: string
+  school_name?: string
+  institution_type?: string
+  institution_level?: string
+  institution_address?: string
+  institution_city?: string
+  institution_country?: string
+  department?: string
+  designation?: string
+  qualification?: string
+  specialization?: string
+  employee_id?: string
+  phone?: string
+  default_course_name?: string
+  default_exam_duration?: string
+  default_exam_instructions?: string
+  default_student_fields?: string[]
+  default_paper_template?: PaperTemplate
 }
 
 export interface AuthTokens {
@@ -127,6 +145,7 @@ export interface Paper {
   // Advanced metadata
   template?: PaperTemplate
   institution_name?: string
+  teacher_name?: string
   course_name?: string
   exam_date?: string
   duration?: string
@@ -154,6 +173,7 @@ export interface PaperGenerationRequest {
   // Template & metadata
   template?: PaperTemplate
   institution_name?: string
+  teacher_name?: string
   course_name?: string
   exam_date?: string
   duration?: string
@@ -174,6 +194,8 @@ export interface QuestionGradingDetail {
   ocr_confidence?: number
   ai_feedback?: string
   ai_comment?: string       // alias for ai_feedback
+  evidence_quote?: string
+  evidence_found?: boolean
   is_correct?: boolean
   student_answer_text?: string
   student_answer?: string   // alias for student_answer_text

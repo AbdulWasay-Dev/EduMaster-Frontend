@@ -8,7 +8,7 @@ import FileDropzone from '@/components/forms/FileDropzone'
 import AIThinking from '@/components/feedback/AIThinking'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import { listPapers } from '@/lib/api/papers'
-import { gradeAnswerSheet } from '@/lib/api/grading'
+import { gradeAnswerSheet, gradeMultipleSheets } from '@/lib/api/grading'
 import { listStudents } from '@/lib/api/students'
 import { listClasses } from '@/lib/api/classes'
 
@@ -29,11 +29,17 @@ export default function UploadGradingPage() {
   })
 
   const gradeMut = useMutation({
-    mutationFn: () => gradeAnswerSheet({
-      paper_id: paperId,
-      student_id: studentId || undefined,
-      answer_sheet_image: files[0],
-    }),
+    mutationFn: () => files.length > 1
+      ? gradeMultipleSheets({
+          paper_id: paperId,
+          student_id: studentId || undefined,
+          answer_sheet_images: files,
+        })
+      : gradeAnswerSheet({
+          paper_id: paperId,
+          student_id: studentId || undefined,
+          answer_sheet_image: files[0],
+        }),
     onSuccess: (sub) => { setResult(sub.id); toast.success('Grading complete!') },
     onError: () => toast.error('Grading failed. Please try again.'),
   })
@@ -73,11 +79,11 @@ export default function UploadGradingPage() {
           <div className="card p-5 space-y-4">
             <h3 className="font-semibold text-[#1C0A00]">Answer Sheet Image</h3>
             <FileDropzone
-              label="Drop answer sheet image here"
+              label="Drop answer sheet images here"
               accept={{ 'image/*': ['.jpg', '.jpeg', '.png', '.webp'] }}
               maxSize={20 * 1024 * 1024}
               onFilesChange={setFiles}
-              multiple={false}
+              multiple
             />
           </div>
 

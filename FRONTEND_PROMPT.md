@@ -4,7 +4,7 @@
 
 Build a **professional, modern SaaS frontend** for **EduMaster** — an AI-powered educational platform designed exclusively for teachers. The platform enables teachers to manage classes, upload learning material, generate AI-powered exam papers, and automatically grade handwritten answer sheets using OCR and Large Language Models (Google Gemini + Mistral).
 
-The frontend communicates with a **FastAPI backend** (`http://localhost:8000`) via a REST API. Authentication uses **JWT Bearer tokens**.
+The frontend communicates with a **FastAPI backend** (`http://localhost:8010`) via a REST API. Authentication uses **JWT Bearer tokens**.
 
 ---
 
@@ -628,7 +628,7 @@ Build and document these reusable components:
 
 ### Base URL
 ```
-http://localhost:8000/api/v1
+http://localhost:8010/api/v1
 ```
 
 ### Auth Flow
@@ -798,7 +798,7 @@ frontend/
 
 ```env
 # .env.local
-NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+NEXT_PUBLIC_API_URL=http://localhost:8010/api/v1
 NEXT_PUBLIC_APP_NAME=EduMaster
 NEXT_PUBLIC_APP_VERSION=1.0.0
 ```
