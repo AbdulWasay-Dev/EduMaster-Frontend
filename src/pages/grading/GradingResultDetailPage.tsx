@@ -12,7 +12,7 @@ import { getSubmission, overrideScore } from '@/lib/api/grading'
 import { formatDate, gradeLabel, gradeColor } from '@/lib/utils'
 
 type QuestionDetail = {
-  question_id: string
+  question_id?: string
   question_text?: string
   question_type?: string
   student_answer?: string
@@ -252,7 +252,7 @@ export default function GradingResultDetailPage() {
                           className="input flex-1 text-sm py-1"
                         />
                         <button
-                          onClick={() => overrideMut.mutate({ qId: d.question_id, score: editScore, note: editNote })}
+                          onClick={() => overrideMut.mutate({ qId: d.question_id ?? '', score: editScore, note: editNote })}
                           disabled={overrideMut.isPending}
                           className="btn-primary py-1 px-2 text-xs flex items-center gap-1"
                         >
@@ -268,7 +268,7 @@ export default function GradingResultDetailPage() {
                     ) : (
                       <button
                         onClick={() => {
-                          setEditingQuestion(d.question_id)
+                          setEditingQuestion(d.question_id ?? null)
                           setEditScore(d.marks_awarded ?? 0)
                           setEditNote('')
                         }}

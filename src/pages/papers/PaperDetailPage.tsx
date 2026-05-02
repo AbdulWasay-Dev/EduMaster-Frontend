@@ -70,6 +70,12 @@ export default function PaperDetailPage() {
             <button onClick={onDownloadKey} className="btn-ghost flex items-center gap-2 text-sm">
               <Key className="w-4 h-4" /> Answer Key PDF
             </button>
+            <button
+              onClick={() => navigate(`/grading/new?paper_id=${id}`)}
+              className="btn-ghost flex items-center gap-2 text-sm border border-emerald-300 text-emerald-700 hover:bg-emerald-50"
+            >
+              <CheckSquare className="w-4 h-4" /> Use for Grading
+            </button>
             {!paper.is_published && (
               <button onClick={() => publishMut.mutate()} disabled={publishMut.isPending} className="btn-primary flex items-center gap-2 text-sm">
                 <Globe className="w-4 h-4" /> Publish

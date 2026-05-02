@@ -1,172 +1,304 @@
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import {
-  AreaChart, Area, BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-} from 'recharts'
-import { TrendingUp, Users, ScrollText, CheckSquare, Award } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { TrendingUp, Users, ScrollText, CheckSquare, Award, AlertTriangle, ChevronRight } from 'lucide-react'
 import PageHeader from '@/components/shared/PageHeader'
 import StatCard from '@/components/shared/StatCard'
+import GradeCircle from '@/components/shared/GradeCircle'
+import EmptyState from '@/components/shared/EmptyState'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
-import { getDashboardStats, getActivityData, getClassOverview } from '@/lib/api/analytics'
 import { listClasses } from '@/lib/api/classes'
+import { listSubmissions } from '@/lib/api/grading'
+import { listPapers } from '@/lib/api/papers'
 
-const GRADE_COLORS: Record<string, string> = {
-  'A+': '#22c55e', A: '#4ade80', B: '#f97316', C: '#fbbf24', D: '#f87171', F: '#ef4444',
-}
-const PIE_COLORS = ['#f97316', '#ef4444', '#fbbf24', '#22c55e', '#06b6d4']
+const GRADE_BANDS = [
+  { label: 'A+', min: 90, max: 101, color: '#22c55e' },
+  { label: 'A',  min: 80, max: 90,  color: '#4ade80' },
+  { label: 'B',  min: 65, max: 80,  color: '#f97316' },
+  { label: 'C',  min: 50, max: 65,  color: '#fbbf24' },
+  { label: 'D',  min: 35, max: 50,  color: '#fb923c' },
+  { label: 'F',  min: 0,  max: 35,  color: '#ef4444' },
+]
 
 export default function AnalyticsDashboardPage() {
-  const { data: stats, isLoading: loadingStats } = useQuery({
-    queryKey: ['dashboard-stats'],
-    queryFn: getDashboardStats,
+  const [selectedClassId, setSelectedClassId] = useState<string>('all')
+
+  const { data: classes = [], isLoading: loadingClasses } = useQuery({
+    queryKey: ['classes'], queryFn: listClasses,
   })
-  const { data: activity = [], isLoading: loadingActivity } = useQuery({
-    queryKey: ['activity-data'],
-    queryFn: () => getActivityData(30),
+  const { data: submissions = [], isLoading: loadingSubs } = useQuery({
+    queryKey: ['submissions'], queryFn: () => listSubmissions(),
   })
-  const { data: classes = [] } = useQuery({ queryKey: ['classes'], queryFn: listClasses })
-  const { data: classOverview } = useQuery({
-    queryKey: ['class-overview', classes[0]?.id],
-    queryFn: () => getClassOverview(classes[0]?.id!),
-    enabled: !!classes[0]?.id,
+  const { data: papers = [] } = useQuery({
+    queryKey: ['papers'], queryFn: () => listPapers(),
   })
 
-  // Synthetic grade distribution from classOverview if available
-  const gradeData = classOverview?.grade_distribution
-    ? Object.entries(classOverview.grade_distribution).map(([grade, count]) => ({ grade, count }))
-    : [
-        { grade: 'A+', count: 8 }, { grade: 'A', count: 14 }, { grade: 'B', count: 22 },
-        { grade: 'C', count: 18 }, { grade: 'D', count: 9 }, { grade: 'F', count: 4 },
-      ]
+  const isLoading = loadingClasses || loadingSubs
 
-  const subjectPieData = [
-    { name: 'Biology', value: 32 }, { name: 'Chemistry', value: 28 },
-    { name: 'Physics', value: 24 }, { name: 'Math', value: 16 },
-  ]
+  // Filter submissions by selected class
+  const filteredSubs = selectedClassId === 'all'
+    ? submissions
+    : submissions.filter(s => s.class_id === selectedClassId)
 
-  if (loadingStats) return <div className="flex justify-center py-20"><LoadingSpinner size="lg" /></div>
+  const gradedSubs = filteredSubs.filter(s => s.status === 'graded')
+
+  const getPct = (s: typeof submissions[0]) =>
+    s.grade_percentage ?? (s.max_score ? Math.round(((s.total_score ?? 0) / s.max_score) * 100) : 0)
+
+  // Global stats (always all-class)
+  const totalStudents = classes.reduce((a, c) => a + (c.student_count ?? 0), 0)
+  const overallAvg = gradedSubs.length
+    ? Math.round(gradedSubs.reduce((a, s) => a + getPct(s), 0) / gradedSubs.length)
+    : 0
+
+  // Grade distribution for chart
+  const gradeDistData = GRADE_BANDS.map(band => ({
+    grade: band.label,
+    count: gradedSubs.filter(s => { const p = getPct(s); return p >= band.min && p < band.max }).length,
+    fill: band.color,
+  })).filter(d => d.count > 0)
+
+  // Students needing attention (< 50% in latest submission)
+  const studentMap = new Map<string, { name: string; pct: number; paperId: string; subId: string }>()
+  for (const sub of gradedSubs) {
+    const key = sub.student_id
+    const pct = getPct(sub)
+    const existing = studentMap.get(key)
+    if (!existing || pct < existing.pct) {
+      studentMap.set(key, { name: sub.student_name ?? 'Unknown', pct, paperId: sub.paper_id, subId: sub.id })
+    }
+  }
+  const needsAttention = [...studentMap.values()].filter(s => s.pct < 50).sort((a, b) => a.pct - b.pct)
+
+  // Top performers
+  const topStudents = [...studentMap.values()].filter(s => s.pct >= 80).sort((a, b) => b.pct - a.pct).slice(0, 5)
+
+  // Paper stats
+  const paperStats = papers.map(paper => {
+    const subs = gradedSubs.filter(s => s.paper_id === paper.id)
+    if (!subs.length) return null
+    const pcts = subs.map(getPct)
+    const avg = Math.round(pcts.reduce((a, b) => a + b, 0) / pcts.length)
+    const high = Math.max(...pcts)
+    const low = Math.min(...pcts)
+    return { id: paper.id, title: paper.title, count: subs.length, avg, high, low }
+  }).filter(Boolean) as { id: string; title: string; count: number; avg: number; high: number; low: number }[]
+
+  if (isLoading) return <div className="flex justify-center py-20"><LoadingSpinner size="lg" /></div>
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Analytics" subtitle="Performance insights across all your classes" />
+      <PageHeader
+        title="Analytics"
+        subtitle="Real performance insights across your classes"
+        action={
+          <select
+            value={selectedClassId}
+            onChange={e => setSelectedClassId(e.target.value)}
+            className="input text-sm py-1.5"
+          >
+            <option value="all">All Classes</option>
+            {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+          </select>
+        }
+      />
 
-      {/* KPI row */}
+      {/* KPI row — all real */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="Total Students"   value={stats?.total_students ?? 0}   delta={stats?.students_delta}   icon={Users}       />
-        <StatCard title="Papers Generated" value={stats?.total_papers ?? 0}     delta={stats?.papers_delta}     icon={ScrollText}  />
-        <StatCard title="Sheets Graded"    value={stats?.total_graded ?? 0}     delta={stats?.graded_delta}     icon={CheckSquare} />
-        <StatCard title="Avg. Score"       value={stats?.avg_score ?? 0}       delta={stats?.score_delta}      icon={TrendingUp} suffix="%" />
+        <StatCard title="Classes"      value={classes.length}    icon={Users}       />
+        <StatCard title="Students"     value={totalStudents}     icon={Users}       />
+        <StatCard title="Papers"       value={papers.length}     icon={ScrollText}  />
+        <StatCard title="Avg Score"    value={overallAvg}        icon={TrendingUp}  suffix="%" />
       </div>
 
-      {/* Charts row 1 */}
-      <div className="grid lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 card p-5">
-          <h2 className="section-title mb-4">Grading Activity — Last 30 Days</h2>
-          <ResponsiveContainer width="100%" height={220}>
-            <AreaChart data={activity.length ? activity : Array.from({length:30},(_,i)=>({date:`D${i+1}`,submissions:Math.floor(Math.random()*12),avg_score:Math.floor(65+Math.random()*25)}))}>
-              <defs>
-                <linearGradient id="actGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#f97316" stopOpacity={0.3}/>
-                  <stop offset="100%" stopColor="#f97316" stopOpacity={0}/>
-                </linearGradient>
-                <linearGradient id="scoreGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#ef4444" stopOpacity={0.2}/>
-                  <stop offset="100%" stopColor="#ef4444" stopOpacity={0}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#ffedd5" />
-              <XAxis dataKey="date" tick={{fontSize:10,fill:'#9a3412'}} tickLine={false} axisLine={false} interval={6}/>
-              <YAxis tick={{fontSize:10,fill:'#9a3412'}} tickLine={false} axisLine={false}/>
-              <Tooltip contentStyle={{border:'1px solid #fed7aa',borderRadius:'8px',fontSize:'12px'}}/>
-              <Legend iconType="circle" iconSize={8} wrapperStyle={{fontSize:'11px'}}/>
-              <Area type="monotone" dataKey="submissions" stroke="#f97316" strokeWidth={2} fill="url(#actGrad)" name="Submissions"/>
-              <Area type="monotone" dataKey="avg_score"   stroke="#ef4444" strokeWidth={2} fill="url(#scoreGrad)" name="Avg Score"/>
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-
+      {gradedSubs.length === 0 ? (
         <div className="card p-5">
-          <h2 className="section-title mb-4">Activity by Subject</h2>
-          <ResponsiveContainer width="100%" height={220}>
-            <PieChart>
-              <Pie data={subjectPieData} cx="50%" cy="50%" innerRadius={55} outerRadius={80} paddingAngle={3} dataKey="value">
-                {subjectPieData.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]}/>)}
-              </Pie>
-              <Tooltip contentStyle={{border:'1px solid #fed7aa',borderRadius:'8px',fontSize:'12px'}}/>
-              <Legend iconType="circle" iconSize={8} wrapperStyle={{fontSize:'11px'}}/>
-            </PieChart>
-          </ResponsiveContainer>
+          <EmptyState
+            icon={CheckSquare}
+            title="No grading data yet"
+            description="Grade some answer sheets to see performance analytics here."
+            action={<Link to="/grading/new" className="btn-primary flex items-center gap-2"><CheckSquare className="w-4 h-4" /> Start Grading</Link>}
+          />
         </div>
-      </div>
-
-      {/* Charts row 2 */}
-      <div className="grid lg:grid-cols-2 gap-4">
-        <div className="card p-5">
-          <h2 className="section-title mb-4">Grade Distribution</h2>
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={gradeData} barSize={32}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#ffedd5"/>
-              <XAxis dataKey="grade" tick={{fontSize:11,fill:'#9a3412'}} tickLine={false} axisLine={false}/>
-              <YAxis tick={{fontSize:10,fill:'#9a3412'}} tickLine={false} axisLine={false}/>
-              <Tooltip contentStyle={{border:'1px solid #fed7aa',borderRadius:'8px',fontSize:'12px'}}/>
-              <Bar dataKey="count" radius={[4,4,0,0]} name="Students">
-                {gradeData.map((entry, i) => (
-                  <Cell key={i} fill={GRADE_COLORS[entry.grade] ?? '#f97316'}/>
+      ) : (
+        <>
+          {/* Grade Distribution + Needs Attention */}
+          <div className="grid lg:grid-cols-2 gap-4">
+            {/* Grade distribution — real data */}
+            <div className="card p-5">
+              <h2 className="section-title mb-4">Grade Distribution</h2>
+              {gradeDistData.length > 0 ? (
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart data={gradeDistData} barSize={36}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffedd5" />
+                    <XAxis dataKey="grade" tick={{ fontSize: 11, fill: '#9a3412' }} tickLine={false} axisLine={false} />
+                    <YAxis tick={{ fontSize: 10, fill: '#9a3412' }} tickLine={false} axisLine={false} />
+                    <Tooltip
+                      contentStyle={{ border: '1px solid #fed7aa', borderRadius: '8px', fontSize: '12px' }}
+                      formatter={(v) => [`${v} students`, 'Count']}
+                    />
+                    <Bar dataKey="count" radius={[4, 4, 0, 0]} name="Students">
+                      {gradeDistData.map((entry, i) => (
+                        <rect key={i} fill={entry.fill} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <p className="text-sm text-brand-500 text-center py-8">No graded data for selected filter.</p>
+              )}
+              <div className="flex flex-wrap gap-2 mt-3">
+                {GRADE_BANDS.map(b => (
+                  <span key={b.label} className="flex items-center gap-1 text-xs text-brand-600">
+                    <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ background: b.color }} />
+                    {b.label}
+                  </span>
                 ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="card p-5">
-          <h2 className="section-title mb-4">Score Trend by Week</h2>
-          <ResponsiveContainer width="100%" height={200}>
-            <LineChart data={[
-              {week:'W1',avg:68},{week:'W2',avg:72},{week:'W3',avg:70},
-              {week:'W4',avg:76},{week:'W5',avg:74},{week:'W6',avg:80},
-            ]}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#ffedd5"/>
-              <XAxis dataKey="week" tick={{fontSize:11,fill:'#9a3412'}} tickLine={false} axisLine={false}/>
-              <YAxis domain={[50,100]} tick={{fontSize:10,fill:'#9a3412'}} tickLine={false} axisLine={false}/>
-              <Tooltip contentStyle={{border:'1px solid #fed7aa',borderRadius:'8px',fontSize:'12px'}}/>
-              <Line type="monotone" dataKey="avg" stroke="#f97316" strokeWidth={2.5} dot={{fill:'#f97316',strokeWidth:0,r:4}} name="Avg Score"/>
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* Top performers */}
-      <div className="card p-5">
-        <h2 className="section-title mb-4">Top Performers</h2>
-        <div className="space-y-2">
-          {[
-            {name:'Alice Johnson', score:96, class:'Class 9A'},
-            {name:'Bob Martinez',  score:93, class:'Class 9B'},
-            {name:'Carol Smith',   score:91, class:'Class 10A'},
-            {name:'David Lee',     score:89, class:'Class 9A'},
-            {name:'Emma Wilson',   score:87, class:'Class 10B'},
-          ].map((s, i) => (
-            <div key={i} className="flex items-center gap-3">
-              <div className={`w-6 text-center text-xs font-bold ${i === 0 ? 'text-amber-500' : i === 1 ? 'text-slate-400' : i === 2 ? 'text-amber-700' : 'text-brand-500'}`}>
-                {i + 1}
-              </div>
-              {i < 3 && <Award className={`w-4 h-4 shrink-0 ${i===0?'text-amber-400':i===1?'text-slate-400':'text-amber-600'}`}/>}
-              {i >= 3 && <div className="w-4"/>}
-              <div className="w-7 h-7 rounded-full bg-brand-100 flex items-center justify-center text-xs font-bold text-brand-600">
-                {s.name.charAt(0)}
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-[#1C0A00]">{s.name}</p>
-                <p className="text-xs text-brand-500">{s.class}</p>
-              </div>
-              <div className="text-sm font-bold text-brand-600">{s.score}%</div>
-              <div className="w-24 h-2 bg-brand-100 rounded-full overflow-hidden">
-                <div className="h-full bg-brand-500 rounded-full" style={{width:`${s.score}%`}}/>
               </div>
             </div>
-          ))}
-        </div>
-      </div>
+
+            {/* Needs Attention */}
+            <div className="card p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <AlertTriangle className="w-4 h-4 text-accent-500" />
+                <h2 className="section-title">Needs Attention</h2>
+                {needsAttention.length > 0 && (
+                  <span className="ml-auto text-xs bg-accent-100 text-accent-700 font-semibold px-2 py-0.5 rounded-full">
+                    {needsAttention.length} student{needsAttention.length !== 1 ? 's' : ''}
+                  </span>
+                )}
+              </div>
+              {needsAttention.length === 0 ? (
+                <div className="text-center py-6">
+                  <p className="text-sm text-emerald-600 font-medium">✅ All students above 50%</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {needsAttention.slice(0, 6).map((s, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <div className="w-7 h-7 rounded-full bg-red-100 flex items-center justify-center text-xs font-bold text-red-600 shrink-0">
+                        {s.name.charAt(0)}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-[#1C0A00] truncate">{s.name}</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <GradeCircle percentage={s.pct} size={36} />
+                        <Link to={`/grading/${s.subId}`} className="text-xs text-brand-500 hover:text-brand-700">
+                          <ChevronRight className="w-4 h-4" />
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Top Performers */}
+          {topStudents.length > 0 && (
+            <div className="card p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <Award className="w-4 h-4 text-amber-500" />
+                <h2 className="section-title">Top Performers</h2>
+              </div>
+              <div className="space-y-2">
+                {topStudents.map((s, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <span className={`w-6 text-center text-xs font-bold ${i === 0 ? 'text-amber-500' : i === 1 ? 'text-slate-400' : i === 2 ? 'text-amber-700' : 'text-brand-500'}`}>
+                      {i + 1}
+                    </span>
+                    {i < 3 && <Award className={`w-4 h-4 shrink-0 ${i === 0 ? 'text-amber-400' : i === 1 ? 'text-slate-400' : 'text-amber-600'}`} />}
+                    {i >= 3 && <div className="w-4" />}
+                    <div className="w-7 h-7 rounded-full bg-brand-100 flex items-center justify-center text-xs font-bold text-brand-600 shrink-0">
+                      {s.name.charAt(0)}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-[#1C0A00]">{s.name}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-24 h-2 bg-brand-100 rounded-full overflow-hidden">
+                        <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${s.pct}%` }} />
+                      </div>
+                      <span className="text-sm font-bold text-emerald-600 w-12 text-right">{s.pct}%</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Paper Statistics */}
+          {paperStats.length > 0 && (
+            <div className="card p-5">
+              <h2 className="section-title mb-4">Paper Statistics</h2>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-brand-100">
+                      {['Paper', 'Submissions', 'Avg Score', 'Highest', 'Lowest', ''].map(h => (
+                        <th key={h} className="text-left py-2 px-3 text-xs font-semibold text-brand-700 uppercase tracking-wide">{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paperStats.map(p => (
+                      <tr key={p.id} className="border-b border-brand-50 hover:bg-brand-50/50 transition-colors">
+                        <td className="py-3 px-3 font-medium text-[#1C0A00]">{p.title}</td>
+                        <td className="py-3 px-3 text-brand-600">{p.count}</td>
+                        <td className="py-3 px-3">
+                          <span className={`font-bold ${p.avg >= 80 ? 'text-emerald-600' : p.avg >= 50 ? 'text-amber-500' : 'text-red-500'}`}>
+                            {p.avg}%
+                          </span>
+                        </td>
+                        <td className="py-3 px-3 text-emerald-600 font-medium">{p.high}%</td>
+                        <td className="py-3 px-3 text-red-500 font-medium">{p.low}%</td>
+                        <td className="py-3 px-3">
+                          <Link to={`/papers/${p.id}`} className="text-xs text-brand-500 hover:text-brand-700 font-medium">View →</Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* Class Performance Snapshot */}
+          {classes.length > 0 && selectedClassId === 'all' && (
+            <div className="card p-5">
+              <h2 className="section-title mb-4">Class Performance Snapshot</h2>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {classes.map(cls => {
+                  const classSubs = gradedSubs.filter(s => s.class_id === cls.id)
+                  const avg = classSubs.length
+                    ? Math.round(classSubs.reduce((a, s) => a + getPct(s), 0) / classSubs.length)
+                    : null
+                  return (
+                    <Link key={cls.id} to={`/classes/${cls.id}`}>
+                      <div className="flex items-center gap-3 p-3 rounded-xl border border-brand-100 hover:border-brand-300 hover:bg-brand-50 transition-all">
+                        <div className="w-9 h-9 rounded-xl bg-brand-100 flex items-center justify-center shrink-0">
+                          <Users className="w-4 h-4 text-brand-600" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-sm text-[#1C0A00] truncate">{cls.name}</p>
+                          <p className="text-xs text-brand-500">{cls.student_count ?? 0} students · {classSubs.length} graded</p>
+                        </div>
+                        {avg !== null ? (
+                          <GradeCircle percentage={avg} size={40} />
+                        ) : (
+                          <span className="text-xs text-brand-400">No data</span>
+                        )}
+                      </div>
+                    </Link>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+        </>
+      )}
     </div>
   )
 }

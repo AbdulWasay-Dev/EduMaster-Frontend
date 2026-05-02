@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import {
@@ -117,10 +117,28 @@ const createDefaultForm = (user?: User | null): WizardState => ({
 
 export default function GeneratePaperPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const prefilledDocId = searchParams.get('doc_id') ?? ''
   const user = useAuthStore(s => s.user)
   const [step, setStep] = useState(0)
-  const [form, setForm] = useState<WizardState>(() => createDefaultForm(user))
+  const [form, setForm] = useState<WizardState>(() => {
+    const defaults = createDefaultForm(user)
+    if (prefilledDocId) defaults.document_ids = [prefilledDocId]
+    return defaults
+  })
   const [generated, setGenerated] = useState<string | null>(null)
+
+  // Also handle if user arrives after React has rendered once (URL-driven)
+  useEffect(() => {
+    if (prefilledDocId) {
+      setForm(cur => ({
+        ...cur,
+        document_ids: cur.document_ids.includes(prefilledDocId)
+          ? cur.document_ids
+          : [prefilledDocId, ...cur.document_ids],
+      }))
+    }
+  }, [prefilledDocId])
 
   useEffect(() => {
     setForm(current => ({

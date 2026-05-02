@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { ArrowLeft, Trash2, FileText, Hash, Brain } from 'lucide-react'
+import { ArrowLeft, Trash2, Hash, Sparkles } from 'lucide-react'
 import * as Tabs from '@radix-ui/react-tabs'
 import PageHeader from '@/components/shared/PageHeader'
 import StatusBadge from '@/components/shared/StatusBadge'
@@ -39,6 +39,14 @@ export default function DocumentDetailPage() {
             <button onClick={() => navigate('/documents')} className="btn-ghost flex items-center gap-2 text-sm">
               <ArrowLeft className="w-4 h-4" /> Back
             </button>
+            {doc.processing_status === 'completed' && (
+              <button
+                onClick={() => navigate(`/papers/generate?doc_id=${id}`)}
+                className="btn-primary flex items-center gap-2 text-sm"
+              >
+                <Sparkles className="w-4 h-4" /> Generate Paper
+              </button>
+            )}
             <button onClick={() => window.confirm('Delete document?') && deleteMut.mutate()} className="btn-danger flex items-center gap-2 text-sm">
               <Trash2 className="w-4 h-4" /> Delete
             </button>

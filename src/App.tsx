@@ -41,6 +41,7 @@ const NotificationsPage = lazy(() => import('./pages/notifications/Notifications
 const ProfileSettingsPage  = lazy(() => import('./pages/settings/ProfileSettingsPage'))
 const SecuritySettingsPage = lazy(() => import('./pages/settings/SecuritySettingsPage'))
 const BillingPage          = lazy(() => import('./pages/settings/BillingPage'))
+const PaperDefaultsPage    = lazy(() => import('./pages/settings/PaperDefaultsPage'))
 
 // Teacher assignment pages
 const AssignmentsListPage   = lazy(() => import('./pages/assignments/AssignmentsListPage'))
@@ -110,10 +111,11 @@ export default function App() {
               <Route path="/analytics"        element={<AnalyticsDashboardPage />} />
               <Route path="/notifications"    element={<NotificationsPage />} />
 
-              <Route path="/settings"         element={<Navigate to="/settings/profile" replace />} />
-              <Route path="/settings/profile" element={<ProfileSettingsPage />} />
-              <Route path="/settings/security" element={<SecuritySettingsPage />} />
-              <Route path="/settings/billing"  element={<BillingPage />} />
+              <Route path="/settings"              element={<Navigate to="/settings/profile" replace />} />
+              <Route path="/settings/profile"       element={<ProfileSettingsPage />} />
+              <Route path="/settings/paper-defaults" element={<PaperDefaultsPage />} />
+              <Route path="/settings/security"      element={<SecuritySettingsPage />} />
+              <Route path="/settings/billing"       element={<BillingPage />} />
 
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Route>
