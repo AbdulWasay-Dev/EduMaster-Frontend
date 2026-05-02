@@ -30,6 +30,19 @@ export default function GradingOverviewPage() {
         </div>
       )
     }},
+    { id: 'questions', header: 'Questions', cell: ({ row }) => {
+      const details: any[] = row.original.grading_details ?? row.original.question_details ?? []
+      if (!details.length) return <span className="text-xs text-brand-400">—</span>
+      const attempted = details.filter((d: any) => d.attempted !== false && (d.student_answer || (d.marks_awarded ?? 0) > 0)).length
+      const correct = details.filter((d: any) => d.is_correct).length
+      return (
+        <div className="flex items-center gap-1.5 text-xs">
+          <span className="text-green-600 font-semibold">{correct}✓</span>
+          <span className="text-brand-400">|</span>
+          <span className="text-brand-600">{attempted}/{details.length} attempted</span>
+        </div>
+      )
+    }},
     { id: 'grade_circle', header: '%', cell: ({ row }) => {
       const score = row.original.score ?? row.original.total_score ?? 0
       const totalMarks = row.original.total_marks ?? row.original.max_score ?? 0

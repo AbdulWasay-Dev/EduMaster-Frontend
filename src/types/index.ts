@@ -188,17 +188,24 @@ export type GradingStrictness = 'lenient' | 'medium' | 'strict'
 export interface QuestionGradingDetail {
   question_id?: string
   question_text?: string
+  question_type?: string
   max_marks?: number
+  max_score?: number
   scored_marks?: number
   marks_awarded?: number    // alias for scored_marks
+  score?: number
   ocr_confidence?: number
   ai_feedback?: string
   ai_comment?: string       // alias for ai_feedback
   evidence_quote?: string
   evidence_found?: boolean
   is_correct?: boolean
+  attempted?: boolean
   student_answer_text?: string
   student_answer?: string   // alias for student_answer_text
+  correct_answer?: string
+  confidence?: number
+  ai_confidence?: number
 }
 
 export interface Submission {
@@ -213,12 +220,14 @@ export interface Submission {
   score?: number           // alias for total_score
   total_marks?: number     // alias for max_score
   grade_percentage: number
+  grade?: string
   grading_mode: GradingMode
   status: 'pending' | 'graded' | 'review'
   feedback: string
   ai_feedback?: string     // alias for feedback
   question_details?: QuestionGradingDetail[]
   grading_details?: QuestionGradingDetail[]  // alias
+  question_scores?: QuestionGradingDetail[]  // alias
   ocr_confidence?: number
   submitted_at: string
   graded_at?: string
