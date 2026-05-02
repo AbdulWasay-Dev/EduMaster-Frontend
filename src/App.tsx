@@ -38,6 +38,8 @@ const GradingResultDetailPage = lazy(() => import('./pages/grading/GradingResult
 const AIAssistantPage   = lazy(() => import('./pages/ai/AIAssistantPage'))
 const AnalyticsDashboardPage = lazy(() => import('./pages/analytics/AnalyticsDashboardPage'))
 const NotificationsPage = lazy(() => import('./pages/notifications/NotificationsPage'))
+const SchedulePage      = lazy(() => import('./pages/schedule/SchedulePage'))
+const AttendancePage    = lazy(() => import('./pages/attendance/AttendancePage'))
 const ProfileSettingsPage  = lazy(() => import('./pages/settings/ProfileSettingsPage'))
 const SecuritySettingsPage = lazy(() => import('./pages/settings/SecuritySettingsPage'))
 const BillingPage          = lazy(() => import('./pages/settings/BillingPage'))
@@ -110,6 +112,8 @@ export default function App() {
               <Route path="/ai-assistant"     element={<AIAssistantPage />} />
               <Route path="/analytics"        element={<AnalyticsDashboardPage />} />
               <Route path="/notifications"    element={<NotificationsPage />} />
+              <Route path="/schedule"         element={<SchedulePage />} />
+              <Route path="/attendance"       element={<AttendancePage />} />
 
               <Route path="/settings"              element={<Navigate to="/settings/profile" replace />} />
               <Route path="/settings/profile"       element={<ProfileSettingsPage />} />

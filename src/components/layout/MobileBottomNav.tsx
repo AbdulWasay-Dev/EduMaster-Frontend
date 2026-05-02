@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, BookOpen, ScrollText, CheckSquare, Bot } from 'lucide-react'
+import { LayoutDashboard, BookOpen, ScrollText, CheckSquare, Bot, Calendar, ClipboardCheck } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const MOBILE_NAV = [
@@ -7,6 +7,8 @@ const MOBILE_NAV = [
   { to: '/subjects',     icon: BookOpen,        label: 'Subjects' },
   { to: '/papers',       icon: ScrollText,      label: 'Papers' },
   { to: '/grading',      icon: CheckSquare,     label: 'Grading' },
+  { to: '/schedule',     icon: Calendar,        label: 'Schedule' },
+  { to: '/attendance',   icon: ClipboardCheck,  label: 'Attendance' },
   { to: '/ai-assistant', icon: Bot,             label: 'AI' },
 ]
 

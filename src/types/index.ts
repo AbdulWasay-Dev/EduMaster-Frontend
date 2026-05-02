@@ -36,6 +36,7 @@ export interface Subject {
   name: string
   code?: string
   description: string
+  class_id?: string
   grade_level?: string
   subject_area?: string
   academic_year?: string
@@ -398,4 +399,33 @@ export interface AssignmentAnalytics {
   submission_rate: number
   pass_rate: number
   grade_distribution: Record<string, number>
+}
+
+// ─── Schedule / Calendar ─────────────────────────────────────────────────────
+export type EventType = 'class' | 'quiz' | 'assignment' | 'paper' | 'personal'
+
+export interface ScheduleEvent {
+  id: string
+  teacher_id: string
+  title: string
+  description?: string
+  date: string
+  start_time: string
+  end_time: string
+  type: EventType
+  class_id?: string
+  class_name?: string
+  is_all_day?: boolean
+  repeat_weekly?: boolean
+  created_at: string
+}
+
+export type AttendanceStatus = 'present' | 'absent' | 'late' | 'excused'
+
+export interface AttendanceRecord {
+  id?: string
+  student_id: string
+  status: AttendanceStatus
+  remarks?: string
+  date: string
 }

@@ -2,7 +2,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, BookOpen, Users, FileText, ScrollText,
   CheckSquare, Bot, BarChart3, Bell, Settings, LogOut,
-  ChevronLeft, ChevronRight, Flame,
+  ChevronLeft, ChevronRight, Flame, Calendar, ClipboardCheck
 } from 'lucide-react'
 import { useUIStore } from '@/store/uiStore'
 import { useAuthStore } from '@/store/authStore'
@@ -17,6 +17,8 @@ const NAV_ITEMS = [
   { to: '/documents',    icon: FileText,        label: 'Documents' },
   { to: '/papers',       icon: ScrollText,      label: 'Papers' },
   { to: '/grading',      icon: CheckSquare,     label: 'Grading' },
+  { to: '/schedule',     icon: Calendar,        label: 'Schedule' },
+  { to: '/attendance',   icon: ClipboardCheck,  label: 'Attendance' },
   { to: '/ai-assistant', icon: Bot,             label: 'AI Assistant' },
   { to: '/analytics',    icon: BarChart3,       label: 'Analytics' },
   { to: '/notifications',icon: Bell,            label: 'Notifications' },
