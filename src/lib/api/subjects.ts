@@ -9,8 +9,9 @@ export interface CreateSubjectPayload {
   academic_year?: string
 }
 
-export async function listSubjects(): Promise<Subject[]> {
-  const { data } = await api.get<Subject[]>('/subjects/')
+export async function listSubjects(class_id?: string): Promise<Subject[]> {
+  const params = class_id ? { class_id } : {}
+  const { data } = await api.get<Subject[]>('/subjects/', { params })
   return data
 }
 

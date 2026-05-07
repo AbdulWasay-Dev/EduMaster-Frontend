@@ -49,9 +49,23 @@ export default function DocumentsLibraryPage() {
     {
       accessorKey: 'file_type',
       header: 'Type',
-      cell: ({ getValue }) => (
-        <span className="text-xs font-mono uppercase text-brand-600">{(getValue() as string) || '—'}</span>
-      ),
+      cell: ({ getValue }) => {
+        const type = (getValue() as string)?.toLowerCase() || ''
+        const colorMap: Record<string, string> = {
+          pdf: 'bg-red-100 text-red-700',
+          pptx: 'bg-orange-100 text-orange-700',
+          ppt: 'bg-orange-100 text-orange-700',
+          docx: 'bg-blue-100 text-blue-700',
+          doc: 'bg-blue-100 text-blue-700',
+          png: 'bg-emerald-100 text-emerald-700',
+          jpg: 'bg-emerald-100 text-emerald-700',
+          jpeg: 'bg-emerald-100 text-emerald-700',
+        }
+        const cls = colorMap[type] || 'bg-slate-100 text-slate-600'
+        return type ? (
+          <span className={`text-xs font-semibold uppercase px-2 py-0.5 rounded-md ${cls}`}>{type}</span>
+        ) : <span className="text-slate-400">—</span>
+      },
     },
     {
       accessorKey: 'file_size',
@@ -159,7 +173,26 @@ export default function DocumentsLibraryPage() {
                   {doc.filename || doc.title}
                 </h3>
               </Link>
-              <p className="text-xs text-brand-500 mt-0.5">{doc.file_size ? formatBytes(doc.file_size) : ''}</p>
+              <div className="mt-1 flex items-center gap-2">
+                {(() => {
+                  const type = (doc.file_type || '').toLowerCase()
+                  const colorMap: Record<string, string> = {
+                    pdf: 'bg-red-100 text-red-700',
+                    pptx: 'bg-orange-100 text-orange-700',
+                    ppt: 'bg-orange-100 text-orange-700',
+                    docx: 'bg-blue-100 text-blue-700',
+                    doc: 'bg-blue-100 text-blue-700',
+                    png: 'bg-emerald-100 text-emerald-700',
+                    jpg: 'bg-emerald-100 text-emerald-700',
+                    jpeg: 'bg-emerald-100 text-emerald-700',
+                  }
+                  const cls = colorMap[type] || 'bg-slate-100 text-slate-600'
+                  return type ? (
+                    <span className={`text-xs font-semibold uppercase px-1.5 py-0.5 rounded ${cls}`}>{type}</span>
+                  ) : null
+                })()}
+                <p className="text-xs text-brand-500">{doc.file_size ? formatBytes(doc.file_size) : ''}</p>
+              </div>
               <div className="mt-3 flex items-center justify-between">
                 <StatusBadge status={doc.processing_status} />
                 <span className="text-xs text-brand-400">{formatDate(doc.created_at)}</span>
