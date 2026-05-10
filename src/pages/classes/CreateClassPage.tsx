@@ -10,6 +10,7 @@ import PageHeader from '@/components/shared/PageHeader'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import { createClass, getClass, updateClass } from '@/lib/api/classes'
 import { listSubjects } from '@/lib/api/subjects'
+import type { Subject } from '@/types'
 
 const schema = z.object({
   name: z.string().min(2, 'Name is required'),
@@ -31,7 +32,7 @@ export default function CreateClassPage() {
     enabled: isEdit,
   })
 
-  const { data: subjects = [] } = useQuery({ queryKey: ['subjects'], queryFn: listSubjects })
+  const { data: subjects = [] } = useQuery<Subject[]>({ queryKey: ['subjects'], queryFn: () => listSubjects() })
 
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormValues>({
     resolver: zodResolver(schema),

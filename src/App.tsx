@@ -91,6 +91,7 @@ export default function App() {
 
               <Route path="/classes"          element={<ClassesListPage />} />
               <Route path="/classes/new"      element={<CreateClassPage />} />
+              <Route path="/classes/:id/edit" element={<CreateClassPage />} />
               <Route path="/classes/:id"      element={<ClassDetailPage />} />
 
               <Route path="/assignments"          element={<AssignmentsListPage />} />

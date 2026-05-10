@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { useSearchParams } from 'react-router-dom'
 import { ClipboardCheck, BarChart3, Users, History, BookOpen, ChevronDown } from 'lucide-react'
 import { listClasses } from '@/lib/api/classes'
 import { listSubjects } from '@/lib/api/subjects'
@@ -20,9 +21,18 @@ const TABS: { id: TabId; label: string; icon: React.ReactNode; desc: string }[] 
 ]
 
 export default function AttendancePage() {
+  const [searchParams] = useSearchParams()
   const [activeTab, setActiveTab] = useState<TabId>('take')
-  const [selectedClass, setSelectedClass]     = useState('')
-  const [selectedSubject, setSelectedSubject] = useState('')
+  const [selectedClass, setSelectedClass]     = useState(searchParams.get('class_id') ?? '')
+  const [selectedSubject, setSelectedSubject] = useState(searchParams.get('subject_id') ?? '')
+
+  // Sync URL params on first render if they change (e.g. back/forward navigation)
+  useEffect(() => {
+    const cid = searchParams.get('class_id')
+    const sid = searchParams.get('subject_id')
+    if (cid) setSelectedClass(cid)
+    if (sid) setSelectedSubject(sid)
+  }, [searchParams])
 
   const { data: classes = [] } = useQuery({ queryKey: ['classes'], queryFn: () => listClasses() })
   const { data: classSubjects = [] } = useQuery({

@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, Save, Sparkles, FileText, BookOpen, Wand2, CheckCircle2, RefreshCw } from 'lucide-react'
@@ -30,15 +30,30 @@ type FormData = z.infer<typeof schema>
 
 export default function CreateAssignmentPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const queryClient = useQueryClient()
   const [aiGenerated, setAiGenerated] = useState(false)
   const [selectedClassName, setSelectedClassName] = useState('')
   const [selectedSubjectName, setSelectedSubjectName] = useState('')
 
+  const prefilledClassId   = searchParams.get('class_id')   ?? ''
+  const prefilledSubjectId = searchParams.get('subject_id') ?? ''
+
   const { register, handleSubmit, formState: { errors }, watch, setValue, control } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { total_marks: 10, auto_grade: true },
+    defaultValues: {
+      total_marks: 10,
+      auto_grade: true,
+      class_id: prefilledClassId,
+      subject_id: prefilledSubjectId,
+    },
   })
+
+  // Pre-fill from URL once classes/subjects are loaded
+  useEffect(() => {
+    if (prefilledClassId)   setValue('class_id',   prefilledClassId)
+    if (prefilledSubjectId) setValue('subject_id', prefilledSubjectId)
+  }, [prefilledClassId, prefilledSubjectId, setValue])
 
   const selectedClass = watch('class_id')
   const selectedSubject = watch('subject_id')

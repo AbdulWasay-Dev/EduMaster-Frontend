@@ -118,12 +118,15 @@ const createDefaultForm = (user?: User | null): WizardState => ({
 export default function GeneratePaperPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const prefilledDocId = searchParams.get('doc_id') ?? ''
+  const prefilledDocId     = searchParams.get('doc_id')     ?? ''
+  const prefilledSubjectId = searchParams.get('subject_id') ?? ''
+  const prefilledClassId   = searchParams.get('class_id')   ?? ''
   const user = useAuthStore(s => s.user)
   const [step, setStep] = useState(0)
   const [form, setForm] = useState<WizardState>(() => {
     const defaults = createDefaultForm(user)
-    if (prefilledDocId) defaults.document_ids = [prefilledDocId]
+    if (prefilledDocId)     defaults.document_ids = [prefilledDocId]
+    if (prefilledSubjectId) defaults.subject_id   = prefilledSubjectId
     return defaults
   })
   const [generated, setGenerated] = useState<string | null>(null)
@@ -138,7 +141,10 @@ export default function GeneratePaperPage() {
           : [prefilledDocId, ...cur.document_ids],
       }))
     }
-  }, [prefilledDocId])
+    if (prefilledSubjectId) {
+      setForm(cur => ({ ...cur, subject_id: cur.subject_id || prefilledSubjectId }))
+    }
+  }, [prefilledDocId, prefilledSubjectId])
 
   useEffect(() => {
     setForm(current => ({

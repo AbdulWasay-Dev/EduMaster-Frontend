@@ -2,9 +2,11 @@ import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
+import { format, parseISO, isToday } from 'date-fns'
 import {
   ArrowLeft, Plus, Trash2, User, ScrollText, CheckSquare,
   Users, BookOpen, TrendingUp, Eye, BarChart2, FileText,
+  ClipboardCheck, ClipboardList, Calendar, Clock, Sparkles,
 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -22,6 +24,9 @@ import { getClass } from '@/lib/api/classes'
 import { listStudents, createStudent, deleteStudent } from '@/lib/api/students'
 import { listPapers } from '@/lib/api/papers'
 import { listSubmissions } from '@/lib/api/grading'
+import { listSubjects } from '@/lib/api/subjects'
+import { listEvents } from '@/lib/api/schedule'
+import { listAssignments } from '@/lib/api/assignments'
 import { formatDate, gradeLabel } from '@/lib/utils'
 import { type Student, type Paper, type Submission } from '@/types'
 
@@ -66,6 +71,28 @@ export default function ClassDetailPage() {
     queryKey: ['submissions'],
     queryFn: () => listSubmissions(),
   })
+  const { data: classSubjects = [] } = useQuery({
+    queryKey: ['subjects', id],
+    queryFn: () => listSubjects(id),
+    enabled: !!id,
+  })
+  const { data: events = [] } = useQuery({
+    queryKey: ['events'],
+    queryFn: () => listEvents(),
+  })
+  const { data: assignments = [] } = useQuery({
+    queryKey: ['assignments', id],
+    queryFn: () => listAssignments({ class_id: id }),
+    enabled: !!id,
+  })
+  // Class schedule events
+  const classEvents = events.filter(e => e.class_id === id && e.type === 'class')
+  const recurringSlots = classEvents.filter(e => e.repeat_weekly)
+  const upcomingOnce = classEvents.filter(e => {
+    try { return !e.repeat_weekly && (isToday(parseISO(e.date)) || parseISO(e.date) > new Date()) } catch { return false }
+  }).slice(0, 3)
+  // First subject for pre-selection
+  const firstSubjectId = classSubjects[0]?.id ?? ''
 
   // Grading submissions relevant to this class
   const classSubmissions = submissions.filter(s => s.class_id === id)
@@ -310,39 +337,111 @@ export default function ClassDetailPage() {
             </dl>
           </div>
 
-          {/* Quick actions */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <button
-              onClick={() => setAddOpen(true)}
-              className="card p-4 flex items-center gap-3 hover:border-brand-300 hover:bg-brand-50 transition-all text-left"
-            >
-              <div className="w-10 h-10 rounded-xl bg-brand-100 flex items-center justify-center">
-                <Plus className="w-5 h-5 text-brand-600" />
-              </div>
-              <div>
-                <p className="font-semibold text-sm text-[#1C0A00]">Add Student</p>
-                <p className="text-xs text-brand-500">Enrol a new student</p>
-              </div>
-            </button>
-            <Link to="/papers/generate" className="card p-4 flex items-center gap-3 hover:border-brand-300 hover:bg-brand-50 transition-all">
-              <div className="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center">
-                <ScrollText className="w-5 h-5 text-violet-600" />
-              </div>
-              <div>
-                <p className="font-semibold text-sm text-[#1C0A00]">Generate Paper</p>
-                <p className="text-xs text-brand-500">AI-powered exam</p>
-              </div>
-            </Link>
-            <Link to="/grading/new" className="card p-4 flex items-center gap-3 hover:border-brand-300 hover:bg-brand-50 transition-all">
-              <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
-                <CheckSquare className="w-5 h-5 text-emerald-600" />
-              </div>
-              <div>
-                <p className="font-semibold text-sm text-[#1C0A00]">Grade Sheets</p>
-                <p className="text-xs text-brand-500">Upload answer sheets</p>
-              </div>
-            </Link>
+          {/* Quick Actions — pre-filled with class_id (and first subject if available) */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {[
+              { label: 'Take Attendance', desc: 'Mark today\'s attendance', icon: ClipboardCheck, color: 'bg-indigo-100 text-indigo-600',
+                to: `/attendance?class_id=${id}${firstSubjectId ? `&subject_id=${firstSubjectId}` : ''}` },
+              { label: 'Generate Paper',  desc: 'AI-powered exam paper',   icon: ScrollText,     color: 'bg-amber-100 text-amber-600',
+                to: `/papers/generate?class_id=${id}${firstSubjectId ? `&subject_id=${firstSubjectId}` : ''}` },
+              { label: 'New Assignment',  desc: 'Create an assignment',     icon: ClipboardList,  color: 'bg-emerald-100 text-emerald-600',
+                to: `/assignments/new?class_id=${id}${firstSubjectId ? `&subject_id=${firstSubjectId}` : ''}` },
+              { label: 'Grade Sheets',    desc: 'Upload answer sheets',     icon: CheckSquare,    color: 'bg-violet-100 text-violet-600',
+                to: `/grading/new?class_id=${id}` },
+              { label: 'Add Student',     desc: 'Enrol a new student',      icon: Plus,           color: 'bg-brand-100 text-brand-600',
+                to: null, onClick: () => setAddOpen(true) },
+              { label: 'Subjects',        desc: `${classSubjects.length} subject${classSubjects.length !== 1 ? 's' : ''}`, icon: BookOpen, color: 'bg-rose-100 text-rose-600',
+                to: `/subjects?class_id=${id}` },
+            ].map(({ label, desc, icon: Icon, color, to, onClick }) =>
+              to ? (
+                <Link key={label} to={to}
+                  className="card p-4 flex items-center gap-3 hover:border-brand-300 hover:bg-brand-50 transition-all group">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${color} flex-shrink-0`}><Icon className="w-5 h-5" /></div>
+                  <div><p className="font-semibold text-sm text-[#1C0A00]">{label}</p><p className="text-xs text-brand-500">{desc}</p></div>
+                </Link>
+              ) : (
+                <button key={label} onClick={onClick as any}
+                  className="card p-4 flex items-center gap-3 hover:border-brand-300 hover:bg-brand-50 transition-all text-left">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${color} flex-shrink-0`}><Icon className="w-5 h-5" /></div>
+                  <div><p className="font-semibold text-sm text-[#1C0A00]">{label}</p><p className="text-xs text-brand-500">{desc}</p></div>
+                </button>
+              )
+            )}
           </div>
+
+          {/* Schedule section */}
+          <div className="card p-5">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="section-title flex items-center gap-2"><Calendar className="w-4 h-4 text-brand-500" /> Class Schedule</h2>
+              <Link to="/schedule" className="text-xs text-brand-500 hover:text-brand-700 font-medium">Manage →</Link>
+            </div>
+            {recurringSlots.length === 0 && upcomingOnce.length === 0 ? (
+              <div className="text-center py-6">
+                <Clock className="w-8 h-8 text-brand-200 mx-auto mb-2" />
+                <p className="text-sm text-brand-400 mb-3">No schedule events yet</p>
+                <Link to="/schedule" className="btn-ghost text-sm">Add to Schedule</Link>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {recurringSlots.map((e, i) => (
+                  <div key={i} className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl">
+                    <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
+                      <Clock className="w-4 h-4 text-blue-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-blue-800 truncate">{e.title}</p>
+                      <p className="text-xs text-blue-600">Weekly · {e.start_time} – {e.end_time}</p>
+                    </div>
+                    <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">Recurring</span>
+                  </div>
+                ))}
+                {upcomingOnce.map((e, i) => (
+                  <div key={i} className="flex items-center gap-3 p-3 bg-brand-50 rounded-xl">
+                    <div className="w-8 h-8 rounded-lg bg-brand-100 flex items-center justify-center flex-shrink-0">
+                      <Calendar className="w-4 h-4 text-brand-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-[#1C0A00] truncate">{e.title}</p>
+                      <p className="text-xs text-brand-500">{isToday(parseISO(e.date)) ? 'Today' : format(parseISO(e.date), 'EEE, MMM d')} · {e.start_time}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Subjects linked to this class */}
+          {classSubjects.length > 0 && (
+            <div className="card p-5">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="section-title flex items-center gap-2"><BookOpen className="w-4 h-4 text-brand-500" /> Subjects ({classSubjects.length})</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {classSubjects.map(s => (
+                  <Link key={s.id} to={`/subjects/${s.id}`}
+                    className="flex items-center gap-3 p-3 rounded-xl border border-brand-100 hover:border-brand-300 hover:bg-brand-50 transition-all group">
+                    <div className="w-8 h-8 rounded-lg bg-brand-100 flex items-center justify-center flex-shrink-0">
+                      <BookOpen className="w-4 h-4 text-brand-500" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-[#1C0A00] truncate">{s.name}</p>
+                      {s.code && <p className="text-xs text-brand-400 font-mono">{s.code}</p>}
+                    </div>
+                    <div className="flex gap-1">
+                      <Link to={`/attendance?class_id=${id}&subject_id=${s.id}`} onClick={e => e.stopPropagation()}
+                        title="Attendance" className="p-1.5 rounded-lg bg-indigo-50 text-indigo-500 hover:bg-indigo-100 transition-colors">
+                        <ClipboardCheck className="w-3.5 h-3.5" />
+                      </Link>
+                      <Link to={`/papers/generate?class_id=${id}&subject_id=${s.id}`} onClick={e => e.stopPropagation()}
+                        title="Generate Paper" className="p-1.5 rounded-lg bg-amber-50 text-amber-500 hover:bg-amber-100 transition-colors">
+                        <ScrollText className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
