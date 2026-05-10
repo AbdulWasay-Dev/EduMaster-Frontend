@@ -84,9 +84,10 @@ export default function App() {
             <Route element={<AppShell />}>
               <Route path="/dashboard"        element={<DashboardPage />} />
 
-              <Route path="/subjects"         element={<SubjectsListPage />} />
-              <Route path="/subjects/new"     element={<CreateSubjectPage />} />
-              <Route path="/subjects/:id"     element={<SubjectDetailPage />} />
+              <Route path="/subjects"           element={<SubjectsListPage />} />
+              <Route path="/subjects/new"       element={<CreateSubjectPage />} />
+              <Route path="/subjects/:id/edit"  element={<CreateSubjectPage />} />
+              <Route path="/subjects/:id"       element={<SubjectDetailPage />} />
 
               <Route path="/classes"          element={<ClassesListPage />} />
               <Route path="/classes/new"      element={<CreateClassPage />} />

@@ -23,6 +23,24 @@ export interface EmailConfig {
   last_fetched_at?: string | null
 }
 
+export interface GeneratedContent {
+  description: string
+  instructions: string
+  grading_rubric: string
+}
+
+export async function generateAssignmentContent(payload: {
+  title: string
+  subject_name: string
+  class_name?: string
+  total_marks?: number
+  topic_hint?: string
+}): Promise<GeneratedContent> {
+  const { data } = await api.post<GeneratedContent>('/assignments/generate-content', payload)
+  return data
+}
+
+
 export async function listAssignments(params?: { class_id?: string; subject_id?: string; status?: string }): Promise<Assignment[]> {
   const { data } = await api.get<Assignment[]>('/assignments/', { params })
   return Array.isArray(data) ? data : []
