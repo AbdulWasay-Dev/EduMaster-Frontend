@@ -14,7 +14,7 @@ import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import SubjectCard from '@/components/subjects/SubjectCard'
 import { listSubjects, deleteSubject } from '@/lib/api/subjects'
 import { listClasses } from '@/lib/api/classes'
-import { type Subject } from '@/types'
+import { type Subject, type Class } from '@/types'
 
 type ViewMode = 'grid' | 'list'
 
@@ -24,14 +24,14 @@ export default function SubjectsListPage() {
   const [filterActive, setFilterActive] = useState<'all' | 'active' | 'inactive'>('all')
   const [viewMode, setViewMode] = useState<ViewMode>('grid')
 
-  const { data: subjects = [], isLoading } = useQuery({
+  const { data: subjects = [], isLoading } = useQuery<Subject[]>({
     queryKey: ['subjects'],
-    queryFn: listSubjects,
+    queryFn: () => listSubjects(),
   })
 
-  const { data: classes = [] } = useQuery({
+  const { data: classes = [] } = useQuery<Class[]>({
     queryKey: ['classes'],
-    queryFn: listClasses,
+    queryFn: () => listClasses(),
   })
 
   const deleteMut = useMutation({
