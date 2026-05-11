@@ -44,7 +44,7 @@ export default function SubmissionDetailModal({ submission, assignment, onClose,
             </div>
             <div>
               <h2 className="text-lg font-bold text-[#1C0A00]">{submission.student_name}</h2>
-              <p className="text-sm text-brand-500">{submission.student_email} • Submitted: {new Date(submission.submitted_at).toLocaleString()}</p>
+              <p className="text-sm text-brand-500">{submission.student_email} • Submitted: {submission.submitted_at ? new Date(submission.submitted_at).toLocaleString() : '—'}</p>
             </div>
           </div>
           <button onClick={onClose} className="p-2 text-brand-400 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-colors">
@@ -71,7 +71,7 @@ export default function SubmissionDetailModal({ submission, assignment, onClose,
                     <h4 className="text-xs font-semibold text-brand-600 mb-2 uppercase tracking-wider">Attachments</h4>
                     <div className="flex flex-col gap-2">
                       {submission.submission_files.map((file, i) => (
-                        <a key={i} href={file} target="_blank" rel="noreferrer" className="text-sm text-blue-600 hover:underline flex items-center gap-1">
+                        <a key={i} href={file.url} target="_blank" rel="noreferrer" className="text-sm text-blue-600 hover:underline flex items-center gap-1">
                           <FileText className="w-4 h-4" /> Attachment {i + 1}
                         </a>
                       ))}
@@ -157,14 +157,14 @@ export default function SubmissionDetailModal({ submission, assignment, onClose,
                 </div>
               )}
 
-              {submission.ai_rubric_breakdown && submission.ai_rubric_breakdown.length > 0 && (
+              {submission.ai_rubric_breakdown && Object.keys(submission.ai_rubric_breakdown).length > 0 && (
                 <div className="bg-white rounded-xl border border-brand-100 p-5">
                   <h4 className="text-xs font-semibold text-brand-900 mb-3 uppercase tracking-wider">Rubric Breakdown</h4>
                   <div className="space-y-3">
-                    {submission.ai_rubric_breakdown.map((item: any, i: number) => (
+                    {Object.entries(submission.ai_rubric_breakdown).map(([criteria, item]: [string, any], i: number) => (
                       <div key={i} className="text-sm">
                         <div className="flex justify-between font-medium text-[#1C0A00] mb-0.5">
-                          <span>{item.criteria}</span>
+                          <span>{item.criteria ?? criteria}</span>
                           <span>{item.score}/{item.max_score}</span>
                         </div>
                         {item.comment && <p className="text-xs text-brand-500">{item.comment}</p>}

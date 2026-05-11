@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -14,9 +14,13 @@ export default function UploadDocumentPage() {
   const navigate = useNavigate()
   const qc = useQueryClient()
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
-  const { data: subjects = [] } = useQuery({ queryKey: ['subjects'], queryFn: listSubjects })
+  const [searchParams] = useSearchParams()
+  const prefilledSubjectId = searchParams.get('subject_id') ?? ''
+  const { data: subjects = [] } = useQuery({ queryKey: ['subjects'], queryFn: () => listSubjects() })
 
-  const { register, handleSubmit, formState: { errors } } = useForm<{ subject_id: string; title: string }>()
+  const { register, handleSubmit, formState: { errors } } = useForm<{ subject_id: string; title: string }>({
+    defaultValues: { subject_id: prefilledSubjectId }
+  })
 
   const uploadMut = useMutation({
     mutationFn: ({ file, subject_id }: { file: File; subject_id?: string; title?: string }) =>

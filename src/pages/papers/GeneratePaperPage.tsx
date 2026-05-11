@@ -163,7 +163,7 @@ export default function GeneratePaperPage() {
     }))
   }, [user])
 
-  const { data: subjects = [] } = useQuery({ queryKey: ['subjects'], queryFn: listSubjects })
+  const { data: subjects = [] } = useQuery({ queryKey: ['subjects'], queryFn: () => listSubjects() })
   const { data: docs = [] } = useQuery({
     queryKey: ['documents', form.subject_id],
     queryFn: () => listDocuments(form.subject_id || undefined),

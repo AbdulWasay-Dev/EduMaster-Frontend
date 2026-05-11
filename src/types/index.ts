@@ -328,12 +328,16 @@ export type AssignmentStatus = 'draft' | 'published' | 'closed'
 export interface Assignment {
   id: string
   title: string
+  description?: string
   instructions?: string
   subject_id: string
+  subject_name?: string
   class_id: string
+  class_name?: string
   total_marks: number
   due_date?: string
   status: AssignmentStatus
+  auto_grade?: boolean
   grading_rubric?: string
   attachment_url?: string
   created_at: string
@@ -348,14 +352,21 @@ export interface AssignmentSubmission {
   assignment_id: string
   student_account_id: string
   student_name?: string
+  student_email?: string
+  roll_number?: string
+  source?: string
   submission_text: string
   attachment_url?: string
+  submission_files?: { name: string; url: string }[]
   status: SubmissionStatus | string
   submitted_at?: string
   marks_obtained?: number
+  max_marks?: number
   percentage?: number
   grade?: string
   ai_feedback?: string
+  ai_rubric_breakdown?: Record<string, any>
+  teacher_remarks?: string
   graded_at?: string
 }
 

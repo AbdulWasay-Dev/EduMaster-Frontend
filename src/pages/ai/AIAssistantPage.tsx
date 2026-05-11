@@ -19,7 +19,7 @@ export default function AIAssistantPage() {
   const user = useAuthStore(s => s.user)
 
   const { sessions, activeSessionId, createSession, addMessage, addAIResponse, setActiveSession } = useChatStore()
-  const { data: subjects = [] } = useQuery({ queryKey: ['subjects'], queryFn: listSubjects })
+  const { data: subjects = [] } = useQuery({ queryKey: ['subjects'], queryFn: () => listSubjects() })
 
   const activeSession = sessions.find(s => s.id === activeSessionId)
 

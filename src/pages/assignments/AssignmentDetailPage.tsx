@@ -14,6 +14,8 @@ import {
   fetchEmailSubmissions, manualUploadSubmission
 } from '@/lib/api/assignments'
 import { listStudents } from '@/lib/api/students'
+import { listClasses } from '@/lib/api/classes'
+import { listSubjects } from '@/lib/api/subjects'
 import { cn } from '@/lib/utils'
 
 import EmailConfigModal from './components/EmailConfigModal'
@@ -54,6 +56,12 @@ export default function AssignmentDetailPage() {
     queryFn: () => listStudents(assignment!.class_id),
     enabled: !!assignment?.class_id,
   })
+
+  // Class and subject name resolution
+  const { data: classes = [] } = useQuery({ queryKey: ['classes'], queryFn: () => listClasses() })
+  const { data: allSubjects = [] } = useQuery({ queryKey: ['subjects'], queryFn: () => listSubjects() })
+  const className   = assignment?.class_name   || classes.find(c => c.id === assignment?.class_id)?.name   || null
+  const subjectName = assignment?.subject_name || allSubjects.find(s => s.id === assignment?.subject_id)?.name || null
 
   const publishMut = useMutation({
     mutationFn: () => publishAssignment(id!),
@@ -122,9 +130,21 @@ export default function AssignmentDetailPage() {
                   {assignment.status.toUpperCase()}
                 </span>
               </div>
-              <p className="text-sm text-brand-600 flex items-center gap-2">
-                <FileText className="w-4 h-4" /> {assignment.total_marks} marks
-                {assignment.due_date && <span>· Due: {new Date(assignment.due_date).toLocaleDateString()}</span>}
+              <p className="text-sm text-brand-600 flex items-center gap-3 flex-wrap mt-1">
+                <span className="flex items-center gap-1">
+                  <FileText className="w-4 h-4" /> {assignment.total_marks} marks
+                </span>
+                {assignment.due_date && <span className="text-orange-600">· Due: {new Date(assignment.due_date).toLocaleDateString()}</span>}
+                {className && (
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-brand-700 bg-brand-50 border border-brand-100 px-2 py-0.5 rounded-full">
+                    🎓 {className}
+                  </span>
+                )}
+                {subjectName && (
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-indigo-700 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-full">
+                    📚 {subjectName}
+                  </span>
+                )}
               </p>
             </div>
           </div>
