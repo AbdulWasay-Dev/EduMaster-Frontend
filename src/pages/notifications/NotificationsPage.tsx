@@ -1,133 +1,256 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Bell, CheckCheck, Trash2, FileText, ScrollText, CheckSquare, Bot, Users } from 'lucide-react'
+import {
+  Bell, CheckCheck, Trash2, FileText, ScrollText, CheckSquare,
+  Bot, Users, CalendarDays, ClipboardCheck, BookOpen, GraduationCap,
+  Inbox, RefreshCw, X,
+} from 'lucide-react'
 import PageHeader from '@/components/shared/PageHeader'
-import { formatDate } from '@/lib/utils'
+import { useNotificationStore } from '@/store/notificationStore'
+import type { NotificationType } from '@/types'
+import { cn } from '@/lib/utils'
 
-type NotifType = 'document' | 'paper' | 'grading' | 'ai' | 'system'
-
-interface Notif {
-  id: string
-  type: NotifType
-  title: string
-  body: string
-  read: boolean
-  created_at: string
+// ── Maps ─────────────────────────────────────────────────────────────────────
+const ICON_MAP: Record<NotificationType, React.ElementType> = {
+  paper_assigned:     ScrollText,
+  paper_published:    ScrollText,
+  grade_available:    CheckSquare,
+  deadline_reminder:  CalendarDays,
+  document_processed: FileText,
+  attendance_saved:   ClipboardCheck,
+  student_enrolled:   Users,
+  assignment_published: BookOpen,
+  assignment_graded:  GraduationCap,
+  class_created:      Users,
+  calendar_event:     CalendarDays,
+  system:             Bot,
 }
 
-const ICON_MAP: Record<NotifType, React.ElementType> = {
-  document: FileText, paper: ScrollText, grading: CheckSquare, ai: Bot, system: Users,
-}
-const COLOR_MAP: Record<NotifType, string> = {
-  document: 'bg-amber-100 text-amber-600',
-  paper:    'bg-brand-100 text-brand-600',
-  grading:  'bg-emerald-100 text-emerald-600',
-  ai:       'bg-violet-100 text-violet-600',
-  system:   'bg-cyan-100 text-cyan-600',
+const COLOR_MAP: Record<NotificationType, string> = {
+  paper_assigned:     'bg-brand-100 text-brand-600',
+  paper_published:    'bg-brand-100 text-brand-600',
+  grade_available:    'bg-emerald-100 text-emerald-600',
+  deadline_reminder:  'bg-amber-100 text-amber-600',
+  document_processed: 'bg-amber-100 text-amber-600',
+  attendance_saved:   'bg-cyan-100 text-cyan-600',
+  student_enrolled:   'bg-cyan-100 text-cyan-600',
+  assignment_published: 'bg-violet-100 text-violet-600',
+  assignment_graded:  'bg-violet-100 text-violet-600',
+  class_created:      'bg-sky-100 text-sky-600',
+  calendar_event:     'bg-orange-100 text-orange-600',
+  system:             'bg-gray-100 text-gray-500',
 }
 
-const SAMPLE: Notif[] = [
-  { id:'1', type:'grading',  title:'Grading complete',          body:'10 answer sheets for Class 9A have been graded. Avg score: 78%.',       read:false, created_at: new Date(Date.now()-5*60*1000).toISOString() },
-  { id:'2', type:'paper',    title:'Paper published',           body:'Chapter 5 Quiz has been published and is ready to distribute.',          read:false, created_at: new Date(Date.now()-2*60*60*1000).toISOString() },
-  { id:'3', type:'document', title:'Document processed',        body:'"Biology Unit 3.pdf" has finished processing and is ready for RAG.',    read:false, created_at: new Date(Date.now()-5*60*60*1000).toISOString() },
-  { id:'4', type:'ai',       title:'AI query answered',         body:'Your question about photosynthesis was answered using 3 sources.',       read:true,  created_at: new Date(Date.now()-24*60*60*1000).toISOString() },
-  { id:'5', type:'system',   title:'New student enrolled',      body:'Alice Johnson has been added to Class 9A.',                              read:true,  created_at: new Date(Date.now()-2*24*60*60*1000).toISOString() },
-  { id:'6', type:'grading',  title:'Grading complete',          body:'5 answer sheets for Class 10B have been graded. Avg score: 83%.',        read:true,  created_at: new Date(Date.now()-3*24*60*60*1000).toISOString() },
-]
+const LABEL_MAP: Record<NotificationType, string> = {
+  paper_assigned:     'Papers',
+  paper_published:    'Papers',
+  grade_available:    'Grading',
+  deadline_reminder:  'Deadlines',
+  document_processed: 'Documents',
+  attendance_saved:   'Attendance',
+  student_enrolled:   'Classes',
+  assignment_published: 'Assignments',
+  assignment_graded:  'Assignments',
+  class_created:      'Classes',
+  calendar_event:     'Calendar',
+  system:             'System',
+}
 
-const TABS = ['All', 'Unread', 'Documents', 'Papers', 'Grading'] as const
+// ── Time helper ───────────────────────────────────────────────────────────────
+function timeAgo(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime()
+  const mins  = Math.floor(diff / 60000)
+  const hours = Math.floor(diff / 3600000)
+  const days  = Math.floor(diff / 86400000)
+  if (mins < 1)  return 'just now'
+  if (mins < 60) return `${mins}m ago`
+  if (hours < 24) return `${hours}h ago`
+  if (days === 1) return 'yesterday'
+  return `${days}d ago`
+}
+
+// ── Tabs ─────────────────────────────────────────────────────────────────────
+const TABS = ['All', 'Unread', 'Grading', 'Papers', 'Attendance', 'Assignments', 'Documents'] as const
 type Tab = typeof TABS[number]
 
+const TAB_FILTER: Record<Tab, (type: NotificationType, is_read: boolean) => boolean> = {
+  All:         () => true,
+  Unread:      (_, is_read) => !is_read,
+  Grading:     (t) => t === 'grade_available',
+  Papers:      (t) => t === 'paper_assigned' || t === 'paper_published',
+  Attendance:  (t) => t === 'attendance_saved',
+  Assignments: (t) => t === 'assignment_published' || t === 'assignment_graded',
+  Documents:   (t) => t === 'document_processed',
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default function NotificationsPage() {
-  const [notifications, setNotifications] = useState<Notif[]>(SAMPLE)
+  const {
+    notifications,
+    unreadCount,
+    loading,
+    fetchNotifications,
+    markRead,
+    markAllRead,
+    remove,
+    clearRead,
+  } = useNotificationStore()
+
   const [activeTab, setActiveTab] = useState<Tab>('All')
 
-  const filtered = notifications.filter(n => {
-    if (activeTab === 'All') return true
-    if (activeTab === 'Unread') return !n.read
-    if (activeTab === 'Documents') return n.type === 'document'
-    if (activeTab === 'Papers') return n.type === 'paper'
-    if (activeTab === 'Grading') return n.type === 'grading'
-    return true
-  })
+  useEffect(() => { fetchNotifications() }, [])
 
-  const unreadCount = notifications.filter(n => !n.read).length
+  const filtered = notifications.filter((n) =>
+    TAB_FILTER[activeTab](n.type as NotificationType, n.is_read),
+  )
 
-  const markAllRead = () => setNotifications(prev => prev.map(n => ({ ...n, read: true })))
-  const markRead = (id: string) => setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n))
-  const remove = (id: string) => setNotifications(prev => prev.filter(n => n.id !== id))
+  const readCount = notifications.filter((n) => n.is_read).length
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="Notifications"
-        subtitle={unreadCount > 0 ? `You have ${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}` : 'All caught up!'}
+        subtitle={
+          unreadCount > 0
+            ? `You have ${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}`
+            : 'All caught up!'
+        }
         action={
-          unreadCount > 0 ? (
-            <button onClick={markAllRead} className="btn-ghost flex items-center gap-2 text-sm">
-              <CheckCheck className="w-4 h-4" /> Mark all read
+          <div className="flex items-center gap-2">
+            {/* Refresh */}
+            <button
+              onClick={fetchNotifications}
+              disabled={loading}
+              className="btn-ghost flex items-center gap-2 text-sm"
+              title="Refresh"
+            >
+              <RefreshCw className={cn('w-4 h-4', loading && 'animate-spin')} />
             </button>
-          ) : undefined
+
+            {/* Clear read */}
+            {readCount > 0 && (
+              <button
+                onClick={clearRead}
+                className="btn-ghost flex items-center gap-2 text-sm text-red-500 hover:text-red-600"
+              >
+                <X className="w-4 h-4" /> Clear read ({readCount})
+              </button>
+            )}
+
+            {/* Mark all read */}
+            {unreadCount > 0 && (
+              <button
+                onClick={markAllRead}
+                className="btn-ghost flex items-center gap-2 text-sm"
+              >
+                <CheckCheck className="w-4 h-4" /> Mark all read
+              </button>
+            )}
+          </div>
         }
       />
 
       {/* Tabs */}
       <div className="flex items-center gap-1 bg-brand-50 p-1 rounded-xl w-fit flex-wrap">
-        {TABS.map(tab => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-              activeTab === tab ? 'bg-white text-brand-900 shadow-sm' : 'text-brand-600 hover:text-brand-900'
-            }`}
-          >
-            {tab}
-            {tab === 'Unread' && unreadCount > 0 && (
-              <span className="ml-1.5 bg-brand-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                {unreadCount}
-              </span>
-            )}
-          </button>
-        ))}
+        {TABS.map((tab) => {
+          const count =
+            tab === 'Unread'
+              ? unreadCount
+              : tab !== 'All'
+              ? notifications.filter((n) => TAB_FILTER[tab](n.type as NotificationType, n.is_read)).length
+              : undefined
+          return (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={cn(
+                'px-4 py-2 rounded-lg text-sm font-medium transition-all',
+                activeTab === tab
+                  ? 'bg-white text-brand-900 shadow-sm'
+                  : 'text-brand-600 hover:text-brand-900',
+              )}
+            >
+              {tab}
+              {count !== undefined && count > 0 && (
+                <span className="ml-1.5 bg-brand-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                  {count}
+                </span>
+              )}
+            </button>
+          )
+        })}
       </div>
 
-      {/* List */}
+      {/* Notification list */}
       <div className="space-y-2">
-        {filtered.length === 0 ? (
+        {loading && filtered.length === 0 ? (
+          <div className="card p-12 flex flex-col items-center gap-3">
+            <div className="w-8 h-8 border-2 border-brand-200 border-t-brand-500 rounded-full animate-spin" />
+            <p className="text-brand-500 text-sm">Loading notifications…</p>
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="card p-12 flex flex-col items-center gap-3 text-center">
-            <Bell className="w-10 h-10 text-brand-300" />
-            <p className="text-brand-500 font-medium">No notifications here</p>
+            <Inbox className="w-10 h-10 text-brand-300" />
+            <p className="text-brand-500 font-medium">
+              {activeTab === 'Unread' ? 'No unread notifications' : 'No notifications here'}
+            </p>
+            <p className="text-xs text-brand-400">
+              {activeTab === 'All'
+                ? 'Notifications appear here when you grade, publish papers, record attendance, and more.'
+                : `No ${activeTab.toLowerCase()} notifications yet.`}
+            </p>
           </div>
         ) : (
           <AnimatePresence initial={false}>
-            {filtered.map(notif => {
-              const Icon = ICON_MAP[notif.type]
+            {filtered.map((notif) => {
+              const type = notif.type as NotificationType
+              const Icon = ICON_MAP[type] ?? Bot
+              const colourCls = COLOR_MAP[type] ?? COLOR_MAP.system
+              const label = LABEL_MAP[type] ?? 'System'
               return (
                 <motion.div
                   key={notif.id}
                   initial={{ opacity: 0, y: -8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, x: 40, height: 0, marginBottom: 0 } as any}
+                  exit={{ opacity: 0, x: 40, height: 0, marginBottom: 0 } as never}
                   transition={{ duration: 0.2 }}
                   onClick={() => markRead(notif.id)}
-                  className={`card p-4 flex items-start gap-4 cursor-pointer group transition-all ${!notif.read ? 'border-l-4 border-l-brand-500' : ''}`}
+                  className={cn(
+                    'card p-4 flex items-start gap-4 cursor-pointer group transition-all',
+                    !notif.is_read && 'border-l-4 border-l-brand-500',
+                  )}
                 >
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${COLOR_MAP[notif.type]}`}>
-                    <Icon className="w-4 h-4" />
+                  {/* Icon */}
+                  <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center shrink-0', colourCls)}>
+                    <Icon className="w-4.5 h-4.5" />
                   </div>
+
+                  {/* Body */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
-                      <p className={`text-sm font-semibold ${notif.read ? 'text-brand-700' : 'text-[#1C0A00]'}`}>
-                        {notif.title}
-                        {!notif.read && <span className="ml-2 w-2 h-2 bg-brand-500 rounded-full inline-block align-middle" />}
-                      </p>
-                      <span className="text-[10px] text-brand-400 whitespace-nowrap shrink-0">{formatDate(notif.created_at)}</span>
+                      <div>
+                        <p className={cn('text-sm font-semibold leading-tight', notif.is_read ? 'text-brand-700' : 'text-[#1C0A00]')}>
+                          {notif.title}
+                          {!notif.is_read && (
+                            <span className="ml-2 w-2 h-2 bg-brand-500 rounded-full inline-block align-middle" />
+                          )}
+                        </p>
+                        <span className="inline-block mt-0.5 text-[10px] font-medium bg-brand-100 text-brand-600 px-1.5 py-0.5 rounded-md">
+                          {label}
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-brand-400 whitespace-nowrap shrink-0 mt-0.5">
+                        {timeAgo(notif.created_at)}
+                      </span>
                     </div>
-                    <p className="text-xs text-brand-600 mt-0.5">{notif.body}</p>
+                    <p className="text-xs text-brand-600 mt-1 leading-relaxed">{notif.message}</p>
                   </div>
+
+                  {/* Delete */}
                   <button
-                    onClick={e => { e.stopPropagation(); remove(notif.id) }}
-                    className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-red-50 text-red-400 hover:text-red-600 transition-all shrink-0"
+                    onClick={(e) => { e.stopPropagation(); remove(notif.id) }}
+                    className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-red-50 text-red-400 hover:text-red-600 transition-all shrink-0 mt-0.5"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
@@ -137,6 +260,14 @@ export default function NotificationsPage() {
           </AnimatePresence>
         )}
       </div>
+
+      {/* Summary footer */}
+      {notifications.length > 0 && (
+        <p className="text-center text-xs text-brand-400">
+          {notifications.length} total notification{notifications.length !== 1 ? 's' : ''} •{' '}
+          {unreadCount} unread • {readCount} read
+        </p>
+      )}
     </div>
   )
 }

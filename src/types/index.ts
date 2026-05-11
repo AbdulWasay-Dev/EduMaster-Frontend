@@ -277,7 +277,19 @@ export interface ActivityDataPoint {
 }
 
 // ─── Notifications ────────────────────────────────────────────────────────────
-export type NotificationType = 'grading' | 'paper' | 'system'
+export type NotificationType =
+  | 'paper_assigned'
+  | 'paper_published'
+  | 'grade_available'
+  | 'deadline_reminder'
+  | 'document_processed'
+  | 'attendance_saved'
+  | 'student_enrolled'
+  | 'assignment_published'
+  | 'assignment_graded'
+  | 'class_created'
+  | 'calendar_event'
+  | 'system'
 
 export interface AppNotification {
   id: string
@@ -285,8 +297,7 @@ export interface AppNotification {
   title: string
   message: string
   is_read: boolean
-  resource_id?: string
-  resource_type?: string
+  metadata?: Record<string, unknown>
   created_at: string
 }
 

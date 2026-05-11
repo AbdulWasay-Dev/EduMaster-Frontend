@@ -1,9 +1,10 @@
 import { useNavigate, useLocation, Link } from 'react-router-dom'
-import { Bell, Moon, Sun, Search, LogOut } from 'lucide-react'
+import { Moon, Sun, Search, LogOut } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 import { useUIStore } from '@/store/uiStore'
 import { cn, getInitials } from '@/lib/utils'
 import { toast } from 'sonner'
+import NotificationDropdown from './NotificationDropdown'
 
 function useBreadcrumbs() {
   const { pathname } = useLocation()
@@ -67,14 +68,8 @@ export default function TopNav() {
           {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
         </button>
 
-        {/* Notifications */}
-        <Link
-          to="/notifications"
-          className="relative p-2 rounded-lg text-brand-600 hover:bg-brand-50 transition-colors"
-        >
-          <Bell className="w-4 h-4" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-accent-500 rounded-full ring-2 ring-white animate-pulse-slow" />
-        </Link>
+        {/* Notifications dropdown */}
+        <NotificationDropdown />
 
         {/* User avatar */}
         {user && (
