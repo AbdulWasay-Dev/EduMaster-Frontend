@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -11,9 +11,10 @@ import { toast } from 'sonner'
 import PageHeader from '@/components/shared/PageHeader'
 import EmptyState from '@/components/shared/EmptyState'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
+import DocumentProgressBar from '@/components/documents/DocumentProgressBar'
 import { listDocuments, deleteDocument } from '@/lib/api/documents'
 import { listSubjects } from '@/lib/api/subjects'
-import { formatDate, formatBytes, fileIcon } from '@/lib/utils'
+import { formatDate, formatBytes, fileIcon, cn } from '@/lib/utils'
 import type { Document, Subject } from '@/types'
 
 const FILE_COLORS: Record<string, { bg: string; text: string; border: string }> = {
@@ -28,7 +29,7 @@ const FILE_COLORS: Record<string, { bg: string; text: string; border: string }> 
   txt:  { bg: 'bg-slate-100',  text: 'text-slate-600',  border: 'border-slate-200'  },
 }
 
-function StatusChip({ status }: { status: string }) {
+function StatusChip({ status, progress }: { status: string; progress?: number }) {
   if (status === 'completed') return (
     <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">
       <CheckCircle2 className="w-2.5 h-2.5" /> Ready
@@ -36,7 +37,8 @@ function StatusChip({ status }: { status: string }) {
   )
   if (status === 'processing') return (
     <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 border border-amber-200">
-      <Loader2 className="w-2.5 h-2.5 animate-spin" /> Processing
+      <Loader2 className="w-2.5 h-2.5 animate-spin" />
+      {progress != null && progress > 0 ? `${progress}%` : 'Processing'}
     </span>
   )
   return (
@@ -60,6 +62,12 @@ export default function DocumentsLibraryPage() {
   const { data: docs = [], isLoading } = useQuery<Document[]>({
     queryKey: ['documents'],
     queryFn: () => listDocuments(),
+    // Auto-refresh while any document is processing
+    refetchInterval: (query) => {
+      const data = query.state.data as Document[] | undefined
+      const hasProcessing = data?.some(d => d.processing_status === 'processing')
+      return hasProcessing ? 5000 : false
+    },
   })
 
   const { data: subjects = [] } = useQuery<Subject[]>({
@@ -72,6 +80,10 @@ export default function DocumentsLibraryPage() {
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['documents'] }); toast.success('Document deleted') },
     onError: () => toast.error('Failed to delete'),
   })
+
+  // Docs that are currently processing
+  const processingDocs = docs.filter(d => d.processing_status === 'processing')
+
 
   // Build subject name lookup
   const subjectMap = useMemo(() =>
@@ -144,6 +156,30 @@ export default function DocumentsLibraryPage() {
           ))}
         </div>
       )}
+
+      {/* ── Currently processing queue ── */}
+      <AnimatePresence>
+        {processingDocs.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="space-y-2"
+          >
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-brand-500">
+              Currently Processing ({processingDocs.length})
+            </h3>
+            {processingDocs.map(doc => (
+              <DocumentProgressBar
+                key={doc.id}
+                documentId={doc.id}
+                filename={doc.original_filename || doc.filename}
+                onComplete={() => qc.invalidateQueries({ queryKey: ['documents'] })}
+              />
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Search + filter */}
       {!isLoading && docs.length > 0 && (

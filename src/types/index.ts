@@ -92,6 +92,12 @@ export interface Document {
   file_type: DocumentType
   file_size: number
   processing_status: DocumentStatus
+  processing_progress?: number     // 0-100
+  processing_stage?: string        // human-readable stage label
+  processing_error?: string        // set on failure
+  page_count?: number
+  word_count?: number
+  chunk_count?: number
   subject_id: string
   subject_name?: string
   created_at: string
