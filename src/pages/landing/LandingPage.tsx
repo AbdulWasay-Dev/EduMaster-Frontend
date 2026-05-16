@@ -1,380 +1,464 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
-  Bot, ScrollText, CheckSquare, FileText, Zap, Star, Crown,
-  Check, ChevronDown, ArrowRight, Play, Upload, Sparkles,
-  TrendingUp, Clock, Shield, Users, BookOpen, Award,
+  BookOpen, ArrowRight, ScrollText, CheckSquare, Bot, Calendar,
+  Users, FileText, Sparkles, ChevronDown, BarChart3, Mail,
+  GraduationCap, Clock, Shield, Zap,
 } from 'lucide-react'
+import './landing.css'
 
-/* ─── helpers ─── */
-const fadeUp = { hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } }
-const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } }
+const fadeUp = { hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.6 } } }
+const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.12 } } }
 
-/* ─── data ─── */
 const FEATURES = [
   {
-    icon: ScrollText, title: 'AI Paper Generator',
-    desc: 'Generate perfectly structured exam papers in seconds. Choose difficulty, question types, and marks — AI does the rest.',
-    color: 'from-brand-500 to-brand-600',
+    badge: 'Paper Generation', icon: ScrollText, bg: 'blue',
+    title: 'AI-Powered Paper Creator',
+    desc: 'Generate perfectly structured exam papers in seconds. Choose difficulty, question types, marks distribution — AI handles the rest using your uploaded course materials.',
+    img: '/images/landing/paper_generator.png',
+    cta: 'Generate Your First Paper',
   },
   {
-    icon: CheckSquare, title: 'Instant OCR Grading',
-    desc: 'Upload answer sheets and watch AI grade them with detailed per-question feedback and score breakdowns.',
-    color: 'from-accent-500 to-accent-600',
+    badge: 'Smart Grading', icon: CheckSquare, bg: 'teal',
+    title: 'Instant OCR Grading',
+    desc: 'Upload scanned answer sheets and watch AI grade them instantly with detailed per-question feedback, score breakdowns, and confidence indicators.',
+    img: '/images/landing/grading_preview.png',
+    cta: 'Grade Your First Sheet',
   },
   {
-    icon: Bot, title: 'RAG AI Assistant',
-    desc: 'Ask questions and get answers grounded in your own uploaded textbooks and study materials.',
-    color: 'from-gold-400 to-gold-600',
+    badge: 'AI Assistant', icon: Bot, bg: 'purple',
+    title: 'RAG-Powered AI Assistant',
+    desc: 'Ask questions and get accurate answers grounded in your own uploaded textbooks and study materials. Like having an AI teaching assistant available 24/7.',
+    img: '/images/landing/ai_assistant.png',
+    cta: 'Ask Your First Question',
   },
   {
-    icon: FileText, title: 'Smart Document Library',
-    desc: 'Upload PDFs and documents — they\'re automatically chunked and indexed for instant AI retrieval.',
-    color: 'from-cyan-500 to-cyan-600',
+    badge: 'Scheduling', icon: Calendar, bg: 'amber',
+    title: 'Smart Schedule & Calendar',
+    desc: 'Powerful scheduling system to manage your classes, exams, and deadlines. Color-coded calendar with reminders keeps you organized effortlessly.',
+    img: '/images/landing/schedule_preview.png',
+    cta: 'Organize Your Schedule',
   },
   {
-    icon: TrendingUp, title: 'Analytics Dashboard',
-    desc: 'Track student progress, grade distributions, and class performance with beautiful real-time charts.',
-    color: 'from-emerald-500 to-emerald-600',
+    badge: 'Attendance', icon: Users, bg: 'rose',
+    title: 'Advanced Attendance Tracking',
+    desc: 'Record and analyze attendance with heatmaps, trend charts, and student performance indicators. Identify at-risk students before it\'s too late.',
+    img: '/images/landing/attendance_preview.png',
+    cta: 'Track Your Class',
   },
   {
-    icon: Users, title: 'Class Management',
-    desc: 'Organize students into classes, track enrollment, and manage assignments all in one place.',
-    color: 'from-violet-500 to-violet-600',
+    badge: 'Assignments', icon: Mail, bg: 'sky',
+    title: 'Assignment Collection & Auto-Grading',
+    desc: 'Students submit via email — the system automatically collects, processes, and grades assignments using AI. Review results in a beautiful dashboard.',
+    img: '/images/landing/dashboard_preview.png',
+    cta: 'Set Up Auto-Grading',
   },
-]
-
-const STEPS = [
-  { icon: Upload,    num: '01', title: 'Upload Your Materials', desc: 'Add PDFs, textbooks, and study guides to your document library.' },
-  { icon: Sparkles, num: '02', title: 'Generate with AI',       desc: 'Create exam papers or query your content — just describe what you need.' },
-  { icon: CheckSquare, num: '03', title: 'Grade Instantly',     desc: 'Upload answer sheets and get detailed AI grading reports in seconds.' },
-  { icon: TrendingUp,  num: '04', title: 'Track Progress',      desc: 'Visualize class performance with analytics dashboards and insights.' },
 ]
 
 const TESTIMONIALS = [
   {
     name: 'Sarah K.', role: 'Biology Teacher, Springfield HS', avatar: 'S',
-    quote: 'EduMaster cut my grading time by 80%. What used to take me an entire Sunday now takes 20 minutes.',
-    stars: 5,
+    quote: 'EduMaster cut my grading time by 80%. What used to take an entire Sunday now takes 20 minutes. The OCR grading is incredibly accurate.',
+    stats: [{ v: '80%', l: 'Time saved' }, { v: '5x', l: 'Faster grading' }, { v: '98%', l: 'Accuracy' }],
   },
   {
     name: 'James R.', role: 'Math Department Head', avatar: 'J',
-    quote: 'The AI paper generator is incredible. I can create differentiated exams for different ability groups instantly.',
-    stars: 5,
+    quote: 'The AI paper generator is incredible. I create differentiated exams for different ability groups instantly. The scheduling system keeps my entire department organized.',
+    stats: [{ v: '3x', l: 'More papers' }, { v: '10+', l: 'Classes managed' }, { v: '100%', l: 'On schedule' }],
   },
   {
     name: 'Maria L.', role: 'Chemistry Teacher', avatar: 'M',
-    quote: 'The RAG assistant answers student-style questions directly from my textbooks. It\'s like having an AI TA.',
-    stars: 5,
+    quote: 'The RAG assistant answers questions directly from my textbooks. Combined with auto-grading assignments, I\'ve reclaimed hours every single week.',
+    stats: [{ v: '24/7', l: 'AI available' }, { v: '50+', l: 'Docs indexed' }, { v: '4.9★', l: 'Rating' }],
   },
 ]
 
-const FAQS = [
-  { q: 'How does AI grading work?',       a: 'Students\' answer sheets are uploaded as images. Our OCR engine extracts the text, then our AI compares each answer against the marking scheme to award scores with detailed feedback.' },
-  { q: 'What file formats are supported?', a: 'We support PDF, DOCX, and images (PNG, JPG) for documents and answer sheets.' },
-  { q: 'Is my data secure?',              a: 'All data is encrypted at rest and in transit. We never use your content to train AI models. You own your data.' },
-  { q: 'Can I try it for free?',          a: 'Yes! Our Free plan includes 5 documents, 3 papers per month, and 10 answer sheets with no credit card required.' },
-  { q: 'Does it work offline?',           a: 'EduMaster is a web-based platform. An internet connection is required for AI features.' },
-]
-
-const PLANS = [
-  { name: 'Free', price: '$0', period: '/month', cta: 'Get Started Free', icon: Zap, color: 'border-brand-200', features: ['5 documents','3 papers/month','10 graded sheets','50 AI queries','1 class'], },
-  { name: 'Pro', price: '$12', period: '/month', cta: 'Start Free Trial', icon: Star, color: 'border-brand-500', badge: 'Most Popular', features: ['Unlimited documents','Unlimited papers','Unlimited grading','Unlimited AI queries','10 classes','PDF export','Priority support'], },
-  { name: 'School', price: '$49', period: '/month', cta: 'Contact Sales', icon: Crown, color: 'border-accent-400', features: ['Everything in Pro','20 teacher accounts','Admin dashboard','Custom branding','API access','SSO','Dedicated support'], },
-]
-
-/* ─── FAQ accordion item ─── */
 function FAQItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false)
   return (
-    <div className="border-b border-brand-100 last:border-0">
-      <button onClick={() => setOpen(v => !v)} className="w-full flex items-center justify-between py-4 text-left gap-4 group">
-        <span className="font-medium text-[#1C0A00] group-hover:text-brand-500 transition-colors text-sm">{q}</span>
-        <ChevronDown className={`w-4 h-4 text-brand-500 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
+    <div className="border-b border-gray-100 last:border-0">
+      <button onClick={() => setOpen(v => !v)} className="w-full flex items-center justify-between py-5 text-left gap-4 group">
+        <span className="font-semibold text-[#0a1628] group-hover:text-[#2d7dd2] transition-colors">{q}</span>
+        <ChevronDown className={`w-5 h-5 text-[#2d7dd2] shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
       </button>
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.22 }}
-            className="overflow-hidden"
-          >
-            <p className="pb-4 text-sm text-brand-600 leading-relaxed">{a}</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {open && <p className="pb-5 text-[15px] text-[#5a7a9e] leading-relaxed">{a}</p>}
     </div>
   )
 }
 
-/* ─── main ─── */
 export default function LandingPage() {
+  const [scrolled, setScrolled] = useState(false)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const mouseRef = useRef({ x: 0.5, y: 0.5 })
+  // Fluid color fields — visible deep blue tones that react to mouse
+  const fieldsRef = useRef([
+    { x: 0.2, y: 0.3, baseX: 0.2, baseY: 0.3, size: 0.7, r: 10, g: 60, b: 180, a: 0.22 },
+    { x: 0.75, y: 0.2, baseX: 0.75, baseY: 0.2, size: 0.6, r: 80, g: 140, b: 240, a: 0.18 },
+    { x: 0.4, y: 0.7, baseX: 0.4, baseY: 0.7, size: 0.65, r: 20, g: 80, b: 200, a: 0.2 },
+    { x: 0.1, y: 0.5, baseX: 0.1, baseY: 0.5, size: 0.55, r: 60, g: 120, b: 220, a: 0.16 },
+    { x: 0.85, y: 0.65, baseX: 0.85, baseY: 0.65, size: 0.5, r: 100, g: 160, b: 250, a: 0.15 },
+    { x: 0.5, y: 0.4, baseX: 0.5, baseY: 0.4, size: 0.45, r: 255, g: 255, b: 255, a: 0.08 },
+  ])
+
+  useEffect(() => {
+    const handler = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', handler, { passive: true })
+    return () => window.removeEventListener('scroll', handler)
+  }, [])
+
+  // Fluid canvas — visible color shifts reacting to mouse
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    let raf: number
+    let dpr = window.devicePixelRatio || 1
+    const resize = () => {
+      dpr = window.devicePixelRatio || 1
+      canvas.width = canvas.offsetWidth * dpr
+      canvas.height = canvas.offsetHeight * dpr
+    }
+    resize()
+    window.addEventListener('resize', resize)
+
+    const draw = () => {
+      const w = canvas.offsetWidth
+      const h = canvas.offsetHeight
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      ctx.clearRect(0, 0, w, h)
+
+      const mx = mouseRef.current.x
+      const my = mouseRef.current.y
+      const fields = fieldsRef.current
+      const t = Date.now() * 0.001
+
+      fields.forEach((f, i) => {
+        // Organic drift
+        const driftX = Math.sin(t * 0.2 + i * 1.8) * 0.06
+        const driftY = Math.cos(t * 0.15 + i * 2.3) * 0.05
+
+        // Visible mouse influence — fields follow cursor noticeably
+        const nudgeX = (mx - f.baseX) * 0.15
+        const nudgeY = (my - f.baseY) * 0.15
+
+        // Smooth interpolation
+        const targetX = f.baseX + driftX + nudgeX
+        const targetY = f.baseY + driftY + nudgeY
+        f.x += (targetX - f.x) * 0.03
+        f.y += (targetY - f.y) * 0.03
+
+        const cx = f.x * w
+        const cy = f.y * h
+        const r = f.size * Math.max(w, h)
+
+        const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r)
+        grad.addColorStop(0, `rgba(${f.r},${f.g},${f.b},${f.a})`)
+        grad.addColorStop(0.5, `rgba(${f.r},${f.g},${f.b},${f.a * 0.4})`)
+        grad.addColorStop(1, 'rgba(0,0,0,0)')
+        ctx.fillStyle = grad
+        ctx.fillRect(0, 0, w, h)
+      })
+
+      raf = requestAnimationFrame(draw)
+    }
+    draw()
+
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('resize', resize)
+    }
+  }, [])
+
+  const handleHeroMouseMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    mouseRef.current = {
+      x: (e.clientX - rect.left) / rect.width,
+      y: (e.clientY - rect.top) / rect.height,
+    }
+  }, [])
+
   return (
-    <div className="min-h-screen bg-white text-[#1C0A00] overflow-x-hidden">
-      {/* NAV */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-brand-100">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center">
-              <BookOpen className="w-4 h-4 text-white" />
+    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+      {/* ── NAV ── */}
+      <nav className={`landing-nav fixed top-0 left-0 right-0 z-50 ${scrolled ? 'scrolled' : ''}`}>
+        <div className="max-w-[1200px] mx-auto px-6 h-[68px] flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#2d7dd2] to-[#56a8e8] flex items-center justify-center">
+              <BookOpen className="w-[18px] h-[18px] text-white" />
             </div>
-            <span className="font-black text-lg gradient-text">EduMaster</span>
+            <span className="font-extrabold text-[20px] text-[#0a1628]">EduMaster</span>
           </Link>
-          <div className="hidden md:flex items-center gap-6 text-sm font-medium text-brand-700">
-            <a href="#features" className="hover:text-brand-500 transition-colors">Features</a>
-            <a href="#how-it-works" className="hover:text-brand-500 transition-colors">How it works</a>
-            <a href="#pricing" className="hover:text-brand-500 transition-colors">Pricing</a>
-            <a href="#faq" className="hover:text-brand-500 transition-colors">FAQ</a>
+          <div className="hidden md:flex items-center gap-7 text-[14px] font-medium text-[#3d5a80]">
+            <a href="#features" className="hover:text-[#2d7dd2] transition-colors">Features</a>
+            <a href="#how-it-works" className="hover:text-[#2d7dd2] transition-colors">How it works</a>
+            <a href="#testimonials" className="hover:text-[#2d7dd2] transition-colors">Testimonials</a>
+            <a href="#faq" className="hover:text-[#2d7dd2] transition-colors">FAQ</a>
           </div>
           <div className="flex items-center gap-3">
-            <Link to="/login" className="btn-ghost text-sm">Sign in</Link>
-            <Link to="/register" className="btn-primary text-sm">Get Started Free</Link>
+            <Link to="/login" className="hidden sm:inline-flex text-[14px] font-semibold text-[#3d5a80] hover:text-[#2d7dd2] transition-colors px-4 py-2">
+              Login
+            </Link>
+            <Link to="/register" style={{ background: '#0f172a', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 600, fontSize: '13px', padding: '10px 22px', display: 'inline-flex', alignItems: 'center', gap: '6px', textDecoration: 'none', transition: 'all 0.2s', boxShadow: 'none' }}>
+              Get Started Free
+            </Link>
           </div>
         </div>
       </nav>
 
-      {/* HERO */}
-      <section className="pt-28 pb-20 px-6 bg-gradient-to-br from-white via-brand-50/40 to-white relative overflow-hidden">
-        {/* Decorative blobs */}
-        <div className="absolute top-20 -left-32 w-80 h-80 bg-brand-200/30 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-10 -right-32 w-96 h-96 bg-accent-200/20 rounded-full blur-3xl pointer-events-none" />
+      {/* ── HERO — padded rounded card with interactive fluid ── */}
+      <div className="hero-wrapper">
+      <section className="landing-hero" onMouseMove={handleHeroMouseMove}>
+        <canvas ref={canvasRef} className="fluid-canvas" />
 
-        <motion.div variants={stagger} initial="hidden" animate="show" className="max-w-4xl mx-auto text-center space-y-6 relative z-10">
-          <motion.div variants={fadeUp}>
-            <span className="inline-flex items-center gap-2 bg-brand-100 text-brand-700 text-xs font-semibold px-4 py-2 rounded-full">
-              <Sparkles className="w-3.5 h-3.5" /> AI-Powered Teaching Tools — Now in Beta
-            </span>
+        <div className="hero-inner">
+          <motion.div variants={stagger} initial="hidden" animate="show" className="max-w-[800px] mx-auto text-center space-y-6">
+            <motion.div variants={fadeUp}>
+              <span className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-white/90 text-[12px] font-semibold px-5 py-2.5 rounded-full border border-white/10">
+                <Sparkles className="w-3.5 h-3.5" /> Powered by EduMaster AI Infrastructure
+              </span>
+            </motion.div>
+            <motion.h1 variants={fadeUp} className="text-[44px] md:text-[60px] font-extrabold leading-[1.08] tracking-[-0.03em] text-white">
+              Automate Teaching<br />That Actually <span className="text-[#7ec8f8]">Matters</span>
+            </motion.h1>
+            <motion.p variants={fadeUp} className="text-[17px] md:text-[19px] text-white/65 max-w-[560px] mx-auto leading-relaxed">
+              Generate papers, grade with AI, track attendance, manage schedules — the all-in-one AI platform built for modern educators.
+            </motion.p>
+            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-1">
+              <Link to="/register" style={{ background: 'white', color: '#0f172a', border: '1px solid rgba(255,255,255,0.9)', borderRadius: '12px', fontWeight: 600, fontSize: '15px', padding: '14px 36px', display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none', transition: 'all 0.3s', boxShadow: 'none' }}>
+                Start For Free
+              </Link>
+            </motion.div>
           </motion.div>
-          <motion.h1 variants={fadeUp} className="text-5xl md:text-7xl font-black leading-tight tracking-tight">
-            Grade Smarter.<br />
-            <span className="gradient-text">Teach Better.</span>
-          </motion.h1>
-          <motion.p variants={fadeUp} className="text-lg md:text-xl text-brand-600 max-w-2xl mx-auto leading-relaxed">
-            EduMaster uses AI to generate exam papers, grade answer sheets instantly with OCR, and answer student questions from your own documents.
-          </motion.p>
-          <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link to="/register" className="btn-primary text-base px-8 py-3 flex items-center gap-2 shadow-brand-lg">
-              Get Started Free <ArrowRight className="w-4 h-4" />
-            </Link>
-            <a href="#how-it-works" className="btn-ghost text-base px-8 py-3 flex items-center gap-2">
-              <Play className="w-4 h-4" /> See how it works
-            </a>
-          </motion.div>
-          <motion.p variants={fadeUp} className="text-xs text-brand-400">No credit card required · Free plan always available</motion.p>
-        </motion.div>
+        </div>
 
-        {/* Hero visual */}
+        {/* Trust strip inside hero at bottom */}
+        <div className="hero-trust">
+          <div className="hero-trust-label">Used by the world's leading educators</div>
+          <div className="hero-trust-items">
+            {[
+              { v: '2,500+', l: 'Teachers' },
+              { v: '180K+', l: 'Papers' },
+              { v: '500K+', l: 'Graded' },
+              { v: '95%', l: 'Time Saved' },
+              { v: '4.9★', l: 'Rating' },
+            ].map(s => (
+              <div key={s.l} className="hero-trust-item">
+                <div className="val">{s.v}</div>
+                <div className="lbl">{s.l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      </div>
+
+      {/* ── FEATURES (alternating, Instantly-style) ── */}
+      <div id="features">
         <motion.div
-          initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.6 }}
-          className="max-w-4xl mx-auto mt-16 rounded-2xl overflow-hidden shadow-2xl border border-brand-100 bg-[#1C0A00]"
+          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} className="text-center pt-24 pb-8 px-6"
         >
-          <div className="flex items-center gap-1.5 px-4 py-3 border-b border-white/10">
-            {['#ef4444','#fbbf24','#22c55e'].map(c => <div key={c} className="w-2.5 h-2.5 rounded-full" style={{background:c}}/>)}
-            <span className="ml-2 text-xs text-white/40 font-mono">EduMaster — Dashboard</span>
-          </div>
-          <div className="p-6 grid grid-cols-4 gap-3">
-            {[{l:'Classes',v:'6'},{l:'Students',v:'148'},{l:'Papers',v:'23'},{l:'Graded',v:'312'}].map(({l,v}) => (
-              <div key={l} className="bg-white/5 rounded-xl p-3 text-center">
-                <p className="text-2xl font-black text-white">{v}</p>
-                <p className="text-[10px] text-brand-300 mt-0.5">{l}</p>
-              </div>
-            ))}
-            <div className="col-span-4 bg-white/5 rounded-xl p-4">
-              <p className="text-xs text-brand-300 mb-2">Grading Activity</p>
-              <div className="flex items-end gap-1 h-12">
-                {[40,65,35,80,55,90,70,85,60,95,50,75].map((h,i) => (
-                  <div key={i} className="flex-1 bg-brand-500 rounded-sm opacity-80 transition-all" style={{height:`${h}%`}}/>
-                ))}
-              </div>
-            </div>
-          </div>
+          <h2 className="text-[36px] md:text-[44px] font-extrabold text-[#0f172a] tracking-tight leading-tight">
+            Everything a Teacher Needs, Instantly
+          </h2>
         </motion.div>
-      </section>
 
-      {/* SOCIAL PROOF STRIP */}
-      <section className="py-8 bg-brand-50 border-y border-brand-100">
-        <div className="max-w-4xl mx-auto px-6 flex flex-wrap items-center justify-center gap-8 text-branch-700">
-          {[
-            {v:'2,500+', l:'Teachers'},
-            {v:'180,000+', l:'Papers Generated'},
-            {v:'4.9/5', l:'Average Rating'},
-            {v:'95%', l:'Time Saved'},
-          ].map(({v,l}) => (
-            <div key={l} className="text-center">
-              <p className="text-2xl font-black text-brand-600">{v}</p>
-              <p className="text-xs text-brand-500">{l}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* FEATURES */}
-      <section id="features" className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
-          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{once:true}} className="text-center mb-14 space-y-3">
-            <motion.p variants={fadeUp} className="text-brand-500 font-semibold text-sm uppercase tracking-widest">Features</motion.p>
-            <motion.h2 variants={fadeUp} className="text-4xl font-black">Everything a teacher needs</motion.h2>
-            <motion.p variants={fadeUp} className="text-brand-600 max-w-xl mx-auto">From paper generation to grading to AI tutoring — all in one platform.</motion.p>
-          </motion.div>
-          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{once:true}} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {FEATURES.map(f => (
-              <motion.div key={f.title} variants={fadeUp} whileHover={{y:-4}} className="card p-6 space-y-3">
-                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${f.color} flex items-center justify-center`}>
-                  <f.icon className="w-5 h-5 text-white" />
-                </div>
-                <h3 className="font-bold text-[#1C0A00]">{f.title}</h3>
-                <p className="text-sm text-brand-600 leading-relaxed">{f.desc}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section id="how-it-works" className="py-20 px-6 bg-brand-50">
-        <div className="max-w-4xl mx-auto">
-          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{once:true}} className="text-center mb-14 space-y-3">
-            <motion.p variants={fadeUp} className="text-brand-500 font-semibold text-sm uppercase tracking-widest">How It Works</motion.p>
-            <motion.h2 variants={fadeUp} className="text-4xl font-black">Up and running in minutes</motion.h2>
-          </motion.div>
-          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{once:true}} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {STEPS.map(step => (
-              <motion.div key={step.num} variants={fadeUp} className="card p-5 text-center space-y-3">
-                <div className="w-10 h-10 rounded-xl bg-brand-500 flex items-center justify-center mx-auto">
-                  <step.icon className="w-5 h-5 text-white" />
-                </div>
-                <p className="text-3xl font-black text-brand-200">{step.num}</p>
-                <h3 className="font-bold text-[#1C0A00] text-sm">{step.title}</h3>
-                <p className="text-xs text-brand-600 leading-relaxed">{step.desc}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* TESTIMONIALS */}
-      <section className="py-20 px-6">
-        <div className="max-w-5xl mx-auto">
-          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{once:true}} className="text-center mb-14 space-y-3">
-            <motion.p variants={fadeUp} className="text-brand-500 font-semibold text-sm uppercase tracking-widest">Testimonials</motion.p>
-            <motion.h2 variants={fadeUp} className="text-4xl font-black">Loved by teachers</motion.h2>
-          </motion.div>
-          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{once:true}} className="grid md:grid-cols-3 gap-5">
-            {TESTIMONIALS.map(t => (
-              <motion.div key={t.name} variants={fadeUp} className="card p-6 space-y-4">
-                <div className="flex gap-0.5">
-                  {Array.from({length:t.stars}).map((_,i) => <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400"/>)}
-                </div>
-                <p className="text-sm text-brand-700 leading-relaxed italic">"{t.quote}"</p>
-                <div className="flex items-center gap-3 pt-2 border-t border-brand-50">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-accent-400 flex items-center justify-center text-white text-xs font-bold">
-                    {t.avatar}
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold text-[#1C0A00]">{t.name}</p>
-                    <p className="text-[10px] text-brand-500">{t.role}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* PRICING */}
-      <section id="pricing" className="py-20 px-6 bg-brand-50">
-        <div className="max-w-5xl mx-auto">
-          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{once:true}} className="text-center mb-14 space-y-3">
-            <motion.p variants={fadeUp} className="text-brand-500 font-semibold text-sm uppercase tracking-widest">Pricing</motion.p>
-            <motion.h2 variants={fadeUp} className="text-4xl font-black">Simple, transparent pricing</motion.h2>
-            <motion.p variants={fadeUp} className="text-brand-600">Start free. Upgrade when you need more.</motion.p>
-          </motion.div>
-          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{once:true}} className="grid sm:grid-cols-3 gap-5">
-            {PLANS.map(p => (
-              <motion.div key={p.name} variants={fadeUp} whileHover={{y:-4}} className={`card p-6 flex flex-col gap-4 relative border-2 ${p.color}`}>
-                {p.badge && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-500 text-white text-[10px] font-bold px-3 py-1 rounded-full whitespace-nowrap">
-                    {p.badge}
-                  </div>
-                )}
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-brand-100 flex items-center justify-center">
-                    <p.icon className="w-4 h-4 text-brand-500" />
-                  </div>
-                  <span className="font-bold">{p.name}</span>
-                </div>
-                <div>
-                  <span className="text-3xl font-black">{p.price}</span>
-                  <span className="text-brand-500 text-sm">{p.period}</span>
-                </div>
-                <ul className="space-y-2 flex-1">
-                  {p.features.map(f => (
-                    <li key={f} className="flex items-start gap-2 text-xs text-brand-700">
-                      <Check className="w-3.5 h-3.5 text-brand-500 shrink-0 mt-0.5"/>{f}
-                    </li>
-                  ))}
-                </ul>
-                <Link to="/register" className={`w-full text-center py-2.5 rounded-xl text-sm font-semibold transition-all block ${p.name==='Pro' ? 'btn-primary' : 'btn-ghost border border-brand-300'}`}>
-                  {p.cta}
+        {FEATURES.map((f, i) => (
+          <section key={f.badge} className="feature-section">
+            <div className={`feature-row ${i % 2 === 1 ? 'reversed' : ''}`}>
+              <motion.div
+                className="feature-content"
+                initial={{ opacity: 0, x: i % 2 === 0 ? -30 : 30 }} whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }} transition={{ duration: 0.6 }}
+              >
+                <h2 className="feature-title">{f.title}</h2>
+                <p className="feature-desc">{f.desc}</p>
+                <Link to="/register" className="feature-cta">
+                  {f.cta}
                 </Link>
               </motion.div>
+              <motion.div
+                className="feature-image"
+                initial={{ opacity: 0, x: i % 2 === 0 ? 30 : -30 }} whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.15 }}
+              >
+                <div className={`feature-image-bg ${f.bg}`}>
+                  <div className="feature-glass-layer">
+                    <div className="feature-image-wrapper">
+                      <img src={f.img} alt={f.title} loading="lazy" />
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </section>
+        ))}
+      </div>
+
+      {/* ── HOW IT WORKS ── */}
+      <section id="how-it-works" className="py-24 px-6 bg-[#f7fafd]">
+        <div className="max-w-[1140px] mx-auto">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
+            <p className="text-[#2d7dd2] font-semibold text-[13px] uppercase tracking-widest mb-3">How It Works</p>
+            <h2 className="text-[40px] font-extrabold text-[#0a1628] tracking-tight">Looks So Good, It's Like Cheating</h2>
+            <p className="text-[17px] text-[#5a7a9e] mt-3 max-w-[500px] mx-auto">Set up in minutes. Save hours every week. Here's how.</p>
+          </motion.div>
+          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true }} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { icon: FileText, num: '01', title: 'Upload Materials', desc: 'Add PDFs, textbooks, and study guides to your document library.' },
+              { icon: Sparkles, num: '02', title: 'Generate with AI', desc: 'Create exam papers, quizzes, or assignments — just describe what you need.' },
+              { icon: CheckSquare, num: '03', title: 'Grade Instantly', desc: 'Upload answer sheets and get detailed AI grading reports in seconds.' },
+              { icon: BarChart3, num: '04', title: 'Track & Analyze', desc: 'Monitor class performance, attendance trends, and student progress.' },
+            ].map(step => (
+              <motion.div key={step.num} variants={fadeUp} className="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#2d7dd2] to-[#56a8e8] flex items-center justify-center mb-5">
+                  <step.icon className="w-5 h-5 text-white" />
+                </div>
+                <p className="text-[32px] font-extrabold text-[#e8f0f8] mb-2">{step.num}</p>
+                <h3 className="font-bold text-[#0a1628] text-[16px] mb-2">{step.title}</h3>
+                <p className="text-[14px] text-[#5a7a9e] leading-relaxed">{step.desc}</p>
+              </motion.div>
             ))}
           </motion.div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section id="faq" className="py-20 px-6">
-        <div className="max-w-2xl mx-auto">
-          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{once:true}} className="text-center mb-12 space-y-3">
-            <motion.p variants={fadeUp} className="text-brand-500 font-semibold text-sm uppercase tracking-widest">FAQ</motion.p>
-            <motion.h2 variants={fadeUp} className="text-4xl font-black">Common questions</motion.h2>
+      {/* ── COMMUNITY CTA ── */}
+      <section className="community-section">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          className="max-w-[700px] mx-auto text-center relative z-[1]"
+        >
+          <h2 className="text-[36px] md:text-[42px] font-extrabold text-white leading-tight tracking-tight">
+            Learn from the Best in Our<br />Educator Community
+          </h2>
+          <p className="text-white/80 text-[17px] mt-4 mb-8 leading-relaxed">
+            Join thousands of educators sharing best practices, exam templates, and teaching strategies. Get help from our AI experts.
+          </p>
+          <Link to="/register" className="landing-btn-primary !bg-white !text-[#0f7b6c] !shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
+            Join Community <ArrowRight className="w-4 h-4" />
+          </Link>
+        </motion.div>
+      </section>
+
+      {/* ── TESTIMONIALS ── */}
+      <section id="testimonials" className="py-24 px-6">
+        <div className="max-w-[1140px] mx-auto">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
+            <p className="text-[#2d7dd2] font-semibold text-[13px] uppercase tracking-widest mb-3">Customer Testimonials</p>
+            <h2 className="text-[40px] font-extrabold text-[#0a1628] tracking-tight">Real Results. Real Educators.</h2>
           </motion.div>
-          <div className="card p-6 divide-y divide-brand-100">
-            {FAQS.map(faq => <FAQItem key={faq.q} q={faq.q} a={faq.a}/>)}
+          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true }} className="grid md:grid-cols-3 gap-6">
+            {TESTIMONIALS.map(t => (
+              <motion.div key={t.name} variants={fadeUp} className="testimonial-card">
+                <div className="testimonial-stats">
+                  {t.stats.map(s => (
+                    <div key={s.l} className="testimonial-stat">
+                      <div className="value">{s.v}</div>
+                      <div className="label">{s.l}</div>
+                    </div>
+                  ))}
+                </div>
+                <p className="testimonial-quote">"{t.quote}"</p>
+                <div className="testimonial-author">
+                  <div className="testimonial-avatar">{t.avatar}</div>
+                  <div>
+                    <div className="testimonial-name">{t.name}</div>
+                    <div className="testimonial-role">{t.role}</div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── FAQ ── */}
+      <section id="faq" className="py-24 px-6 bg-[#f7fafd]">
+        <div className="max-w-[680px] mx-auto">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
+            <p className="text-[#2d7dd2] font-semibold text-[13px] uppercase tracking-widest mb-3">FAQ</p>
+            <h2 className="text-[36px] font-extrabold text-[#0a1628] tracking-tight">Common Questions</h2>
+          </motion.div>
+          <div className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm">
+            {[
+              { q: 'How does AI grading work?', a: 'Students\' answer sheets are uploaded as images. Our OCR engine extracts the text, then our AI compares each answer against the marking scheme to award scores with detailed feedback.' },
+              { q: 'What features are included?', a: 'Paper generation, OCR grading, RAG AI assistant, schedule & calendar management, attendance tracking, assignment collection via email with auto-grading, analytics dashboard, and class management.' },
+              { q: 'What file formats are supported?', a: 'We support PDF, DOCX, and images (PNG, JPG) for documents and answer sheets.' },
+              { q: 'Is my data secure?', a: 'All data is encrypted at rest and in transit. We never use your content to train AI models. You own your data.' },
+              { q: 'How does assignment collection work?', a: 'Students submit assignments via email to a designated address. The system automatically collects, processes, and grades them using AI, presenting results in your dashboard.' },
+              { q: 'Can I try it for free?', a: 'Yes! Our Free plan includes core features with no credit card required. Upgrade anytime for unlimited access.' },
+            ].map(faq => <FAQItem key={faq.q} q={faq.q} a={faq.a} />)}
           </div>
         </div>
       </section>
 
-      {/* CTA BANNER */}
-      <section className="py-20 px-6 bg-gradient-to-br from-[#1C0A00] via-brand-950 to-[#2d0e00]">
+      {/* ── BOTTOM CTA ── */}
+      <section className="bottom-cta">
         <motion.div
-          initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}}
-          className="max-w-2xl mx-auto text-center space-y-6"
+          initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          className="max-w-[700px] mx-auto text-center relative z-[1]"
         >
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center mx-auto shadow-brand-lg">
-            <Award className="w-7 h-7 text-white" />
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#56a8e8] to-[#2d7dd2] flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <GraduationCap className="w-8 h-8 text-white" />
           </div>
-          <h2 className="text-4xl font-black text-white">Ready to transform<br/>your classroom?</h2>
-          <p className="text-brand-300">Join thousands of teachers who save hours every week with EduMaster.</p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link to="/register" className="btn-primary px-8 py-3 text-base flex items-center gap-2">
-              Get Started Free <ArrowRight className="w-4 h-4"/>
+          <h2 className="text-[36px] md:text-[44px] font-extrabold text-white leading-tight tracking-tight">
+            Start Building Your<br />AI Teaching Toolkit
+          </h2>
+          <p className="text-white/60 text-[17px] mt-4 mb-8">
+            Stop spending hours on manual grading and paper creation. Join thousands of educators who've made the switch to EduMaster.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link to="/register" className="landing-btn-primary !bg-white !text-[#1a4b8c]">
+              Get Started <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link to="/login" className="text-brand-300 hover:text-white text-sm font-medium transition-colors">
-              Already have an account →
+            <Link to="/login" className="landing-btn-secondary !bg-transparent !text-white !border-white/20 hover:!bg-white/10">
+              See pricing
             </Link>
           </div>
-          <p className="text-xs text-brand-500">No credit card · 2-minute setup · Cancel anytime</p>
+          <p className="text-white/40 text-[13px] mt-6">No credit card required.</p>
         </motion.div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="bg-[#1C0A00] border-t border-white/10 py-10 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center">
-              <BookOpen className="w-3.5 h-3.5 text-white" />
+      {/* ── FOOTER ── */}
+      <footer className="landing-footer">
+        <div className="footer-grid">
+          <div className="footer-brand">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#2d7dd2] to-[#56a8e8] flex items-center justify-center">
+                <BookOpen className="w-[18px] h-[18px] text-white" />
+              </div>
+              <span className="font-extrabold text-[18px] text-white">EduMaster</span>
             </div>
-            <span className="font-black text-white">EduMaster</span>
+            <p className="text-[14px] text-white/50 leading-relaxed max-w-[280px]">
+              AI-powered teaching assistant platform. Generate papers, grade instantly, track everything.
+            </p>
           </div>
-          <p className="text-xs text-brand-400">© 2026 EduMaster. Built with ❤️ for educators.</p>
-          <div className="flex items-center gap-4 text-xs text-brand-400">
-            <a href="#" className="hover:text-brand-300 transition-colors">Privacy</a>
-            <a href="#" className="hover:text-brand-300 transition-colors">Terms</a>
-            <a href="#" className="hover:text-brand-300 transition-colors">Contact</a>
+          <div>
+            <div className="footer-col-title">Features</div>
+            {['Paper Generator', 'OCR Grading', 'AI Assistant', 'Scheduling', 'Attendance', 'Assignments'].map(l => (
+              <Link key={l} to="/register" className="footer-link">{l}</Link>
+            ))}
           </div>
+          <div>
+            <div className="footer-col-title">Resources</div>
+            {['Documentation', 'API', 'Help Center', 'Community', 'Blog', 'Changelog'].map(l => (
+              <a key={l} href="#" className="footer-link">{l}</a>
+            ))}
+          </div>
+          <div>
+            <div className="footer-col-title">Company</div>
+            {['About', 'Careers', 'Privacy', 'Terms', 'Contact', 'Security'].map(l => (
+              <a key={l} href="#" className="footer-link">{l}</a>
+            ))}
+          </div>
+        </div>
+        <div className="footer-bottom">
+          <span>© 2026 EduMaster. All rights reserved.</span>
+          <span>Built with ❤️ for educators</span>
         </div>
       </footer>
     </div>

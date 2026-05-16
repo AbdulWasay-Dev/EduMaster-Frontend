@@ -1,0 +1,591 @@
+/* ═══════════════════════════════════════════
+   LANDING PAGE — Instantly.ai-inspired design
+   ═══════════════════════════════════════════ */
+
+/* Hero wrapper — white background with padding around the hero card */
+.hero-wrapper {
+  background: white;
+  padding: 0 16px 16px;
+  height: calc(100vh - 68px);
+  min-height: 550px;
+  margin-top: 68px;
+}
+
+/* Hero — rounded card inside the wrapper */
+.landing-hero {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(150deg, #1565d8 0%, #2979e6 20%, #4d94f0 40%, #6dacf5 55%, #8fc0f8 70%, #b4d5fb 85%, #d0e4fc 100%);
+  border-radius: 24px;
+}
+
+/* Fluid canvas — covers entire hero card */
+.landing-hero canvas.fluid-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 24px;
+}
+
+/* Hero inner content — vertically centered */
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  width: 100%;
+  padding: 40px 24px 0;
+}
+
+/* Trust strip at bottom of hero */
+.hero-trust {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 24px 24px 32px;
+}
+
+.hero-trust-label {
+  text-align: center;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.hero-trust-items {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.hero-trust-item {
+  text-align: center;
+}
+
+.hero-trust-item .val {
+  font-size: 22px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: -0.02em;
+}
+
+.hero-trust-item .lbl {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+/* Nav */
+.landing-nav {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.landing-nav.scrolled {
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Gradient text — blue version */
+.landing-gradient-text {
+  background: linear-gradient(135deg, #2d7dd2 0%, #56a8e8 50%, #7ec8f8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Primary CTA button */
+.landing-btn-primary {
+  background: linear-gradient(135deg, #2d7dd2 0%, #1a6bc4 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 14px 32px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(45, 125, 210, 0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.landing-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(45, 125, 210, 0.5);
+  background: linear-gradient(135deg, #3589de 0%, #2070cc 100%);
+}
+
+.landing-btn-secondary {
+  background: white;
+  color: #1a4b8c;
+  border: 1.5px solid rgba(45, 125, 210, 0.2);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 14px 32px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.landing-btn-secondary:hover {
+  border-color: rgba(45, 125, 210, 0.4);
+  background: #f0f7ff;
+  transform: translateY(-1px);
+}
+
+/* Hero screenshot container — floating with glow */
+.hero-screenshot {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 25px 80px -12px rgba(0, 0, 0, 0.4),
+              0 0 0 1px rgba(255, 255, 255, 0.1);
+  position: relative;
+  z-index: 2;
+}
+
+.hero-screenshot img {
+  width: 100%;
+  display: block;
+}
+
+/* Trust logos strip */
+.trust-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+  flex-wrap: wrap;
+  padding: 16px 0;
+}
+
+.trust-item {
+  text-align: center;
+}
+
+.trust-item .value {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f2847;
+  letter-spacing: -0.02em;
+}
+
+.trust-item .label {
+  font-size: 13px;
+  color: #5a7a9e;
+  margin-top: 2px;
+}
+
+/* Feature section — Instantly-style alternating layout */
+.feature-section {
+  padding: 60px 0;
+  position: relative;
+  background: white;
+}
+
+.feature-row {
+  display: flex;
+  align-items: center;
+  gap: 80px;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.feature-row.reversed {
+  flex-direction: row-reverse;
+}
+
+.feature-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.feature-badge {
+  display: none; /* Instantly doesn't use badges */
+}
+
+.feature-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  margin-bottom: 12px;
+}
+
+.feature-desc {
+  font-size: 16px;
+  line-height: 1.65;
+  color: #64748b;
+  margin-bottom: 28px;
+}
+
+/* Black pill CTA button — matches Instantly */
+.feature-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #0f172a;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px 24px;
+  border-radius: 100px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.feature-cta:hover {
+  background: #1e293b;
+  transform: translateY(-1px);
+}
+
+/* Feature image container — consistent width, auto height */
+.feature-image {
+  flex: none;
+  width: 480px;
+  min-width: 0;
+  position: relative;
+}
+
+/* Vibrant colored background — acts as the padded card */
+.feature-image-bg {
+  border-radius: 24px;
+  padding: 40px 36px 36px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Diagonal light sheen across the bg */
+.feature-image-bg::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    135deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.08) 45%,
+    rgba(255, 255, 255, 0.12) 50%,
+    rgba(255, 255, 255, 0.08) 55%,
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+/* Each color — rich, vibrant, with depth */
+.feature-image-bg.blue {
+  background: linear-gradient(160deg, #1e3a8a 0%, #2563eb 35%, #3b82f6 55%, #93c5fd 80%, #bfdbfe 100%);
+}
+
+.feature-image-bg.teal {
+  background: linear-gradient(160deg, #065f56 0%, #0d9488 35%, #14b8a6 55%, #5eead4 80%, #d4b896 100%);
+}
+
+.feature-image-bg.purple {
+  background: linear-gradient(160deg, #5b21b6 0%, #7c3aed 35%, #a78bfa 55%, #c4b5fd 80%, #8b5cf6 100%);
+}
+
+.feature-image-bg.amber {
+  background: linear-gradient(160deg, #1e3a8a 0%, #2563eb 35%, #60a5fa 55%, #bfdbfe 80%, #e0b896 100%);
+}
+
+.feature-image-bg.rose {
+  background: linear-gradient(160deg, #155e75 0%, #0891b2 35%, #22d3ee 55%, #67e8f9 80%, #cffafe 100%);
+}
+
+.feature-image-bg.sky {
+  background: linear-gradient(160deg, #075985 0%, #0284c7 35%, #38bdf8 55%, #7dd3fc 80%, #e0f2fe 100%);
+}
+
+/* Glassmorphism backing layer — behind the white card for depth */
+.feature-glass-layer {
+  position: relative;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 20px 18px 18px;
+}
+
+/* White screenshot card — sits inside glass layer, full image visible */
+.feature-image-wrapper {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+.feature-image-wrapper img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Community / CTA section */
+.community-section {
+  background: linear-gradient(135deg, #0f7b6c 0%, #0d9488 30%, #14b8a6 70%, #2dd4bf 100%);
+  padding: 80px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.community-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at 70% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* Testimonials */
+.testimonial-card {
+  background: white;
+  border-radius: 20px;
+  padding: 36px;
+  box-shadow: 0 4px 24px rgba(10, 22, 40, 0.06);
+  border: 1px solid rgba(10, 22, 40, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(10, 22, 40, 0.1);
+}
+
+.testimonial-stats {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.testimonial-stat .value {
+  font-size: 24px;
+  font-weight: 800;
+  color: #3b82f6;
+}
+
+.testimonial-stat .label {
+  font-size: 11px;
+  color: #5a7a9e;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.testimonial-quote {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #3d5a80;
+  font-style: italic;
+  margin-bottom: 20px;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.testimonial-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2d7dd2, #56a8e8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.testimonial-name {
+  font-weight: 700;
+  font-size: 14px;
+  color: #0a1628;
+}
+
+.testimonial-role {
+  font-size: 12px;
+  color: #5a7a9e;
+}
+
+/* Bottom CTA */
+.bottom-cta {
+  background: linear-gradient(150deg, #1a6de3 0%, #3b82f6 30%, #5b9bf5 60%, #94b8f5 100%);
+  padding: 100px 24px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  margin: 0 16px 16px;
+}
+
+.bottom-cta::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -25%;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Footer */
+.landing-footer {
+  background: #0f172a;
+  color: white;
+  padding: 60px 24px 32px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 40px;
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-col-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 12px;
+}
+
+.footer-link {
+  display: block;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  padding: 4px 0;
+  transition: color 0.2s;
+}
+
+.footer-link:hover {
+  color: white;
+}
+
+.footer-bottom {
+  max-width: 1140px;
+  margin: 40px auto 0;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .feature-row,
+  .feature-row.reversed {
+    flex-direction: column;
+    gap: 40px;
+    padding: 0 20px;
+  }
+
+  .feature-title {
+    font-size: 26px;
+  }
+
+  .feature-image {
+    width: 100%;
+  }
+
+  .feature-image-bg {
+    padding: 28px 24px 24px;
+  }
+
+  .feature-glass-layer {
+    padding: 16px 14px 14px;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  .trust-strip {
+    gap: 24px;
+  }
+
+  .testimonial-stats {
+    gap: 16px;
+  }
+}
+
+/* Floating animation for hero images */
+@keyframes heroFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+.hero-float {
+  animation: heroFloat 6s ease-in-out infinite;
+}
+
+/* Subtle shine animation */
+@keyframes shine {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.shine-effect {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shine 3s ease-in-out infinite;
+}
