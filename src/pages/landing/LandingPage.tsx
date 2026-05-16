@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
@@ -6,6 +6,7 @@ import {
   Users, FileText, Sparkles, ChevronDown, BarChart3, Mail,
   GraduationCap, Clock, Shield, Zap,
 } from 'lucide-react'
+import GenerativeMountainScene from '@/components/ui/mountain-scene'
 import './landing.css'
 
 const fadeUp = { hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.6 } } }
@@ -89,95 +90,11 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const mouseRef = useRef({ x: 0.5, y: 0.5 })
-  // Fluid color fields — visible deep blue tones that react to mouse
-  const fieldsRef = useRef([
-    { x: 0.2, y: 0.3, baseX: 0.2, baseY: 0.3, size: 0.7, r: 10, g: 60, b: 180, a: 0.22 },
-    { x: 0.75, y: 0.2, baseX: 0.75, baseY: 0.2, size: 0.6, r: 80, g: 140, b: 240, a: 0.18 },
-    { x: 0.4, y: 0.7, baseX: 0.4, baseY: 0.7, size: 0.65, r: 20, g: 80, b: 200, a: 0.2 },
-    { x: 0.1, y: 0.5, baseX: 0.1, baseY: 0.5, size: 0.55, r: 60, g: 120, b: 220, a: 0.16 },
-    { x: 0.85, y: 0.65, baseX: 0.85, baseY: 0.65, size: 0.5, r: 100, g: 160, b: 250, a: 0.15 },
-    { x: 0.5, y: 0.4, baseX: 0.5, baseY: 0.4, size: 0.45, r: 255, g: 255, b: 255, a: 0.08 },
-  ])
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', handler, { passive: true })
     return () => window.removeEventListener('scroll', handler)
-  }, [])
-
-  // Fluid canvas — visible color shifts reacting to mouse
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    let raf: number
-    let dpr = window.devicePixelRatio || 1
-    const resize = () => {
-      dpr = window.devicePixelRatio || 1
-      canvas.width = canvas.offsetWidth * dpr
-      canvas.height = canvas.offsetHeight * dpr
-    }
-    resize()
-    window.addEventListener('resize', resize)
-
-    const draw = () => {
-      const w = canvas.offsetWidth
-      const h = canvas.offsetHeight
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-      ctx.clearRect(0, 0, w, h)
-
-      const mx = mouseRef.current.x
-      const my = mouseRef.current.y
-      const fields = fieldsRef.current
-      const t = Date.now() * 0.001
-
-      fields.forEach((f, i) => {
-        // Organic drift
-        const driftX = Math.sin(t * 0.2 + i * 1.8) * 0.06
-        const driftY = Math.cos(t * 0.15 + i * 2.3) * 0.05
-
-        // Visible mouse influence — fields follow cursor noticeably
-        const nudgeX = (mx - f.baseX) * 0.15
-        const nudgeY = (my - f.baseY) * 0.15
-
-        // Smooth interpolation
-        const targetX = f.baseX + driftX + nudgeX
-        const targetY = f.baseY + driftY + nudgeY
-        f.x += (targetX - f.x) * 0.03
-        f.y += (targetY - f.y) * 0.03
-
-        const cx = f.x * w
-        const cy = f.y * h
-        const r = f.size * Math.max(w, h)
-
-        const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r)
-        grad.addColorStop(0, `rgba(${f.r},${f.g},${f.b},${f.a})`)
-        grad.addColorStop(0.5, `rgba(${f.r},${f.g},${f.b},${f.a * 0.4})`)
-        grad.addColorStop(1, 'rgba(0,0,0,0)')
-        ctx.fillStyle = grad
-        ctx.fillRect(0, 0, w, h)
-      })
-
-      raf = requestAnimationFrame(draw)
-    }
-    draw()
-
-    return () => {
-      cancelAnimationFrame(raf)
-      window.removeEventListener('resize', resize)
-    }
-  }, [])
-
-  const handleHeroMouseMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    mouseRef.current = {
-      x: (e.clientX - rect.left) / rect.width,
-      y: (e.clientY - rect.top) / rect.height,
-    }
   }, [])
 
   return (
@@ -186,7 +103,7 @@ export default function LandingPage() {
       <nav className={`landing-nav fixed top-0 left-0 right-0 z-50 ${scrolled ? 'scrolled' : ''}`}>
         <div className="max-w-[1200px] mx-auto px-6 h-[68px] flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#2d7dd2] to-[#56a8e8] flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#0281FF' }}>
               <BookOpen className="w-[18px] h-[18px] text-white" />
             </div>
             <span className="font-extrabold text-[20px] text-[#0a1628]">EduMaster</span>
@@ -208,10 +125,12 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* ── HERO — padded rounded card with interactive fluid ── */}
+      {/* ── HERO — padded rounded card with 3D mountain scene ── */}
       <div className="hero-wrapper">
-      <section className="landing-hero" onMouseMove={handleHeroMouseMove}>
-        <canvas ref={canvasRef} className="fluid-canvas" />
+      <section className="landing-hero">
+        <Suspense fallback={null}>
+          <GenerativeMountainScene />
+        </Suspense>
 
         <div className="hero-inner">
           <motion.div variants={stagger} initial="hidden" animate="show" className="max-w-[800px] mx-auto text-center space-y-6">
@@ -327,22 +246,24 @@ export default function LandingPage() {
       </section>
 
       {/* ── COMMUNITY CTA ── */}
+      <div style={{ padding: '0 16px' }}>
       <section className="community-section">
         <motion.div
           initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          className="max-w-[700px] mx-auto text-center relative z-[1]"
+          className="max-w-[600px] mx-auto text-center relative z-[1]"
         >
-          <h2 className="text-[36px] md:text-[42px] font-extrabold text-white leading-tight tracking-tight">
+          <h2 className="text-[32px] md:text-[38px] font-extrabold text-white leading-tight tracking-tight">
             Learn from the Best in Our<br />Educator Community
           </h2>
-          <p className="text-white/80 text-[17px] mt-4 mb-8 leading-relaxed">
+          <p className="text-white/80 text-[16px] mt-4 mb-8 leading-relaxed">
             Join thousands of educators sharing best practices, exam templates, and teaching strategies. Get help from our AI experts.
           </p>
-          <Link to="/register" className="landing-btn-primary !bg-white !text-[#0f7b6c] !shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
+          <Link to="/register" style={{ background: 'white', color: '#0f172a', border: 'none', borderRadius: '100px', fontWeight: 600, fontSize: '14px', padding: '12px 28px', display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
             Join Community <ArrowRight className="w-4 h-4" />
           </Link>
         </motion.div>
       </section>
+      </div>
 
       {/* ── TESTIMONIALS ── */}
       <section id="testimonials" className="py-24 px-6">
@@ -402,7 +323,7 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
           className="max-w-[700px] mx-auto text-center relative z-[1]"
         >
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#56a8e8] to-[#2d7dd2] flex items-center justify-center mx-auto mb-6 shadow-lg">
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg" style={{ background: '#0281FF' }}>
             <GraduationCap className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-[36px] md:text-[44px] font-extrabold text-white leading-tight tracking-tight">
@@ -412,10 +333,10 @@ export default function LandingPage() {
             Stop spending hours on manual grading and paper creation. Join thousands of educators who've made the switch to EduMaster.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/register" className="landing-btn-primary !bg-white !text-[#1a4b8c]">
+            <Link to="/register" style={{ background: 'white', color: '#0f172a', border: 'none', borderRadius: '100px', fontWeight: 600, fontSize: '14px', padding: '14px 32px', display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
               Get Started <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link to="/login" className="landing-btn-secondary !bg-transparent !text-white !border-white/20 hover:!bg-white/10">
+            <Link to="/login" style={{ background: 'transparent', color: 'white', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '100px', fontWeight: 600, fontSize: '14px', padding: '14px 32px', display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
               See pricing
             </Link>
           </div>
