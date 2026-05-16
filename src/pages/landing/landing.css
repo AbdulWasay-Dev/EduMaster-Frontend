@@ -2,6 +2,67 @@
    LANDING PAGE — Instantly.ai-inspired design
    ═══════════════════════════════════════════ */
 
+/* ── Logo Carousel — seamless infinite loop ── */
+.logo-carousel-mask {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Fade edges */
+.logo-carousel-mask::before,
+.logo-carousel-mask::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  z-index: 2;
+  pointer-events: none;
+}
+.logo-carousel-mask::before {
+  left: 0;
+  background: linear-gradient(to right, white, transparent);
+}
+.logo-carousel-mask::after {
+  right: 0;
+  background: linear-gradient(to left, white, transparent);
+}
+
+/* The track holds 2 copies of logos side by side */
+.logo-carousel-track {
+  display: flex;
+  width: max-content;
+  animation: carouselLoop 25s linear infinite;
+}
+
+/* Start off-screen left, slide into view to the right */
+@keyframes carouselLoop {
+  0%   { transform: translateX(-50%); }
+  100% { transform: translateX(0%); }
+}
+
+.logo-carousel-item {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 36px;
+}
+
+.logo-carousel-img {
+  width: auto;
+  object-fit: contain;
+  opacity: 0.4;
+  filter: grayscale(100%);
+  transition: all 0.3s;
+}
+
+.logo-carousel-img:hover {
+  opacity: 0.8;
+  filter: grayscale(0%);
+}
+
 /* Hero wrapper — white background with padding around the hero card */
 .hero-wrapper {
   background: white;

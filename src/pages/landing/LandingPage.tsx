@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import GenerativeMountainScene from '@/components/ui/mountain-scene'
 import AnimatedTestimonials from '@/components/ui/testimonial'
+import { LogoCarousel } from '@/components/ui/logo-carousel'
 import './landing.css'
 
 const fadeUp = { hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.6 } } }
@@ -190,6 +191,27 @@ export default function LandingPage() {
       </section>
       </div>
 
+      {/* ── LOGO CAROUSEL ── */}
+      <LogoCarousel
+        title="Trusted by educators worldwide"
+        logos={[
+          'https://cdn.worldvectorlogo.com/logos/microsoft-5.svg',
+          'https://cdn.worldvectorlogo.com/logos/openai-2.svg',
+          'https://cdn.worldvectorlogo.com/logos/notion-2.svg',
+          'https://cdn.worldvectorlogo.com/logos/slack-new-logo.svg',
+          'https://cdn.worldvectorlogo.com/logos/zoom-app.svg',
+          'https://cdn.worldvectorlogo.com/logos/github-icon-1.svg',
+          'https://cdn.worldvectorlogo.com/logos/stripe-4.svg',
+          'https://cdn.worldvectorlogo.com/logos/aws-2.svg',
+          'https://cdn.worldvectorlogo.com/logos/python-5.svg',
+          'https://cdn.worldvectorlogo.com/logos/react-2.svg',
+          'https://cdn.worldvectorlogo.com/logos/typescript.svg',
+          'https://cdn.worldvectorlogo.com/logos/vercel.svg',
+        ]}
+        speed={30}
+        logoHeight="26px"
+      />
+
       {/* ── FEATURES (alternating, Instantly-style) ── */}
       <div id="features">
         <motion.div
@@ -249,7 +271,7 @@ export default function LandingPage() {
               { icon: BarChart3, num: '04', title: 'Track & Analyze', desc: 'Monitor class performance, attendance trends, and student progress.' },
             ].map(step => (
               <motion.div key={step.num} variants={fadeUp} className="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#2d7dd2] to-[#56a8e8] flex items-center justify-center mb-5">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ background: '#0281FF' }}>
                   <step.icon className="w-5 h-5 text-white" />
                 </div>
                 <p className="text-[32px] font-extrabold text-[#e8f0f8] mb-2">{step.num}</p>
@@ -325,7 +347,7 @@ export default function LandingPage() {
         <div className="footer-grid">
           <div className="footer-brand">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#2d7dd2] to-[#56a8e8] flex items-center justify-center">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#0281FF' }}>
                 <BookOpen className="w-[18px] h-[18px] text-white" />
               </div>
               <span className="font-extrabold text-[18px] text-white">EduMaster</span>
