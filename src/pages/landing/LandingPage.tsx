@@ -7,6 +7,7 @@ import {
   GraduationCap, Clock, Shield, Zap,
 } from 'lucide-react'
 import GenerativeMountainScene from '@/components/ui/mountain-scene'
+import AnimatedTestimonials from '@/components/ui/testimonial'
 import './landing.css'
 
 const fadeUp = { hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.6 } } }
@@ -59,19 +60,34 @@ const FEATURES = [
 
 const TESTIMONIALS = [
   {
-    name: 'Sarah K.', role: 'Biology Teacher, Springfield HS', avatar: 'S',
     quote: 'EduMaster cut my grading time by 80%. What used to take an entire Sunday now takes 20 minutes. The OCR grading is incredibly accurate.',
-    stats: [{ v: '80%', l: 'Time saved' }, { v: '5x', l: 'Faster grading' }, { v: '98%', l: 'Accuracy' }],
+    name: 'Sarah Kennedy',
+    designation: 'Biology Teacher, Springfield HS',
+    src: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=500&auto=format&fit=crop',
   },
   {
-    name: 'James R.', role: 'Math Department Head', avatar: 'J',
     quote: 'The AI paper generator is incredible. I create differentiated exams for different ability groups instantly. The scheduling system keeps my entire department organized.',
-    stats: [{ v: '3x', l: 'More papers' }, { v: '10+', l: 'Classes managed' }, { v: '100%', l: 'On schedule' }],
+    name: 'James Rodriguez',
+    designation: 'Math Department Head',
+    src: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=500&auto=format&fit=crop',
   },
   {
-    name: 'Maria L.', role: 'Chemistry Teacher', avatar: 'M',
     quote: 'The RAG assistant answers questions directly from my textbooks. Combined with auto-grading assignments, I\'ve reclaimed hours every single week.',
-    stats: [{ v: '24/7', l: 'AI available' }, { v: '50+', l: 'Docs indexed' }, { v: '4.9★', l: 'Rating' }],
+    name: 'Maria Lopez',
+    designation: 'Chemistry Teacher',
+    src: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=500&auto=format&fit=crop',
+  },
+  {
+    quote: 'The attendance tracking with heatmaps changed how I identify struggling students. I can intervene weeks earlier than before. Truly a game-changer.',
+    name: 'David Chen',
+    designation: 'English Teacher, Lincoln Academy',
+    src: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=500&auto=format&fit=crop',
+  },
+  {
+    quote: 'Assignment auto-collection via email saved my sanity. Students just email their work and it\'s graded by the time I check. The ROI was immediate.',
+    name: 'Fatima Al-Rashid',
+    designation: 'Physics Teacher, Central High',
+    src: 'https://images.unsplash.com/photo-1557053910-d9eadeed1c58?q=80&w=500&auto=format&fit=crop',
   },
 ]
 
@@ -245,55 +261,15 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── COMMUNITY CTA ── */}
-      <div style={{ padding: '0 16px' }}>
-      <section className="community-section">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          className="max-w-[600px] mx-auto text-center relative z-[1]"
-        >
-          <h2 className="text-[32px] md:text-[38px] font-extrabold text-white leading-tight tracking-tight">
-            Learn from the Best in Our<br />Educator Community
-          </h2>
-          <p className="text-white/80 text-[16px] mt-4 mb-8 leading-relaxed">
-            Join thousands of educators sharing best practices, exam templates, and teaching strategies. Get help from our AI experts.
-          </p>
-          <Link to="/register" style={{ background: 'white', color: '#0f172a', border: 'none', borderRadius: '100px', fontWeight: 600, fontSize: '14px', padding: '12px 28px', display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
-            Join Community <ArrowRight className="w-4 h-4" />
-          </Link>
-        </motion.div>
-      </section>
-      </div>
 
       {/* ── TESTIMONIALS ── */}
-      <section id="testimonials" className="py-24 px-6">
+      <section id="testimonials" className="py-16 px-6">
         <div className="max-w-[1140px] mx-auto">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
-            <p className="text-[#2d7dd2] font-semibold text-[13px] uppercase tracking-widest mb-3">Customer Testimonials</p>
-            <h2 className="text-[40px] font-extrabold text-[#0a1628] tracking-tight">Real Results. Real Educators.</h2>
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-4">
+            <p className="text-[#0281FF] font-semibold text-[13px] uppercase tracking-widest mb-3">Customer Testimonials</p>
+            <h2 className="text-[40px] font-extrabold text-[#0f172a] tracking-tight">Real Results. Real Educators.</h2>
           </motion.div>
-          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true }} className="grid md:grid-cols-3 gap-6">
-            {TESTIMONIALS.map(t => (
-              <motion.div key={t.name} variants={fadeUp} className="testimonial-card">
-                <div className="testimonial-stats">
-                  {t.stats.map(s => (
-                    <div key={s.l} className="testimonial-stat">
-                      <div className="value">{s.v}</div>
-                      <div className="label">{s.l}</div>
-                    </div>
-                  ))}
-                </div>
-                <p className="testimonial-quote">"{t.quote}"</p>
-                <div className="testimonial-author">
-                  <div className="testimonial-avatar">{t.avatar}</div>
-                  <div>
-                    <div className="testimonial-name">{t.name}</div>
-                    <div className="testimonial-role">{t.role}</div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+          <AnimatedTestimonials testimonials={TESTIMONIALS} autoplay />
         </div>
       </section>
 
