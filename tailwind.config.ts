@@ -29,11 +29,11 @@ export default {
           600: '#d97706',
         },
         sidebar: {
-          bg:     '#0f172a',
-          border: '#1e293b',
-          active: '#0281FF',
-          text:   '#94a3b8',
-          icon:   '#64748b',
+          bg:     '#0281FF',
+          border: 'rgba(255,255,255,0.15)',
+          active: '#ffffff',
+          text:   'rgba(255,255,255,0.7)',
+          icon:   'rgba(255,255,255,0.5)',
         },
       },
       fontFamily: {

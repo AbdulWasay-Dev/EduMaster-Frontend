@@ -44,19 +44,20 @@ export default function Sidebar() {
         'hidden lg:flex flex-col h-screen shrink-0 relative z-30 transition-all duration-300',
         collapsed ? 'w-[60px]' : 'w-[260px]',
       )}
-      style={{ background: '#0f172a', borderRight: '1px solid #1e293b' }}
+      style={{
+        background: 'linear-gradient(180deg, #0281FF 0%, #0270e0 100%)',
+        borderRight: '1px solid rgba(255,255,255,0.1)',
+      }}
     >
       {/* Logo */}
-      <div className={cn(
-        'flex items-center gap-3 px-4 py-5',
-        collapsed && 'justify-center px-2',
-      )}
-        style={{ borderBottom: '1px solid #1e293b' }}
+      <div
+        className={cn(
+          'flex items-center gap-3 px-4 py-5',
+          collapsed && 'justify-center px-2',
+        )}
+        style={{ borderBottom: '1px solid rgba(255,255,255,0.15)' }}
       >
-        <div
-          className="w-8 h-8 rounded-lg shrink-0 flex items-center justify-center"
-          style={{ background: '#0281FF' }}
-        >
+        <div className="w-8 h-8 rounded-lg shrink-0 flex items-center justify-center bg-white/20">
           <BookOpenCheck className="w-4 h-4 text-white" />
         </div>
         {!collapsed && (
@@ -76,19 +77,18 @@ export default function Sidebar() {
               cn(
                 'flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium transition-all duration-150 group',
                 isActive
-                  ? 'text-white'
-                  : 'text-[#94a3b8] hover:text-white hover:bg-white/5',
+                  ? 'bg-white text-[#0281FF] shadow-sm'
+                  : 'text-white/70 hover:text-white hover:bg-white/10',
                 collapsed && 'justify-center px-2',
               )
             }
-            style={({ isActive }) => isActive ? { background: '#0281FF' } : {}}
             title={collapsed ? label : undefined}
           >
             {({ isActive }) => (
               <>
                 <Icon className={cn(
                   'w-4 h-4 shrink-0',
-                  isActive ? 'text-white' : 'text-[#64748b] group-hover:text-white',
+                  isActive ? 'text-[#0281FF]' : 'text-white/50 group-hover:text-white',
                 )} />
                 {!collapsed && <span>{label}</span>}
               </>
@@ -101,23 +101,20 @@ export default function Sidebar() {
       {user && (
         <div
           className={cn('p-3', collapsed ? 'flex justify-center' : '')}
-          style={{ borderTop: '1px solid #1e293b' }}
+          style={{ borderTop: '1px solid rgba(255,255,255,0.15)' }}
         >
           {!collapsed ? (
             <div className="flex items-center gap-3">
-              <div
-                className="w-8 h-8 rounded-full text-white text-xs font-bold shrink-0 flex items-center justify-center"
-                style={{ background: '#0281FF' }}
-              >
+              <div className="w-8 h-8 rounded-full bg-white/20 text-white text-xs font-bold shrink-0 flex items-center justify-center">
                 {getInitials(user.name)}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-white text-[13px] font-medium truncate">{user.name}</p>
-                <p className="text-[#64748b] text-[11px] truncate capitalize">{user.role}</p>
+                <p className="text-white/50 text-[11px] truncate capitalize">{user.role}</p>
               </div>
               <button
                 onClick={handleLogout}
-                className="text-[#64748b] hover:text-red-400 transition-colors"
+                className="text-white/50 hover:text-white transition-colors"
                 title="Log out"
               >
                 <LogOut className="w-4 h-4" />
@@ -126,7 +123,7 @@ export default function Sidebar() {
           ) : (
             <button
               onClick={handleLogout}
-              className="text-[#64748b] hover:text-red-400 transition-colors"
+              className="text-white/50 hover:text-white transition-colors"
               title="Log out"
             >
               <LogOut className="w-4 h-4" />
@@ -138,8 +135,8 @@ export default function Sidebar() {
       {/* Collapse toggle */}
       <button
         onClick={toggleSidebar}
-        className="absolute -right-3 top-16 z-10 w-6 h-6 rounded-full flex items-center justify-center transition-colors"
-        style={{ background: '#0281FF', color: 'white' }}
+        className="absolute -right-3 top-16 z-10 w-6 h-6 rounded-full flex items-center justify-center transition-colors shadow-md"
+        style={{ background: 'white', color: '#0281FF' }}
         title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
       >
         {collapsed

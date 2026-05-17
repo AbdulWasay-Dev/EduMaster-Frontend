@@ -172,15 +172,16 @@ export default function DashboardPage() {
             <Link to={to}>
               <div
                 className="group relative overflow-hidden rounded-2xl p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer"
-                style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #0281FF 0%, #0270e0 100%)' }}
               >
-                <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full opacity-10" style={{ background: '#0281FF' }} />
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ background: 'rgba(2, 129, 255, 0.15)' }}>
-                  <Icon className="w-5 h-5 text-[#60a5fa]" />
+                <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-white/10" />
+                <div className="absolute bottom-0 left-0 w-16 h-16 rounded-full bg-white/5 -translate-x-4 translate-y-4" />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 bg-white/20">
+                  <Icon className="w-5 h-5 text-white" />
                 </div>
                 <p className="font-semibold text-[14px] text-white leading-tight">{label}</p>
-                <p className="text-[12px] text-white/50 mt-1">{desc}</p>
-                <ArrowRight className="w-4 h-4 text-white/30 mt-3 group-hover:text-white/60 group-hover:translate-x-1 transition-all" />
+                <p className="text-[12px] text-white/70 mt-1">{desc}</p>
+                <ArrowRight className="w-4 h-4 text-white/40 mt-3 group-hover:text-white group-hover:translate-x-1 transition-all" />
               </div>
             </Link>
           </motion.div>
