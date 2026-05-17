@@ -24,19 +24,23 @@ export default function StatCard({
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -2, boxShadow: '0 10px 40px -8px rgba(28,10,0,0.12)' } as any}
-      className={cn('card p-5 cursor-default', className)}
+      whileHover={{ y: -2 } as any}
+      className={cn(
+        'bg-white rounded-2xl border border-[#e2e8f0] p-5 transition-shadow hover:shadow-lg cursor-default',
+        className
+      )}
     >
       <div className="flex items-start justify-between mb-4">
-        <div>
-          <p className="text-xs font-semibold text-brand-700 uppercase tracking-wide">{title}</p>
-        </div>
-        <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-brand-100">
-          <Icon className="w-5 h-5 text-brand-600" />
+        <p className="text-[12px] font-semibold text-[#64748b] uppercase tracking-wider">{title}</p>
+        <div
+          className="w-10 h-10 rounded-xl flex items-center justify-center"
+          style={{ background: '#EFF6FF' }}
+        >
+          <Icon className="w-5 h-5" style={{ color: '#0281FF' }} />
         </div>
       </div>
       <div className="flex items-end gap-2">
-        <p className="text-3xl font-bold text-[#1C0A00]">
+        <p className="text-[28px] font-extrabold text-[#0f172a] tracking-tight">
           {prefix}
           <CountUp end={value} duration={1.2} separator="," />
           {suffix}
@@ -44,8 +48,8 @@ export default function StatCard({
       </div>
       {delta !== undefined && (
         <div className={cn(
-          'flex items-center gap-1 mt-2 text-xs font-semibold',
-          isPositive ? 'text-emerald-600' : 'text-accent-500',
+          'flex items-center gap-1 mt-2 text-[11px] font-semibold',
+          isPositive ? 'text-emerald-600' : 'text-red-500',
         )}>
           {isPositive
             ? <TrendingUp className="w-3 h-3" />
@@ -53,6 +57,9 @@ export default function StatCard({
           }
           <span>{isPositive ? '+' : ''}{delta} {deltaLabel ?? 'this month'}</span>
         </div>
+      )}
+      {deltaLabel && delta === undefined && (
+        <p className="text-[11px] text-[#94a3b8] mt-2">{deltaLabel}</p>
       )}
     </motion.div>
   )

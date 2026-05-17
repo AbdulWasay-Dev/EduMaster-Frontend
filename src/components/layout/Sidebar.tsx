@@ -2,7 +2,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, BookOpen, Users, FileText, ScrollText,
   CheckSquare, Bot, BarChart3, Bell, Settings, LogOut,
-  ChevronLeft, ChevronRight, Flame, Calendar, ClipboardCheck
+  ChevronLeft, ChevronRight, Calendar, ClipboardCheck, BookOpenCheck
 } from 'lucide-react'
 import { useUIStore } from '@/store/uiStore'
 import { useAuthStore } from '@/store/authStore'
@@ -41,21 +41,27 @@ export default function Sidebar() {
   return (
     <aside
       className={cn(
-        'hidden lg:flex flex-col h-screen bg-sidebar-bg border-r border-sidebar-border transition-all duration-300 shrink-0 relative z-30',
+        'hidden lg:flex flex-col h-screen shrink-0 relative z-30 transition-all duration-300',
         collapsed ? 'w-[60px]' : 'w-[260px]',
       )}
+      style={{ background: '#0f172a', borderRight: '1px solid #1e293b' }}
     >
       {/* Logo */}
       <div className={cn(
-        'flex items-center gap-3 px-4 py-5 border-b border-sidebar-border',
+        'flex items-center gap-3 px-4 py-5',
         collapsed && 'justify-center px-2',
-      )}>
-        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-brand-500 shadow-brand shrink-0">
-          <Flame className="w-4 h-4 text-white" />
+      )}
+        style={{ borderBottom: '1px solid #1e293b' }}
+      >
+        <div
+          className="w-8 h-8 rounded-lg shrink-0 flex items-center justify-center"
+          style={{ background: '#0281FF' }}
+        >
+          <BookOpenCheck className="w-4 h-4 text-white" />
         </div>
         {!collapsed && (
-          <span className="font-bold text-white text-lg tracking-tight">
-            Edu<span className="text-brand-400">Master</span>
+          <span className="font-extrabold text-white text-[17px] tracking-tight">
+            EduMaster
           </span>
         )}
       </div>
@@ -68,20 +74,21 @@ export default function Sidebar() {
             to={to}
             className={({ isActive }) =>
               cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150 group',
+                'flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium transition-all duration-150 group',
                 isActive
-                  ? 'bg-sidebar-active text-white shadow-brand'
-                  : 'text-sidebar-text hover:bg-white/10 hover:text-white',
+                  ? 'text-white'
+                  : 'text-[#94a3b8] hover:text-white hover:bg-white/5',
                 collapsed && 'justify-center px-2',
               )
             }
+            style={({ isActive }) => isActive ? { background: '#0281FF' } : {}}
             title={collapsed ? label : undefined}
           >
             {({ isActive }) => (
               <>
                 <Icon className={cn(
                   'w-4 h-4 shrink-0',
-                  isActive ? 'text-white' : 'text-sidebar-icon group-hover:text-white',
+                  isActive ? 'text-white' : 'text-[#64748b] group-hover:text-white',
                 )} />
                 {!collapsed && <span>{label}</span>}
               </>
@@ -92,22 +99,25 @@ export default function Sidebar() {
 
       {/* User section */}
       {user && (
-        <div className={cn(
-          'border-t border-sidebar-border p-3',
-          collapsed ? 'flex justify-center' : '',
-        )}>
+        <div
+          className={cn('p-3', collapsed ? 'flex justify-center' : '')}
+          style={{ borderTop: '1px solid #1e293b' }}
+        >
           {!collapsed ? (
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-brand-500 text-white text-xs font-bold shrink-0">
+              <div
+                className="w-8 h-8 rounded-full text-white text-xs font-bold shrink-0 flex items-center justify-center"
+                style={{ background: '#0281FF' }}
+              >
                 {getInitials(user.name)}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-white text-sm font-medium truncate">{user.name}</p>
-                <p className="text-sidebar-text text-xs truncate">{user.role}</p>
+                <p className="text-white text-[13px] font-medium truncate">{user.name}</p>
+                <p className="text-[#64748b] text-[11px] truncate capitalize">{user.role}</p>
               </div>
               <button
                 onClick={handleLogout}
-                className="text-sidebar-icon hover:text-accent-400 transition-colors"
+                className="text-[#64748b] hover:text-red-400 transition-colors"
                 title="Log out"
               >
                 <LogOut className="w-4 h-4" />
@@ -116,7 +126,7 @@ export default function Sidebar() {
           ) : (
             <button
               onClick={handleLogout}
-              className="text-sidebar-icon hover:text-accent-400 transition-colors"
+              className="text-[#64748b] hover:text-red-400 transition-colors"
               title="Log out"
             >
               <LogOut className="w-4 h-4" />
@@ -128,7 +138,8 @@ export default function Sidebar() {
       {/* Collapse toggle */}
       <button
         onClick={toggleSidebar}
-        className="absolute -right-3 top-16 z-10 flex items-center justify-center w-6 h-6 rounded-full bg-brand-500 text-white shadow-brand hover:bg-brand-600 transition-colors"
+        className="absolute -right-3 top-16 z-10 w-6 h-6 rounded-full flex items-center justify-center transition-colors"
+        style={{ background: '#0281FF', color: 'white' }}
         title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
       >
         {collapsed

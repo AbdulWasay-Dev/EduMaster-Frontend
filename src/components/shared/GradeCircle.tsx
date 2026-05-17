@@ -20,7 +20,7 @@ export default function GradeCircle({
 
   const color =
     percentage >= 80 ? '#10b981' :
-    percentage >= 60 ? '#fbbf24' :
+    percentage >= 60 ? '#f59e0b' :
     '#ef4444'
 
   return (
@@ -31,7 +31,7 @@ export default function GradeCircle({
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="#fed7aa"
+          stroke="#e2e8f0"
           strokeWidth={strokeWidth}
         />
         <motion.circle
@@ -49,7 +49,7 @@ export default function GradeCircle({
         />
       </svg>
       <div className="absolute flex flex-col items-center">
-        <span className="text-xl font-bold text-[#1C0A00]">{Math.round(percentage)}%</span>
+        <span className="text-xl font-bold text-[#0f172a]">{Math.round(percentage)}%</span>
       </div>
     </div>
   )

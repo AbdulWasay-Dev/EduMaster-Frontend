@@ -9,7 +9,10 @@ export default function AppShell() {
   const collapsed = useUIStore((s) => s.sidebarCollapsed)
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#FFFAF5]">
+    <div
+      className="flex h-screen overflow-hidden"
+      style={{ background: '#f8fafc', fontFamily: "'Inter', system-ui, sans-serif" }}
+    >
       {/* Sidebar */}
       <Sidebar />
 
@@ -17,11 +20,11 @@ export default function AppShell() {
       <div
         className={cn(
           'flex flex-1 flex-col overflow-hidden transition-all duration-300',
-          'lg:ml-0', // sidebar handles its own width offset
+          'lg:ml-0',
         )}
       >
         <TopNav />
-        <main className="flex-1 overflow-y-auto p-4 lg:p-6">
+        <main className="flex-1 overflow-y-auto p-4 lg:p-6 pb-20 lg:pb-6">
           <div className="mx-auto max-w-7xl animate-slide-up">
             <Outlet />
           </div>

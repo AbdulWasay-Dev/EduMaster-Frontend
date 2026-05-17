@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom'
 import {
   Users, ScrollText, CheckSquare, Plus, FileText, Bot,
   ArrowRight, ChevronRight, AlertCircle, Clock, BookOpen,
+  Bell, Calendar, Activity,
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import PageHeader from '@/components/shared/PageHeader'
 import StatCard from '@/components/shared/StatCard'
 import StatusBadge from '@/components/shared/StatusBadge'
-import GradeCircle from '@/components/shared/GradeCircle'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import { useAuthStore } from '@/store/authStore'
 import { listPapers } from '@/lib/api/papers'
@@ -17,34 +17,10 @@ import { listSubmissions } from '@/lib/api/grading'
 import { formatDate, gradeLabel } from '@/lib/utils'
 
 const QUICK_ACTIONS = [
-  {
-    label: 'Generate Paper',
-    icon: ScrollText,
-    to: '/papers/generate',
-    color: 'from-brand-500 to-brand-600',
-    desc: 'Create AI-powered exam',
-  },
-  {
-    label: 'Grade Answer Sheets',
-    icon: CheckSquare,
-    to: '/grading/new',
-    color: 'from-accent-500 to-accent-600',
-    desc: 'Upload & auto-grade',
-  },
-  {
-    label: 'Upload Document',
-    icon: FileText,
-    to: '/documents/upload',
-    color: 'from-gold-400 to-gold-600',
-    desc: 'Add study materials',
-  },
-  {
-    label: 'Ask AI Assistant',
-    icon: Bot,
-    to: '/ai-assistant',
-    color: 'from-cyan-500 to-cyan-600',
-    desc: 'Query your content',
-  },
+  { label: 'Generate Paper', icon: ScrollText, to: '/papers/generate', desc: 'Create AI-powered exam' },
+  { label: 'Grade Sheets', icon: CheckSquare, to: '/grading/new', desc: 'Upload & auto-grade' },
+  { label: 'Upload Document', icon: FileText, to: '/documents/upload', desc: 'Add study materials' },
+  { label: 'Ask AI Assistant', icon: Bot, to: '/ai-assistant', desc: 'Query your content' },
 ]
 
 function getGreeting() {
@@ -52,6 +28,59 @@ function getGreeting() {
   if (hour < 12) return 'Good morning'
   if (hour < 17) return 'Good afternoon'
   return 'Good evening'
+}
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 16 },
+  show: (i: number) => ({ opacity: 1, y: 0, transition: { duration: 0.4, delay: i * 0.06 } }),
+}
+
+/* ── Mock notifications (replace with real API later) ── */
+function getNotifications(pendingCount: number, papersCount: number) {
+  const notifs = []
+  if (pendingCount > 0) {
+    notifs.push({
+      id: 'pending',
+      icon: AlertCircle,
+      iconBg: '#fef2f2',
+      iconColor: '#ef4444',
+      title: `${pendingCount} submission${pendingCount > 1 ? 's' : ''} need grading`,
+      time: 'Just now',
+      to: '/grading',
+    })
+  }
+  if (papersCount > 0) {
+    notifs.push({
+      id: 'papers',
+      icon: ScrollText,
+      iconBg: '#EFF6FF',
+      iconColor: '#0281FF',
+      title: `${papersCount} paper${papersCount > 1 ? 's' : ''} generated this week`,
+      time: 'This week',
+      to: '/papers',
+    })
+  }
+  notifs.push(
+    { id: 'welcome', icon: Bell, iconBg: '#f0fdf4', iconColor: '#22c55e', title: 'Welcome to EduMaster! Start by creating a class.', time: 'Today', to: '/classes/new' },
+    { id: 'tip', icon: Bot, iconBg: '#faf5ff', iconColor: '#a855f7', title: 'Tip: Use AI Assistant to query your documents', time: 'Tip', to: '/ai-assistant' },
+  )
+  return notifs.slice(0, 5)
+}
+
+/* ── Calendar brief (mock schedule) ── */
+function getCalendarItems() {
+  const today = new Date()
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  const days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(today)
+    d.setDate(today.getDate() + i)
+    return {
+      day: dayNames[d.getDay()],
+      date: d.getDate(),
+      isToday: i === 0,
+    }
+  })
+  return days
 }
 
 export default function DashboardPage() {
@@ -72,12 +101,10 @@ export default function DashboardPage() {
     queryFn: () => listSubmissions(),
   })
 
-  // Real computed stats
   const totalStudents = classes.reduce((a, c) => a + (c.student_count ?? 0), 0)
   const gradedSubmissions = submissions.filter(s => s.status === 'graded')
   const pendingSubmissions = submissions.filter(s => s.status === 'pending' || s.status === 'review')
 
-  // Average score across all graded submissions
   const avgScore = gradedSubmissions.length
     ? Math.round(
         gradedSubmissions.reduce((acc, s) => {
@@ -87,19 +114,45 @@ export default function DashboardPage() {
       )
     : null
 
-  const recentPapers = papers.slice(0, 5)
-
   const isLoading = loadingPapers || loadingClasses || loadingSubmissions
+  const notifications = getNotifications(pendingSubmissions.length, papers.length)
+  const calendarDays = getCalendarItems()
+
+  // Build recent activities from all sources
+  const recentActivities = [
+    ...gradedSubmissions.slice(0, 3).map(s => ({
+      id: `grade-${s.id}`,
+      icon: CheckSquare,
+      iconBg: '#f0fdf4',
+      iconColor: '#22c55e',
+      title: `Graded ${s.student_name ?? 'student'}'s submission`,
+      subtitle: s.paper_title ?? 'Paper',
+      time: formatDate(s.graded_at ?? s.created_at ?? ''),
+      to: `/grading/${s.id}`,
+    })),
+    ...papers.slice(0, 3).map(p => ({
+      id: `paper-${p.id}`,
+      icon: ScrollText,
+      iconBg: '#EFF6FF',
+      iconColor: '#0281FF',
+      title: `Created paper "${p.title}"`,
+      subtitle: `${p.questions?.length ?? 0} questions · ${p.total_marks} marks`,
+      time: formatDate(p.created_at),
+      to: `/papers/${p.id}`,
+    })),
+  ]
+    .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
+    .slice(0, 6)
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-[1200px] mx-auto" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <PageHeader
         title={`${getGreeting()}, ${user?.name?.split(' ')[0] ?? 'Teacher'} 👋`}
         subtitle={`${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`}
       />
 
-      {/* ── Stat Row ─────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* ── Stat Row ── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard title="Classes" value={classes.length} icon={Users} />
         <StatCard title="Students" value={totalStudents} icon={Users} />
         <StatCard title="Papers" value={papers.length} icon={ScrollText} />
@@ -112,272 +165,243 @@ export default function DashboardPage() {
         />
       </div>
 
-      {/* ── Needs Attention + Quick Actions ──────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      {/* ── Quick Actions ── */}
+      <motion.div initial="hidden" animate="show" className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        {QUICK_ACTIONS.map(({ label, icon: Icon, to, desc }, i) => (
+          <motion.div key={to} custom={i} variants={fadeUp}>
+            <Link to={to}>
+              <div
+                className="group relative overflow-hidden rounded-2xl p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer"
+                style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}
+              >
+                <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full opacity-10" style={{ background: '#0281FF' }} />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ background: 'rgba(2, 129, 255, 0.15)' }}>
+                  <Icon className="w-5 h-5 text-[#60a5fa]" />
+                </div>
+                <p className="font-semibold text-[14px] text-white leading-tight">{label}</p>
+                <p className="text-[12px] text-white/50 mt-1">{desc}</p>
+                <ArrowRight className="w-4 h-4 text-white/30 mt-3 group-hover:text-white/60 group-hover:translate-x-1 transition-all" />
+              </div>
+            </Link>
+          </motion.div>
+        ))}
+      </motion.div>
 
-        {/* Needs Attention — real pending grading */}
-        <div className="lg:col-span-2 card p-5">
+      {/* ── Notifications + Calendar ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+
+        {/* Notifications Panel */}
+        <div className="lg:col-span-3 bg-white rounded-2xl border border-[#e2e8f0] p-5 sm:p-6">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-accent-500" />
-              <h2 className="section-title">Needs Attention</h2>
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#EFF6FF' }}>
+                <Bell className="w-4 h-4" style={{ color: '#0281FF' }} />
+              </div>
+              <h2 className="text-[15px] font-bold text-[#0f172a]">Notifications</h2>
             </div>
-            {pendingSubmissions.length > 0 && (
-              <span className="text-xs bg-accent-100 text-accent-700 font-semibold px-2 py-0.5 rounded-full">
-                {pendingSubmissions.length} pending
-              </span>
-            )}
+            <Link to="/notifications" className="text-[12px] font-medium flex items-center gap-0.5 hover:underline" style={{ color: '#0281FF' }}>
+              View all <ChevronRight className="w-3 h-3" />
+            </Link>
           </div>
 
           {isLoading ? (
             <div className="flex justify-center py-8"><LoadingSpinner size="md" /></div>
-          ) : pendingSubmissions.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-10 text-center">
-              <CheckSquare className="w-10 h-10 text-emerald-400 mb-3" />
-              <p className="font-medium text-[#1C0A00]">All caught up!</p>
-              <p className="text-xs text-brand-500 mt-1">No pending answer sheets to grade.</p>
-              <Link to="/grading/new" className="btn-primary mt-4 flex items-center gap-2 text-sm">
-                <Plus className="w-4 h-4" /> Grade New Batch
-              </Link>
-            </div>
           ) : (
             <div className="space-y-2">
-              {pendingSubmissions.slice(0, 5).map(sub => (
+              {notifications.map(n => (
                 <Link
-                  key={sub.id}
-                  to={`/grading/${sub.id}`}
-                  className="flex items-center justify-between p-3 rounded-xl border border-brand-100 hover:border-brand-300 hover:bg-brand-50/60 transition-all group"
+                  key={n.id}
+                  to={n.to}
+                  className="flex items-center gap-3 p-3 rounded-xl border border-[#f1f5f9] hover:border-[#0281FF]/20 hover:bg-[#f8fafc] transition-all group"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-accent-100 flex items-center justify-center shrink-0">
-                      <Clock className="w-4 h-4 text-accent-500" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-[#1C0A00]">
-                        {sub.student_name ?? 'Unknown Student'}
-                      </p>
-                      <p className="text-xs text-brand-500">
-                        {sub.paper_title ?? 'Untitled Paper'} · {formatDate(sub.submitted_at ?? sub.created_at ?? '')}
-                      </p>
-                    </div>
+                  <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: n.iconBg }}>
+                    <n.icon className="w-4 h-4" style={{ color: n.iconColor }} />
                   </div>
-                  <div className="flex items-center gap-2">
-                    <StatusBadge status={sub.status} />
-                    <ArrowRight className="w-3.5 h-3.5 text-brand-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-medium text-[#0f172a] truncate">{n.title}</p>
+                    <p className="text-[11px] text-[#94a3b8]">{n.time}</p>
                   </div>
+                  <ArrowRight className="w-3.5 h-3.5 text-[#94a3b8] opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                 </Link>
               ))}
-              {pendingSubmissions.length > 5 && (
-                <Link
-                  to="/grading"
-                  className="flex items-center justify-center gap-1 text-xs text-brand-500 hover:text-brand-700 font-medium py-2 transition-colors"
-                >
-                  +{pendingSubmissions.length - 5} more <ChevronRight className="w-3 h-3" />
-                </Link>
-              )}
             </div>
           )}
         </div>
 
-        {/* Quick Actions */}
-        <div>
-          <h2 className="section-title mb-3">Quick Actions</h2>
-          <div className="grid grid-cols-2 gap-3">
-            {QUICK_ACTIONS.map(({ label, icon: Icon, to, color, desc }) => (
-              <Link key={to} to={to}>
-                <motion.div
-                  whileHover={{ y: -2, boxShadow: '0 10px 40px -8px rgba(28,10,0,0.15)' } as any}
-                  className={`bg-gradient-to-br ${color} rounded-xl p-4 text-white cursor-pointer h-full`}
-                >
-                  <Icon className="w-6 h-6 mb-2 opacity-90" />
-                  <p className="font-semibold text-sm leading-tight">{label}</p>
-                  <p className="text-xs opacity-80 mt-0.5">{desc}</p>
-                  <ArrowRight className="w-3.5 h-3.5 mt-2 opacity-70" />
-                </motion.div>
-              </Link>
+        {/* Calendar Brief */}
+        <div className="lg:col-span-2 bg-white rounded-2xl border border-[#e2e8f0] p-5 sm:p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#EFF6FF' }}>
+                <Calendar className="w-4 h-4" style={{ color: '#0281FF' }} />
+              </div>
+              <h2 className="text-[15px] font-bold text-[#0f172a]">Calendar</h2>
+            </div>
+            <Link to="/schedule" className="text-[12px] font-medium flex items-center gap-0.5 hover:underline" style={{ color: '#0281FF' }}>
+              Full view <ChevronRight className="w-3 h-3" />
+            </Link>
+          </div>
+
+          {/* Week strip */}
+          <div className="flex items-center justify-between gap-1 mb-5">
+            {calendarDays.map(d => (
+              <div
+                key={d.date}
+                className="flex flex-col items-center gap-1 py-2 px-2.5 sm:px-3 rounded-xl transition-all cursor-pointer"
+                style={{
+                  background: d.isToday ? '#0281FF' : 'transparent',
+                  color: d.isToday ? 'white' : '#64748b',
+                }}
+              >
+                <span className="text-[10px] font-semibold uppercase">{d.day}</span>
+                <span className={`text-[16px] font-bold ${d.isToday ? 'text-white' : 'text-[#0f172a]'}`}>{d.date}</span>
+              </div>
             ))}
+          </div>
+
+          {/* Upcoming items */}
+          <div className="space-y-2.5">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#94a3b8]">Today's Schedule</p>
+            {classes.length > 0 ? (
+              classes.slice(0, 3).map(cls => (
+                <Link
+                  key={cls.id}
+                  to={`/classes/${cls.id}`}
+                  className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-[#f8fafc] transition-all"
+                >
+                  <div className="w-1 h-8 rounded-full" style={{ background: '#0281FF' }} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-semibold text-[#0f172a] truncate">{cls.name}</p>
+                    <p className="text-[11px] text-[#94a3b8]">{cls.grade_level} · {cls.student_count ?? 0} students</p>
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <p className="text-[13px] text-[#94a3b8] py-3 text-center">No classes scheduled today</p>
+            )}
           </div>
         </div>
       </div>
 
-      {/* ── Recent Graded Results ─────────────────────────────────────── */}
-      {gradedSubmissions.length > 0 && (
-        <div className="card p-5">
+      {/* ── Recent Activities ── */}
+      {recentActivities.length > 0 && (
+        <div className="bg-white rounded-2xl border border-[#e2e8f0] p-5 sm:p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="section-title">Recent Grading Results</h2>
-            <Link
-              to="/grading"
-              className="text-sm text-brand-500 font-medium hover:text-brand-700 flex items-center gap-1"
-            >
-              View all <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#f0fdf4' }}>
+                <Activity className="w-4 h-4 text-emerald-500" />
+              </div>
+              <h2 className="text-[15px] font-bold text-[#0f172a]">Recent Activities</h2>
+            </div>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-brand-100">
-                  {['Student', 'Paper', 'Score', '%', 'Grade', 'Date'].map(h => (
-                    <th
-                      key={h}
-                      className="text-left py-2 px-3 text-xs font-semibold text-brand-700 uppercase tracking-wide"
-                    >
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {gradedSubmissions.slice(0, 5).map(sub => {
-                  const pct = sub.grade_percentage
-                    ?? (sub.max_score ? Math.round(((sub.total_score ?? 0) / sub.max_score) * 100) : 0)
-                  return (
-                    <tr
-                      key={sub.id}
-                      className="border-b border-brand-50 hover:bg-brand-50/50 transition-colors"
-                    >
-                      <td className="py-3 px-3 font-medium text-[#1C0A00]">
-                        {sub.student_name ?? '—'}
-                      </td>
-                      <td className="py-3 px-3 text-brand-600 text-xs">
-                        {sub.paper_title ?? '—'}
-                      </td>
-                      <td className="py-3 px-3 text-brand-700">
-                        {sub.total_score ?? sub.score ?? 0}/{sub.max_score ?? sub.total_marks ?? 0}
-                      </td>
-                      <td className="py-3 px-3">
-                        <GradeCircle percentage={pct} size={36} />
-                      </td>
-                      <td className={`py-3 px-3 font-bold text-sm ${pct >= 80 ? 'text-emerald-600' : pct >= 60 ? 'text-amber-500' : 'text-red-500'}`}>
-                        {gradeLabel(pct)}
-                      </td>
-                      <td className="py-3 px-3 text-brand-500 text-xs">
-                        {formatDate(sub.graded_at ?? sub.created_at ?? '')}
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+
+          {/* Desktop list */}
+          <div className="hidden sm:block space-y-2">
+            {recentActivities.map(a => (
+              <Link
+                key={a.id}
+                to={a.to}
+                className="flex items-center gap-3 p-3 rounded-xl border border-[#f1f5f9] hover:border-[#0281FF]/20 hover:bg-[#f8fafc] transition-all group"
+              >
+                <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: a.iconBg }}>
+                  <a.icon className="w-4 h-4" style={{ color: a.iconColor }} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] font-semibold text-[#0f172a] truncate">{a.title}</p>
+                  <p className="text-[11px] text-[#94a3b8]">{a.subtitle}</p>
+                </div>
+                <span className="text-[11px] text-[#94a3b8] shrink-0">{a.time}</span>
+                <ArrowRight className="w-3.5 h-3.5 text-[#94a3b8] opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+              </Link>
+            ))}
+          </div>
+
+          {/* Mobile cards */}
+          <div className="sm:hidden space-y-2">
+            {recentActivities.map(a => (
+              <Link
+                key={a.id}
+                to={a.to}
+                className="block p-3 rounded-xl border border-[#f1f5f9] hover:border-[#0281FF]/20 transition-all"
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <div className="w-7 h-7 rounded-md flex items-center justify-center shrink-0" style={{ background: a.iconBg }}>
+                    <a.icon className="w-3.5 h-3.5" style={{ color: a.iconColor }} />
+                  </div>
+                  <p className="text-[12px] font-semibold text-[#0f172a] truncate flex-1">{a.title}</p>
+                </div>
+                <p className="text-[11px] text-[#94a3b8] pl-9">{a.subtitle} · {a.time}</p>
+              </Link>
+            ))}
           </div>
         </div>
       )}
 
-      {/* ── Recent Papers ─────────────────────────────────────────────── */}
-      {recentPapers.length > 0 && (
-        <div className="card p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="section-title">Recent Papers</h2>
-            <Link
-              to="/papers"
-              className="text-sm text-brand-500 font-medium hover:text-brand-700 flex items-center gap-1"
-            >
-              View all <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-brand-100">
-                  {['Title', 'Questions', 'Marks', 'Created', 'Status', ''].map(h => (
-                    <th
-                      key={h}
-                      className="text-left py-2 px-3 text-xs font-semibold text-brand-700 uppercase tracking-wide"
-                    >
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {recentPapers.map(paper => (
-                  <tr
-                    key={paper.id}
-                    className="border-b border-brand-50 hover:bg-brand-50/50 transition-colors"
-                  >
-                    <td className="py-3 px-3 font-medium text-[#1C0A00]">{paper.title}</td>
-                    <td className="py-3 px-3 text-brand-700">{paper.questions?.length ?? 0}</td>
-                    <td className="py-3 px-3 text-brand-700">{paper.total_marks}</td>
-                    <td className="py-3 px-3 text-brand-700">{formatDate(paper.created_at)}</td>
-                    <td className="py-3 px-3">
-                      <StatusBadge status={paper.is_published ? 'published' : 'draft'} />
-                    </td>
-                    <td className="py-3 px-3">
-                      <Link
-                        to={`/papers/${paper.id}`}
-                        className="text-brand-500 hover:text-brand-700 text-xs font-medium"
-                      >
-                        View →
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* ── My Classes ───────────────────────────────────────────────── */}
+      {/* ── My Classes ── */}
       {classes.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="section-title">My Classes</h2>
-            <Link
-              to="/classes"
-              className="text-sm text-brand-500 font-medium hover:text-brand-700 flex items-center gap-1"
-            >
-              View all <ChevronRight className="w-3.5 h-3.5" />
+            <h2 className="text-[15px] font-bold text-[#0f172a]">My Classes</h2>
+            <Link to="/classes" className="text-[12px] font-medium flex items-center gap-0.5 hover:underline" style={{ color: '#0281FF' }}>
+              View all <ChevronRight className="w-3 h-3" />
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {classes.slice(0, 3).map(cls => (
               <Link key={cls.id} to={`/classes/${cls.id}`}>
                 <motion.div
-                  whileHover={{ y: -2, boxShadow: '0 10px 40px -8px rgba(28,10,0,0.12)' } as any}
-                  className="card p-4 cursor-pointer"
+                  whileHover={{ y: -2 } as any}
+                  className="bg-white rounded-2xl border border-[#e2e8f0] p-4 sm:p-5 cursor-pointer transition-shadow hover:shadow-lg"
                 >
                   <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-xl bg-brand-100 flex items-center justify-center">
-                        <BookOpen className="w-4 h-4 text-brand-600" />
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#EFF6FF' }}>
+                        <BookOpen className="w-4 h-4" style={{ color: '#0281FF' }} />
                       </div>
-                      <h3 className="font-semibold text-[#1C0A00]">{cls.name}</h3>
+                      <h3 className="font-semibold text-[14px] text-[#0f172a]">{cls.name}</h3>
                     </div>
                     <StatusBadge status={cls.is_active ? 'active' : 'inactive'} />
                   </div>
-                  <p className="text-xs text-brand-600 ml-10">{cls.grade_level} · {cls.academic_year}</p>
-                  <div className="flex items-center gap-1 mt-3 ml-10">
-                    <Users className="w-3.5 h-3.5 text-brand-400" />
-                    <span className="text-xs text-brand-600">{cls.student_count ?? 0} students</span>
+                  <p className="text-[12px] text-[#94a3b8] ml-[46px]">{cls.grade_level} · {cls.academic_year}</p>
+                  <div className="flex items-center gap-1.5 mt-3 ml-[46px]">
+                    <Users className="w-3.5 h-3.5 text-[#94a3b8]" />
+                    <span className="text-[12px] text-[#64748b]">{cls.student_count ?? 0} students</span>
                   </div>
                 </motion.div>
               </Link>
             ))}
             <Link to="/classes/new">
-              <div className="card p-4 flex flex-col items-center justify-center gap-2 cursor-pointer border-dashed hover:border-brand-400 hover:bg-brand-50 transition-all group min-h-[100px]">
-                <Plus className="w-6 h-6 text-brand-400 group-hover:text-brand-500" />
-                <span className="text-sm font-medium text-brand-500">New Class</span>
+              <div className="bg-white rounded-2xl border border-dashed border-[#cbd5e1] p-5 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-[#0281FF] hover:bg-[#f8fafc] transition-all group min-h-[120px]">
+                <Plus className="w-6 h-6 text-[#94a3b8] group-hover:text-[#0281FF] transition-colors" />
+                <span className="text-[13px] font-semibold text-[#94a3b8] group-hover:text-[#0281FF] transition-colors">New Class</span>
               </div>
             </Link>
           </div>
         </div>
       )}
 
-      {/* ── Empty state when truly new user ─────────────────────────── */}
+      {/* ── Empty state ── */}
       {!isLoading && classes.length === 0 && papers.length === 0 && (
-        <div className="card p-10 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-brand-100 flex items-center justify-center mx-auto mb-4">
-            <BookOpen className="w-8 h-8 text-brand-500" />
+        <div className="bg-white rounded-2xl border border-[#e2e8f0] p-10 text-center">
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: '#EFF6FF' }}>
+            <BookOpen className="w-8 h-8" style={{ color: '#0281FF' }} />
           </div>
-          <h3 className="text-lg font-bold text-[#1C0A00] mb-2">Welcome! Let's get started.</h3>
-          <p className="text-brand-600 text-sm mb-6 max-w-sm mx-auto">
+          <h3 className="text-[18px] font-bold text-[#0f172a] mb-2">Welcome! Let's get started.</h3>
+          <p className="text-[14px] text-[#64748b] mb-6 max-w-sm mx-auto">
             Set up your first class, upload your study materials, and generate AI-powered exam papers in minutes.
           </p>
-          <div className="flex justify-center gap-3">
-            <Link to="/classes/new" className="btn-primary flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row justify-center gap-3">
+            <Link
+              to="/classes/new"
+              className="h-[44px] px-6 flex items-center justify-center gap-2 rounded-xl text-[14px] font-semibold transition-all"
+              style={{ background: '#0f172a', color: 'white' }}
+            >
               <Plus className="w-4 h-4" /> Create Class
             </Link>
-            <Link to="/documents/upload" className="btn-ghost flex items-center gap-2">
+            <Link
+              to="/documents/upload"
+              className="h-[44px] px-6 flex items-center justify-center gap-2 rounded-xl text-[14px] font-semibold border border-[#e2e8f0] text-[#64748b] hover:bg-[#f8fafc] transition-all"
+            >
               <FileText className="w-4 h-4" /> Upload Document
             </Link>
           </div>

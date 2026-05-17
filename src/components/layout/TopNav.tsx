@@ -1,7 +1,6 @@
 import { useNavigate, useLocation, Link } from 'react-router-dom'
-import { Moon, Sun, Search, LogOut } from 'lucide-react'
+import { Search, LogOut } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
-import { useUIStore } from '@/store/uiStore'
 import { cn, getInitials } from '@/lib/utils'
 import { toast } from 'sonner'
 import NotificationDropdown from './NotificationDropdown'
@@ -19,7 +18,6 @@ function useBreadcrumbs() {
 export default function TopNav() {
   const user = useAuthStore((s) => s.user)
   const logout = useAuthStore((s) => s.logout)
-  const { isDarkMode, toggleDarkMode } = useUIStore()
   const navigate = useNavigate()
   const breadcrumbs = useBreadcrumbs()
 
@@ -30,16 +28,19 @@ export default function TopNav() {
   }
 
   return (
-    <header className="flex items-center justify-between h-14 px-4 lg:px-6 bg-white border-b border-brand-100 shrink-0 z-20">
+    <header
+      className="flex items-center justify-between h-14 px-4 lg:px-6 shrink-0 z-20"
+      style={{ background: 'white', borderBottom: '1px solid #e2e8f0' }}
+    >
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-1.5 text-sm">
+      <nav className="flex items-center gap-1.5 text-[13px]">
         {breadcrumbs.map((crumb, i) => (
           <span key={crumb.to} className="flex items-center gap-1.5">
-            {i > 0 && <span className="text-brand-300">/</span>}
+            {i > 0 && <span style={{ color: '#cbd5e1' }}>/</span>}
             {crumb.isLast ? (
-              <span className="font-semibold text-[#1C0A00]">{crumb.label}</span>
+              <span className="font-semibold" style={{ color: '#0f172a' }}>{crumb.label}</span>
             ) : (
-              <Link to={crumb.to} className="text-brand-700 hover:text-brand-500 transition-colors">
+              <Link to={crumb.to} className="transition-colors hover:underline" style={{ color: '#64748b' }}>
                 {crumb.label}
               </Link>
             )}
@@ -50,40 +51,39 @@ export default function TopNav() {
       {/* Right actions */}
       <div className="flex items-center gap-2">
         {/* Search */}
-        <div className="hidden md:flex items-center gap-2 bg-brand-50 border border-brand-200 rounded-lg px-3 py-1.5 w-48 lg:w-64">
-          <Search className="w-3.5 h-3.5 text-brand-400 shrink-0" />
+        <div
+          className="hidden md:flex items-center gap-2 rounded-xl px-3 py-1.5 w-48 lg:w-56"
+          style={{ background: '#f8fafc', border: '1px solid #e2e8f0' }}
+        >
+          <Search className="w-3.5 h-3.5 shrink-0" style={{ color: '#94a3b8' }} />
           <input
             type="text"
             placeholder="Search…"
-            className="bg-transparent text-sm text-[#1C0A00] placeholder-brand-400 outline-none flex-1 min-w-0"
+            className="bg-transparent text-[13px] outline-none flex-1 min-w-0"
+            style={{ color: '#0f172a' }}
           />
         </div>
-
-        {/* Dark mode toggle */}
-        <button
-          onClick={toggleDarkMode}
-          className="p-2 rounded-lg text-brand-600 hover:bg-brand-50 transition-colors"
-          title={isDarkMode ? 'Light mode' : 'Dark mode'}
-        >
-          {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-        </button>
 
         {/* Notifications dropdown */}
         <NotificationDropdown />
 
         {/* User avatar */}
         {user && (
-          <div className="flex items-center gap-2 pl-2 border-l border-brand-200">
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-brand-500 to-accent-500 text-white text-xs font-bold cursor-pointer">
+          <div className="flex items-center gap-2 pl-2" style={{ borderLeft: '1px solid #e2e8f0' }}>
+            <div
+              className="w-8 h-8 rounded-full text-white text-[11px] font-bold flex items-center justify-center cursor-pointer"
+              style={{ background: '#0281FF' }}
+            >
               {getInitials(user.name)}
             </div>
             <div className="hidden lg:block">
-              <p className="text-xs font-semibold text-[#1C0A00] leading-tight">{user.name}</p>
-              <p className="text-[10px] text-brand-700 capitalize">{user.role}</p>
+              <p className="text-[12px] font-semibold leading-tight" style={{ color: '#0f172a' }}>{user.name}</p>
+              <p className="text-[10px] capitalize" style={{ color: '#94a3b8' }}>{user.role}</p>
             </div>
             <button
               onClick={handleLogout}
-              className="p-1.5 rounded-lg text-brand-600 hover:bg-brand-50 hover:text-accent-500 transition-colors"
+              className="p-1.5 rounded-lg transition-colors hover:bg-[#f8fafc]"
+              style={{ color: '#94a3b8' }}
               title="Log out"
             >
               <LogOut className="w-3.5 h-3.5" />
