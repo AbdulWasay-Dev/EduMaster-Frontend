@@ -1,12 +1,11 @@
-import { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
   BookOpen, ArrowRight, ScrollText, CheckSquare, Bot, Calendar,
   Users, FileText, Sparkles, ChevronDown, BarChart3, Mail,
-  GraduationCap, Clock, Shield, Zap,
+  GraduationCap,
 } from 'lucide-react'
-import GenerativeMountainScene from '@/components/ui/mountain-scene'
 import AnimatedTestimonials from '@/components/ui/testimonial'
 import { LogoCarousel } from '@/components/ui/logo-carousel'
 import './landing.css'
@@ -142,25 +141,91 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* ── HERO — padded rounded card with 3D mountain scene ── */}
+      {/* ── HERO — padded rounded card with teacher-assistant workspace background ── */}
       <div className="hero-wrapper">
       <section className="landing-hero">
-        <Suspense fallback={null}>
-          <GenerativeMountainScene />
-        </Suspense>
+        <div className="hero-background" aria-hidden="true">
+          <div className="hero-bg-grid" />
+
+          <div className="hero-workspace-panel">
+            <div className="hero-workspace-header">
+              <div className="hero-window-dots">
+                <span />
+                <span />
+                <span />
+              </div>
+              <span className="hero-workspace-title">AI Teaching Workspace</span>
+              <span className="hero-workspace-status">Live</span>
+            </div>
+            <div className="hero-workspace-body">
+              <div className="hero-metric-card">
+                <ScrollText className="w-4 h-4" />
+                <span>Paper creator</span>
+                <strong>15 questions</strong>
+              </div>
+              <div className="hero-metric-card">
+                <CheckSquare className="w-4 h-4" />
+                <span>Grading queue</span>
+                <strong>87/100</strong>
+              </div>
+              <div className="hero-metric-card">
+                <Users className="w-4 h-4" />
+                <span>Attendance</span>
+                <strong>96%</strong>
+              </div>
+              <div className="hero-metric-card">
+                <Bot className="w-4 h-4" />
+                <span>Class AI</span>
+                <strong>Ready</strong>
+              </div>
+            </div>
+          </div>
+
+          <div className="hero-snapshot hero-snapshot-paper">
+            <div className="hero-snapshot-label">
+              <ScrollText className="w-4 h-4" />
+              <span>Generate exams</span>
+            </div>
+            <img src="/images/landing/paper_generator.png" alt="" />
+          </div>
+
+          <div className="hero-snapshot hero-snapshot-chat">
+            <div className="hero-snapshot-label">
+              <Bot className="w-4 h-4" />
+              <span>Ask class material</span>
+            </div>
+            <img src="/images/landing/ai_assistant.png" alt="" />
+          </div>
+
+          <div className="hero-snapshot hero-snapshot-grading">
+            <div className="hero-snapshot-label">
+              <CheckSquare className="w-4 h-4" />
+              <span>Grade answer sheets</span>
+            </div>
+            <img src="/images/landing/grading_preview.png" alt="" />
+          </div>
+
+          <div className="hero-snapshot hero-snapshot-attendance">
+            <div className="hero-snapshot-label">
+              <Users className="w-4 h-4" />
+              <span>Track class presence</span>
+            </div>
+            <img src="/images/landing/attendance_preview.png" alt="" />
+          </div>
+        </div>
 
         <div className="hero-inner">
           <motion.div variants={stagger} initial="hidden" animate="show" className="max-w-[800px] mx-auto text-center space-y-6">
             <motion.div variants={fadeUp}>
               <span className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-white/90 text-[12px] font-semibold px-5 py-2.5 rounded-full border border-white/10">
-                <Sparkles className="w-3.5 h-3.5" /> Powered by EduMaster AI Infrastructure
+                <Sparkles className="w-3.5 h-3.5" /> AI assistant for teachers and classrooms
               </span>
             </motion.div>
             <motion.h1 variants={fadeUp} className="text-[44px] md:text-[60px] font-extrabold leading-[1.08] tracking-[-0.03em] text-white">
-              Automate Teaching<br />That Actually <span className="text-[#7ec8f8]">Matters</span>
+              Your AI Teaching<br />Assistant for <span className="text-[#a7f3d0]">Every Class</span>
             </motion.h1>
             <motion.p variants={fadeUp} className="text-[17px] md:text-[19px] text-white/65 max-w-[560px] mx-auto leading-relaxed">
-              Generate papers, grade with AI, track attendance, manage schedules — the all-in-one AI platform built for modern educators.
+              Generate papers, grade answer sheets, track attendance, manage schedules, and ask questions from your own course materials in one teacher workspace.
             </motion.p>
             <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-1">
               <Link to="/register" style={{ background: 'white', color: '#0f172a', border: '1px solid rgba(255,255,255,0.9)', borderRadius: '12px', fontWeight: 600, fontSize: '15px', padding: '14px 36px', display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none', transition: 'all 0.3s', boxShadow: 'none' }}>
@@ -172,7 +237,7 @@ export default function LandingPage() {
 
         {/* Trust strip inside hero at bottom */}
         <div className="hero-trust">
-          <div className="hero-trust-label">Used by the world's leading educators</div>
+          <div className="hero-trust-label">Built around daily teacher workflows</div>
           <div className="hero-trust-items">
             {[
               { v: '2,500+', l: 'Teachers' },
