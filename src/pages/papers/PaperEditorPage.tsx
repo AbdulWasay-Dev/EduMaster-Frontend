@@ -36,7 +36,7 @@ const TEMPLATES: { key: PaperTemplate; label: string; icon: React.ReactNode }[] 
 const TEMPLATE_COLORS: Record<PaperTemplate, string> = {
   classic: 'bg-slate-700',
   university: 'bg-blue-800',
-  school: 'bg-orange-600',
+  school: 'bg-blue-600',
   minimalist: 'bg-gray-600',
 }
 
@@ -72,7 +72,7 @@ function QuestionTextEditor({
     editorProps: {
       attributes: {
         class:
-          'min-h-[3rem] outline-none text-sm text-[#1C0A00] leading-relaxed [&_p]:m-0 [&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.is-editor-empty:first-child::before]:text-brand-300 [&_.is-editor-empty:first-child::before]:pointer-events-none [&_.is-editor-empty:first-child::before]:float-left',
+          'min-h-[3rem] outline-none text-sm text-[#0f172a] leading-relaxed [&_p]:m-0 [&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.is-editor-empty:first-child::before]:text-brand-300 [&_.is-editor-empty:first-child::before]:pointer-events-none [&_.is-editor-empty:first-child::before]:float-left',
       },
     },
   })
@@ -269,7 +269,7 @@ function QuestionCard({
                           onChange={() => updateField('correct_answer', opt)}
                           className="accent-green-500"
                         />
-                        <span className="text-sm font-medium text-[#1C0A00]">{opt}</span>
+                        <span className="text-sm font-medium text-[#0f172a]">{opt}</span>
                       </label>
                     ))}
                   </div>
@@ -458,7 +458,7 @@ export default function PaperEditorPage() {
   if (!paper) return <div className="py-20 text-center text-brand-500">Paper not found</div>
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-[#FFFAF5]">
+    <div className="flex flex-col h-screen overflow-hidden bg-[#f8fafc]">
 
       {/* ── Top Toolbar ────────────────────────────────────────────────────── */}
       <div className="flex items-center gap-3 px-5 py-3 bg-white border-b border-brand-100 shrink-0 flex-wrap">
@@ -470,7 +470,7 @@ export default function PaperEditorPage() {
           <input
             value={meta.title}
             onChange={e => setMeta(m => ({ ...m, title: e.target.value }))}
-            className="text-base font-semibold text-[#1C0A00] bg-transparent border-none outline-none w-full truncate"
+            className="text-base font-semibold text-[#0f172a] bg-transparent border-none outline-none w-full truncate"
             placeholder="Paper Title…"
           />
         </div>
@@ -628,7 +628,7 @@ export default function PaperEditorPage() {
                   {[[meta.course_name || 'Course / Subject', 'Course'], [meta.exam_date || 'Date', 'Date'], [meta.duration, 'Duration'], [String(totalMarks), 'Total Marks']].map(([v, label]) => (
                     <div key={label} className="flex items-center gap-2">
                       <span className="text-brand-400 text-xs">{label}:</span>
-                      <span className="font-medium text-[#1C0A00] text-xs">{v}</span>
+                      <span className="font-medium text-[#0f172a] text-xs">{v}</span>
                     </div>
                   ))}
                 </div>
@@ -691,7 +691,7 @@ export default function PaperEditorPage() {
               <div className="p-4">
                 <div className="flex items-center gap-2 mb-4">
                   <Key className="w-4 h-4 text-brand-600" />
-                  <p className="font-semibold text-sm text-[#1C0A00]">Answer Key</p>
+                  <p className="font-semibold text-sm text-[#0f172a]">Answer Key</p>
                 </div>
                 <div className="space-y-2">
                   {questions.map((q, i) => (
@@ -715,7 +715,7 @@ export default function PaperEditorPage() {
                 <div className="mt-4 pt-3 border-t border-brand-100">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-brand-600">Total Marks</span>
-                    <span className="font-bold text-[#1C0A00]">{totalMarks}</span>
+                    <span className="font-bold text-[#0f172a]">{totalMarks}</span>
                   </div>
                 </div>
                 <button onClick={handleDownloadKey}

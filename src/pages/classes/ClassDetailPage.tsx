@@ -139,7 +139,7 @@ export default function ClassDetailPage() {
           <div className="w-7 h-7 rounded-full bg-brand-100 flex items-center justify-center text-xs font-bold text-brand-600">
             {row.original.name?.charAt(0).toUpperCase()}
           </div>
-          <span className="font-medium text-[#1C0A00]">{row.original.name}</span>
+          <span className="font-medium text-[#0f172a]">{row.original.name}</span>
         </div>
       ),
     },
@@ -167,7 +167,7 @@ export default function ClassDetailPage() {
     {
       accessorKey: 'title',
       header: 'Title',
-      cell: ({ getValue }) => <span className="font-medium text-[#1C0A00]">{getValue() as string}</span>,
+      cell: ({ getValue }) => <span className="font-medium text-[#0f172a]">{getValue() as string}</span>,
     },
     {
       id: 'questions',
@@ -208,7 +208,7 @@ export default function ClassDetailPage() {
     {
       accessorKey: 'student_name',
       header: 'Student',
-      cell: ({ getValue }) => <span className="font-medium text-[#1C0A00]">{(getValue() as string) || '—'}</span>,
+      cell: ({ getValue }) => <span className="font-medium text-[#0f172a]">{(getValue() as string) || '—'}</span>,
     },
     {
       accessorKey: 'paper_title',
@@ -277,7 +277,7 @@ export default function ClassDetailPage() {
         {[
           { label: 'Students',      value: students.length,           icon: Users,       color: 'bg-brand-100 text-brand-600'   },
           { label: 'Papers',        value: allPapers.length,          icon: ScrollText,  color: 'bg-violet-100 text-violet-600' },
-          { label: 'Submissions',   value: classSubmissions.length,   icon: FileText,    color: 'bg-amber-100 text-amber-600'   },
+          { label: 'Submissions',   value: classSubmissions.length,   icon: FileText,    color: 'bg-blue-100 text-blue-600'     },
           { label: 'Avg Score',     value: avgScore !== null ? `${avgScore}%` : '—', icon: TrendingUp, color: 'bg-emerald-100 text-emerald-600' },
         ].map(({ label, value, icon: Icon, color }) => (
           <motion.div
@@ -289,7 +289,7 @@ export default function ClassDetailPage() {
               <Icon className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xl font-bold text-[#1C0A00]">{value}</p>
+              <p className="text-xl font-bold text-[#0f172a]">{value}</p>
               <p className="text-xs text-brand-600">{label}</p>
             </div>
           </motion.div>
@@ -331,7 +331,7 @@ export default function ClassDetailPage() {
               ].map(([k, v]) => (
                 <div key={k}>
                   <dt className="text-xs font-semibold text-brand-600 uppercase tracking-wide">{k}</dt>
-                  <dd className="mt-1 text-sm font-medium text-[#1C0A00]">{v}</dd>
+                  <dd className="mt-1 text-sm font-medium text-[#0f172a]">{v}</dd>
                 </div>
               ))}
             </dl>
@@ -342,7 +342,7 @@ export default function ClassDetailPage() {
             {[
               { label: 'Take Attendance', desc: 'Mark today\'s attendance', icon: ClipboardCheck, color: 'bg-indigo-100 text-indigo-600',
                 to: `/attendance?class_id=${id}${firstSubjectId ? `&subject_id=${firstSubjectId}` : ''}` },
-              { label: 'Generate Paper',  desc: 'AI-powered exam paper',   icon: ScrollText,     color: 'bg-amber-100 text-amber-600',
+              { label: 'Generate Paper',  desc: 'AI-powered exam paper',   icon: ScrollText,     color: 'bg-blue-100 text-blue-600',
                 to: `/papers/generate?class_id=${id}${firstSubjectId ? `&subject_id=${firstSubjectId}` : ''}` },
               { label: 'New Assignment',  desc: 'Create an assignment',     icon: ClipboardList,  color: 'bg-emerald-100 text-emerald-600',
                 to: `/assignments/new?class_id=${id}${firstSubjectId ? `&subject_id=${firstSubjectId}` : ''}` },
@@ -357,13 +357,13 @@ export default function ClassDetailPage() {
                 <Link key={label} to={to}
                   className="card p-4 flex items-center gap-3 hover:border-brand-300 hover:bg-brand-50 transition-all group">
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${color} flex-shrink-0`}><Icon className="w-5 h-5" /></div>
-                  <div><p className="font-semibold text-sm text-[#1C0A00]">{label}</p><p className="text-xs text-brand-500">{desc}</p></div>
+                  <div><p className="font-semibold text-sm text-[#0f172a]">{label}</p><p className="text-xs text-brand-500">{desc}</p></div>
                 </Link>
               ) : (
                 <button key={label} onClick={onClick as any}
                   className="card p-4 flex items-center gap-3 hover:border-brand-300 hover:bg-brand-50 transition-all text-left">
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${color} flex-shrink-0`}><Icon className="w-5 h-5" /></div>
-                  <div><p className="font-semibold text-sm text-[#1C0A00]">{label}</p><p className="text-xs text-brand-500">{desc}</p></div>
+                  <div><p className="font-semibold text-sm text-[#0f172a]">{label}</p><p className="text-xs text-brand-500">{desc}</p></div>
                 </button>
               )
             )}
@@ -401,7 +401,7 @@ export default function ClassDetailPage() {
                       <Calendar className="w-4 h-4 text-brand-600" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-[#1C0A00] truncate">{e.title}</p>
+                      <p className="text-sm font-semibold text-[#0f172a] truncate">{e.title}</p>
                       <p className="text-xs text-brand-500">{isToday(parseISO(e.date)) ? 'Today' : format(parseISO(e.date), 'EEE, MMM d')} · {e.start_time}</p>
                     </div>
                   </div>
@@ -424,7 +424,7 @@ export default function ClassDetailPage() {
                       <BookOpen className="w-4 h-4 text-brand-500" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-[#1C0A00] truncate">{s.name}</p>
+                      <p className="text-sm font-semibold text-[#0f172a] truncate">{s.name}</p>
                       {s.code && <p className="text-xs text-brand-400 font-mono">{s.code}</p>}
                     </div>
                     <div className="flex gap-1">
@@ -433,7 +433,7 @@ export default function ClassDetailPage() {
                         <ClipboardCheck className="w-3.5 h-3.5" />
                       </Link>
                       <Link to={`/papers/generate?class_id=${id}&subject_id=${s.id}`} onClick={e => e.stopPropagation()}
-                        title="Generate Paper" className="p-1.5 rounded-lg bg-amber-50 text-amber-500 hover:bg-amber-100 transition-colors">
+                        title="Generate Paper" className="p-1.5 rounded-lg bg-blue-50 text-blue-500 hover:bg-blue-100 transition-colors">
                         <ScrollText className="w-3.5 h-3.5" />
                       </Link>
                     </div>
@@ -576,7 +576,7 @@ export default function ClassDetailPage() {
                     const pct = gradedSubmissions.length ? Math.round((count / gradedSubmissions.length) * 100) : 0
                     const colors: Record<string, string> = {
                       'A+': 'bg-emerald-500', 'A': 'bg-green-400', 'B': 'bg-cyan-400',
-                      'C': 'bg-amber-400', 'D': 'bg-orange-400', 'F': 'bg-red-400',
+                      'C': 'bg-sky-400', 'D': 'bg-blue-300', 'F': 'bg-red-400',
                     }
                     return (
                       <div key={grade} className="flex items-center gap-3">
@@ -613,10 +613,10 @@ export default function ClassDetailPage() {
                         const pct = sub.grade_percentage ?? (sub.max_score ? Math.round(((sub.total_score ?? 0) / sub.max_score) * 100) : 0)
                         return (
                           <tr key={sub.id} className="border-b border-brand-50 hover:bg-brand-50/50 transition-colors">
-                            <td className="py-3 px-3 font-medium text-[#1C0A00]">{sub.student_name ?? '—'}</td>
+                            <td className="py-3 px-3 font-medium text-[#0f172a]">{sub.student_name ?? '—'}</td>
                             <td className="py-3 px-3 text-brand-600 text-xs">{sub.paper_title ?? '—'}</td>
                             <td className="py-3 px-3 text-brand-700">{sub.total_score ?? 0}/{sub.max_score ?? 0}</td>
-                            <td className={`py-3 px-3 font-bold ${pct >= 80 ? 'text-emerald-600' : pct >= 60 ? 'text-amber-500' : 'text-red-500'}`}>{gradeLabel(pct)}</td>
+                            <td className={`py-3 px-3 font-bold ${pct >= 80 ? 'text-emerald-600' : pct >= 60 ? 'text-blue-500' : 'text-red-500'}`}>{gradeLabel(pct)}</td>
                             <td className="py-3 px-3 text-brand-500 text-xs">{formatDate(sub.graded_at ?? sub.created_at ?? '')}</td>
                             <td className="py-3 px-3">
                               <Link to={`/grading/${sub.id}`} className="text-brand-500 hover:text-brand-700 text-xs font-medium">View →</Link>
@@ -638,7 +638,7 @@ export default function ClassDetailPage() {
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-black/40 z-40" />
           <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl p-6 z-50 w-full max-w-sm">
-            <Dialog.Title className="text-lg font-bold text-[#1C0A00] mb-4">Add Student</Dialog.Title>
+            <Dialog.Title className="text-lg font-bold text-[#0f172a] mb-4">Add Student</Dialog.Title>
             <form onSubmit={handleSubmit(v => addMut.mutate(v))} className="space-y-4">
               <div>
                 <label className="label">Full Name *</label>

@@ -20,14 +20,14 @@ import { listStudents } from '@/lib/api/students'
 import { listEvents } from '@/lib/api/schedule'
 import type { Class, ScheduleEvent } from '@/types'
 
-// Color palette keyed by class name hash
+// Blue-led palette keyed by class name hash
 const CLASS_GRADIENTS = [
-  'from-brand-500 to-orange-400',
+  'from-brand-500 to-sky-400',
   'from-violet-500 to-purple-400',
   'from-emerald-500 to-teal-400',
-  'from-blue-500 to-cyan-400',
-  'from-rose-500 to-pink-400',
-  'from-amber-500 to-yellow-400',
+  'from-blue-600 to-cyan-400',
+  'from-indigo-500 to-blue-400',
+  'from-sky-500 to-blue-300',
 ]
 function classGradient(name: string) {
   const h = name.split('').reduce((a, c) => a + c.charCodeAt(0), 0)
@@ -107,7 +107,7 @@ export default function ClassesListPage() {
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
           className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { label: 'Total Classes', value: classes.length, icon: Layers,      grad: 'from-brand-500 to-orange-400' },
+            { label: 'Total Classes', value: classes.length, icon: Layers,      grad: 'from-brand-500 to-sky-400' },
             { label: 'Active',        value: activeCount,    icon: CheckCircle2, grad: 'from-emerald-500 to-teal-400' },
             { label: 'Students',      value: totalStudents,  icon: Users,        grad: 'from-blue-500 to-cyan-400'    },
             { label: 'Scheduled',     value: events.filter(e => e.type === 'class').length, icon: Calendar, grad: 'from-violet-500 to-purple-400' },
@@ -117,7 +117,7 @@ export default function ClassesListPage() {
                 <Icon className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-xl font-bold text-[#1C0A00] leading-none">{value}</p>
+                <p className="text-xl font-bold text-[#0f172a] leading-none">{value}</p>
                 <p className="text-xs text-brand-500 mt-0.5 font-medium">{label}</p>
               </div>
             </div>
@@ -156,7 +156,7 @@ export default function ClassesListPage() {
       ) : filtered.length === 0 ? (
         <div className="card p-12 text-center">
           <Search className="w-10 h-10 text-brand-200 mx-auto mb-3" />
-          <p className="font-semibold text-[#1C0A00] mb-1">No classes match</p>
+          <p className="font-semibold text-[#0f172a] mb-1">No classes match</p>
           <button onClick={() => { setSearch(''); setFilterStatus('all') }} className="btn-ghost text-sm mt-2">Clear filters</button>
         </div>
       ) : (
@@ -209,7 +209,7 @@ function ClassCard({ cls, schedule, onDelete, index }: {
 
   const quickActions = [
     { label: 'Attendance',   icon: ClipboardCheck, to: `/attendance?class_id=${cls.id}`,                    color: 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'  },
-    { label: 'Make Paper',   icon: ScrollText,     to: `/papers/generate?class_id=${cls.id}`,               color: 'bg-amber-50 text-amber-600 hover:bg-amber-100'      },
+    { label: 'Make Paper',   icon: ScrollText,     to: `/papers/generate?class_id=${cls.id}`,               color: 'bg-blue-50 text-blue-600 hover:bg-blue-100'         },
     { label: 'Assignment',   icon: ClipboardList,  to: `/assignments/new?class_id=${cls.id}`,               color: 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'},
     { label: 'Grade',        icon: CheckSquare,    to: `/grading/new?class_id=${cls.id}`,                   color: 'bg-violet-50 text-violet-600 hover:bg-violet-100'   },
   ]
@@ -218,7 +218,7 @@ function ClassCard({ cls, schedule, onDelete, index }: {
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0, transition: { delay: index * 0.05 } }}
-      whileHover={{ y: -4, boxShadow: '0 20px 48px -8px rgba(28,10,0,0.16)' } as any}
+      whileHover={{ y: -4, boxShadow: '0 20px 48px -8px rgba(15,23,42,0.16)' } as any}
       transition={{ duration: 0.2 }}
       className="card overflow-hidden cursor-pointer group relative border-0 shadow-card"
       onClick={() => navigate(`/classes/${cls.id}`)}
@@ -236,7 +236,7 @@ function ClassCard({ cls, schedule, onDelete, index }: {
               <GraduationCap className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h3 className="font-bold text-[#1C0A00] text-base leading-tight">{cls.name}</h3>
+              <h3 className="font-bold text-[#0f172a] text-base leading-tight">{cls.name}</h3>
               <div className="flex flex-wrap gap-1 mt-0.5">
                 {cls.grade_level && (
                   <span className="text-xs text-brand-500 bg-brand-50 px-1.5 py-0.5 rounded">{cls.grade_level}</span>
@@ -304,15 +304,15 @@ function ClassCard({ cls, schedule, onDelete, index }: {
             </div>
           </div>
         ) : nextEvent ? (
-          <div className="bg-amber-50 rounded-xl p-3 mb-4">
-            <p className="text-xs font-semibold text-amber-600 mb-1 flex items-center gap-1">
+          <div className="bg-blue-50 rounded-xl p-3 mb-4">
+            <p className="text-xs font-semibold text-blue-600 mb-1 flex items-center gap-1">
               <Calendar className="w-3 h-3" /> Next Session
             </p>
-            <div className="flex items-center justify-between text-xs text-amber-700">
+            <div className="flex items-center justify-between text-xs text-blue-700">
               <span className="font-medium truncate">{nextEvent.title}</span>
               <span className="font-mono ml-2 flex-shrink-0">{nextEvent.start_time}</span>
             </div>
-            <p className="text-[10px] text-amber-500 mt-0.5">
+            <p className="text-[10px] text-blue-500 mt-0.5">
               {isToday(parseISO(nextEvent.date)) ? 'Today' : format(parseISO(nextEvent.date), 'EEE, MMM d')}
             </p>
           </div>

@@ -25,12 +25,12 @@ const DIFFICULTY_COLORS: Record<string, string> = {
 }
 
 const CARD_GRADIENTS = [
-  'from-brand-500 to-orange-400',
+  'from-brand-500 to-sky-400',
   'from-violet-500 to-purple-400',
   'from-blue-500 to-cyan-400',
   'from-emerald-500 to-teal-400',
   'from-rose-500 to-pink-400',
-  'from-amber-500 to-yellow-400',
+  'from-blue-600 to-cyan-400',
 ]
 const cardGradient = (title: string) =>
   CARD_GRADIENTS[title.split('').reduce((a, c) => a + c.charCodeAt(0), 0) % CARD_GRADIENTS.length]
@@ -88,7 +88,7 @@ export default function PapersListPage() {
   return (
     <div className="space-y-6">
       {/* Hero header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[#1C0A00] to-brand-900 rounded-3xl p-8 text-white shadow-xl">
+      <div className="relative overflow-hidden bg-gradient-to-br from-[#0f172a] to-brand-900 rounded-3xl p-8 text-white shadow-xl">
         <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-white/5 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-brand-500/20 translate-y-1/2 -translate-x-1/4 pointer-events-none" />
         <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -128,7 +128,7 @@ export default function PapersListPage() {
       {papers.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { label: 'Total Papers',  value: papers.length,    icon: ScrollText, grad: 'from-brand-500 to-orange-400'   },
+            { label: 'Total Papers',  value: papers.length,    icon: ScrollText, grad: 'from-brand-500 to-sky-400'      },
             { label: 'Published',     value: publishedCount,   icon: Globe,      grad: 'from-emerald-500 to-teal-400'   },
             { label: 'Total Questions', value: totalQuestions, icon: FileText,   grad: 'from-violet-500 to-purple-400'  },
             { label: 'Total Marks',   value: totalMarks,       icon: BarChart2,  grad: 'from-blue-500 to-cyan-400'      },
@@ -138,7 +138,7 @@ export default function PapersListPage() {
                 <Icon className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-xl font-bold text-[#1C0A00] leading-none">{value}</p>
+                <p className="text-xl font-bold text-[#0f172a] leading-none">{value}</p>
                 <p className="text-xs text-brand-500 mt-0.5 font-medium">{label}</p>
               </div>
             </div>
@@ -193,7 +193,7 @@ export default function PapersListPage() {
       ) : filtered.length === 0 ? (
         <div className="card p-12 text-center">
           <Search className="w-10 h-10 text-brand-200 mx-auto mb-3" />
-          <p className="font-semibold text-[#1C0A00] mb-1">No papers match</p>
+          <p className="font-semibold text-[#0f172a] mb-1">No papers match</p>
           <button onClick={() => { setSearch(''); setSubjectFilter(''); setStatusFilter('all') }}
             className="btn-ghost text-sm mt-2">Clear filters</button>
         </div>
@@ -218,7 +218,7 @@ export default function PapersListPage() {
                 <motion.div key={p.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                   className="grid grid-cols-12 gap-3 px-4 py-3 items-center hover:bg-brand-25 group transition-colors">
                   <div className="col-span-4 min-w-0">
-                    <Link to={`/papers/${p.id}`} className="font-semibold text-sm text-[#1C0A00] hover:text-brand-500 transition-colors truncate block">
+                    <Link to={`/papers/${p.id}`} className="font-semibold text-sm text-[#0f172a] hover:text-brand-500 transition-colors truncate block">
                       {p.title}
                     </Link>
                     {getClassName(p) && <p className="text-xs text-brand-400 truncate">{getClassName(p)}</p>}
@@ -230,8 +230,8 @@ export default function PapersListPage() {
                       </span>
                     ) : <span className="text-brand-300 text-xs">—</span>}
                   </div>
-                  <div className="col-span-1 text-sm font-bold text-[#1C0A00]">{p.questions?.length ?? 0}</div>
-                  <div className="col-span-1 text-sm font-bold text-[#1C0A00]">{p.total_marks}</div>
+                  <div className="col-span-1 text-sm font-bold text-[#0f172a]">{p.questions?.length ?? 0}</div>
+                  <div className="col-span-1 text-sm font-bold text-[#0f172a]">{p.total_marks}</div>
                   <div className="col-span-1">
                     <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded border ${DIFFICULTY_COLORS[diff] || DIFFICULTY_COLORS.medium}`}>{diff}</span>
                   </div>
@@ -289,7 +289,7 @@ export default function PapersListPage() {
                           <ScrollText className="w-5 h-5 text-white" />
                         </div>
                         <div className="min-w-0">
-                          <h3 className="font-bold text-[#1C0A00] text-sm leading-snug line-clamp-2 group-hover:text-brand-600 transition-colors">{p.title}</h3>
+                          <h3 className="font-bold text-[#0f172a] text-sm leading-snug line-clamp-2 group-hover:text-brand-600 transition-colors">{p.title}</h3>
                           {p.is_published
                             ? <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded-full border border-emerald-200 mt-0.5"><CheckCircle2 className="w-2.5 h-2.5" /> Published</span>
                             : <span className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded-full border border-slate-200 mt-0.5"><PenLine className="w-2.5 h-2.5" /> Draft</span>}
@@ -325,7 +325,7 @@ export default function PapersListPage() {
                         { label: p.duration_minutes ? 'Mins' : 'Difficulty', value: p.duration_minutes ?? diff },
                       ].map(({ label, value }) => (
                         <div key={label} className="bg-brand-50 rounded-xl p-2 text-center">
-                          <p className="text-sm font-bold text-[#1C0A00]">{value}</p>
+                          <p className="text-sm font-bold text-[#0f172a]">{value}</p>
                           <p className="text-[10px] text-brand-400 uppercase tracking-wide">{label}</p>
                         </div>
                       ))}

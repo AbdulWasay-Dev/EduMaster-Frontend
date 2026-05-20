@@ -76,7 +76,7 @@ export default function UploadGradingPage() {
         <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-5">
           <CheckCircle className="w-10 h-10 text-emerald-500" />
         </div>
-        <h3 className="text-2xl font-bold text-[#1C0A00] mb-2">Grading Complete!</h3>
+        <h3 className="text-2xl font-bold text-[#0f172a] mb-2">Grading Complete!</h3>
         <p className="text-brand-500 mb-6">
           {files.length > 1 ? `${files.length} answer sheets have` : 'The answer sheet has'} been graded successfully.
         </p>
@@ -123,7 +123,7 @@ export default function UploadGradingPage() {
           <ArrowLeft className="w-4 h-4" /> Back
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-[#1C0A00]">Grade Answer Sheets</h1>
+          <h1 className="text-2xl font-bold text-[#0f172a]">Grade Answer Sheets</h1>
           <p className="text-sm text-brand-500">Upload scanned answer sheets for AI-powered grading</p>
         </div>
       </div>
@@ -164,7 +164,7 @@ export default function UploadGradingPage() {
             <div className="card p-5 space-y-4">
               <div className="flex items-center gap-2 mb-1">
                 <BookOpen className="w-4 h-4 text-brand-500" />
-                <h3 className="font-bold text-[#1C0A00]">Select Exam Paper <span className="text-red-500">*</span></h3>
+                <h3 className="font-bold text-[#0f172a]">Select Exam Paper <span className="text-red-500">*</span></h3>
               </div>
               <select value={paperId} onChange={e => setPaperId(e.target.value)} className="input">
                 <option value="">— Choose a paper —</option>
@@ -175,7 +175,7 @@ export default function UploadGradingPage() {
               {selectedPaper && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                   className="p-4 bg-brand-50 rounded-xl border border-brand-100 space-y-2">
-                  <p className="font-bold text-sm text-[#1C0A00]">{selectedPaper.title}</p>
+                  <p className="font-bold text-sm text-[#0f172a]">{selectedPaper.title}</p>
                   <div className="flex flex-wrap gap-2 text-xs">
                     <span className="bg-white border border-brand-100 px-2 py-1 rounded-lg font-medium text-brand-700">
                       {selectedPaper.questions?.length ?? 0} Questions
@@ -206,7 +206,7 @@ export default function UploadGradingPage() {
             <div className="card p-5 space-y-4">
               <div className="flex items-center gap-2 mb-1">
                 <Users className="w-4 h-4 text-brand-500" />
-                <h3 className="font-bold text-[#1C0A00]">Class & Student <span className="text-brand-400 text-xs font-normal">(optional)</span></h3>
+                <h3 className="font-bold text-[#0f172a]">Class & Student <span className="text-brand-400 text-xs font-normal">(optional)</span></h3>
               </div>
               <div>
                 <label className="label">Class</label>
@@ -281,7 +281,7 @@ export default function UploadGradingPage() {
             <div className="lg:col-span-2 card p-5 space-y-4">
               <div className="flex items-center gap-2">
                 <Upload className="w-4 h-4 text-brand-500" />
-                <h3 className="font-bold text-[#1C0A00]">Upload Answer Sheet Images</h3>
+                <h3 className="font-bold text-[#0f172a]">Upload Answer Sheet Images</h3>
               </div>
               <FileDropzone
                 label="Drop scanned answer sheets here (JPG, PNG, WEBP)"
@@ -312,7 +312,7 @@ export default function UploadGradingPage() {
             {/* Summary + grade button */}
             <div className="space-y-4">
               <div className="card p-5 space-y-3">
-                <h3 className="font-bold text-[#1C0A00] text-sm">Grading Summary</h3>
+                <h3 className="font-bold text-[#0f172a] text-sm">Grading Summary</h3>
                 {[
                   { label: 'Paper',     value: selectedPaper?.title ?? '—',       icon: FileText },
                   { label: 'Class',     value: selectedClass?.name ?? 'Not set',  icon: Users    },
@@ -323,7 +323,7 @@ export default function UploadGradingPage() {
                   <div key={label} className="flex items-center gap-2 text-sm">
                     <Icon className="w-3.5 h-3.5 text-brand-400 shrink-0" />
                     <span className="text-brand-500 w-20 shrink-0 text-xs font-medium">{label}</span>
-                    <span className="font-semibold text-[#1C0A00] text-xs truncate">{value}</span>
+                    <span className="font-semibold text-[#0f172a] text-xs truncate">{value}</span>
                   </div>
                 ))}
               </div>

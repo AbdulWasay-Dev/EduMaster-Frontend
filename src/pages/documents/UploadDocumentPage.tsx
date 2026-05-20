@@ -144,7 +144,7 @@ export default function UploadDocumentPage() {
                     <div className="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center">
                       <CheckCircle2 className="w-7 h-7 text-emerald-600" />
                     </div>
-                    <p className="font-semibold text-[#1C0A00] text-sm">{selectedFile.name}</p>
+                    <p className="font-semibold text-[#0f172a] text-sm">{selectedFile.name}</p>
                     <p className="text-xs text-brand-500">{formatBytes(selectedFile.size)}</p>
                     <button
                       type="button"
@@ -160,7 +160,7 @@ export default function UploadDocumentPage() {
                     <div className="w-14 h-14 rounded-2xl bg-brand-100 flex items-center justify-center">
                       <CloudUpload className="w-7 h-7 text-brand-500" />
                     </div>
-                    <p className="font-semibold text-[#1C0A00] text-sm">
+                    <p className="font-semibold text-[#0f172a] text-sm">
                       {dragOver ? 'Drop your file here' : 'Drag & drop or click to browse'}
                     </p>
                     <p className="text-xs text-brand-400">PDF, PPTX, DOCX, PNG, JPG — up to 200 MB</p>

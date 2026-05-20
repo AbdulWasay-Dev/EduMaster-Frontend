@@ -112,7 +112,7 @@ export default function DataTable<TData>({
                   className="border-t border-brand-50 hover:bg-brand-50/40 transition-colors"
                 >
                   {row.getVisibleCells().map(cell => (
-                    <td key={cell.id} className="py-3 px-4 text-[#1C0A00]">
+                    <td key={cell.id} className="py-3 px-4 text-[#0f172a]">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}

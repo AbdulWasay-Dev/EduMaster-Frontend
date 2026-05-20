@@ -35,16 +35,28 @@ export default function AttendancePage() {
   }, [searchParams])
 
   const { data: classes = [] } = useQuery({ queryKey: ['classes'], queryFn: () => listClasses() })
-  const { data: classSubjects = [] } = useQuery({
+  const { data: classSubjects = [], isLoading: isLoadingSubjects } = useQuery({
     queryKey: ['subjects', selectedClass],
     queryFn: () => listSubjects(selectedClass || undefined),
     enabled: !!selectedClass,
   })
 
   const selectedClassObj   = (classes as Class[]).find(c => c.id === selectedClass)
-  const selectedSubjectObj = (classSubjects as Subject[]).find(s => s.id === selectedSubject)
+  const classSubjectList   = classSubjects as Subject[]
+  const selectedSubjectObj = classSubjectList.find(s => s.id === selectedSubject)
 
-  const filtersReady = !!selectedClass && !!selectedSubject
+  useEffect(() => {
+    if (!selectedClass && selectedSubject) {
+      setSelectedSubject('')
+      return
+    }
+
+    if (!isLoadingSubjects && selectedSubject && !selectedSubjectObj) {
+      setSelectedSubject('')
+    }
+  }, [isLoadingSubjects, selectedClass, selectedSubject, selectedSubjectObj])
+
+  const filtersReady = !!selectedClass && !!selectedSubject && !!selectedSubjectObj
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/20 to-indigo-50/30">
@@ -102,10 +114,13 @@ export default function AttendancePage() {
                   disabled={!selectedClass}
                 >
                   <option value="">— Select a subject —</option>
-                  {(classSubjects as Subject[]).map(s => (
+                  {classSubjectList.map(s => (
                     <option key={s.id} value={s.id}>{s.name}</option>
                   ))}
                 </select>
+                {selectedClass && !isLoadingSubjects && classSubjectList.length === 0 && (
+                  <p className="mt-2 text-xs text-amber-600">No subjects are assigned to this class yet.</p>
+                )}
                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               </div>
             </div>

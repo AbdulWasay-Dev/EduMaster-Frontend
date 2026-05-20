@@ -59,7 +59,7 @@ const StudentSubjectsPage         = lazy(() => import('./pages/student/StudentSu
 const StudentAskAIPage            = lazy(() => import('./pages/student/StudentAskAIPage'))
 
 const Fallback = () => (
-  <div className="flex items-center justify-center h-screen bg-[#FFFAF5]">
+  <div className="flex items-center justify-center h-screen bg-[#f8fafc]">
     <LoadingSpinner size="lg" />
   </div>
 )

@@ -116,7 +116,7 @@ export default function SchedulePage() {
           {/* Calendar Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
-              <h2 className="text-xl font-bold text-[#1C0A00] w-48">
+              <h2 className="text-xl font-bold text-[#0f172a] w-48">
                 {format(currentDate, dateFormat)}
               </h2>
               <div className="flex items-center gap-1 bg-brand-50 p-1 rounded-lg">
@@ -192,7 +192,7 @@ export default function SchedulePage() {
                       <span className={`text-sm font-medium w-7 h-7 flex items-center justify-center rounded-full ${
                         isToday(day) 
                           ? 'bg-brand-500 text-white shadow-sm' 
-                          : 'text-[#1C0A00]'
+                          : 'text-[#0f172a]'
                       }`}>
                         {format(day, 'd')}
                       </span>
@@ -227,7 +227,7 @@ export default function SchedulePage() {
           <div className="card p-5 bg-gradient-to-br from-brand-50 to-white border-brand-100">
             <div className="flex items-center gap-2 mb-4">
               <Bell className="w-5 h-5 text-brand-500" />
-              <h3 className="font-bold text-[#1C0A00]">Upcoming Alerts</h3>
+              <h3 className="font-bold text-[#0f172a]">Upcoming Alerts</h3>
             </div>
             
             {upcomingEvents.length === 0 ? (
@@ -252,7 +252,7 @@ export default function SchedulePage() {
                           <Icon className="w-4 h-4" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-semibold text-[#1C0A00] truncate">{evt.title}</p>
+                          <p className="text-sm font-semibold text-[#0f172a] truncate">{evt.title}</p>
                           <p className="text-xs text-brand-600 mt-0.5">
                             {isToday(eDate) ? 'Today' : format(eDate, 'MMM d')} • {evt.start_time}
                           </p>
@@ -280,7 +280,7 @@ export default function SchedulePage() {
           </div>
           
           <div className="card p-5">
-            <h3 className="font-bold text-[#1C0A00] text-sm mb-3">Event Types</h3>
+            <h3 className="font-bold text-[#0f172a] text-sm mb-3">Event Types</h3>
             <div className="space-y-2">
               {Object.entries(EVENT_COLORS).map(([type, colorClass]) => (
                 <div key={type} className="flex items-center gap-2">

@@ -50,7 +50,7 @@ const TEMPLATES: { key: PaperTemplate; label: string; description: string; icon:
     label: 'School',
     description: 'Colorful header band — bright and student-friendly',
     icon: <School className="w-6 h-6" />,
-    color: 'border-orange-400 bg-orange-50',
+    color: 'border-blue-400 bg-blue-50',
   },
   {
     key: 'minimalist',
@@ -311,7 +311,7 @@ export default function GeneratePaperPage() {
                           : form.document_ids.filter(x => x !== doc.id))}
                         className="w-4 h-4 accent-brand-500"
                       />
-                      <span className="text-sm font-medium text-[#1C0A00]">{doc.filename}</span>
+                      <span className="text-sm font-medium text-[#0f172a]">{doc.filename}</span>
                     </label>
                   ))}
                   {docs.filter(d => d.processing_status === 'completed').length === 0 && (
@@ -364,7 +364,7 @@ export default function GeneratePaperPage() {
                       <div key={key} className="flex items-center justify-between p-3 rounded-xl border border-brand-100">
                         <div className="flex items-center gap-2">
                           <span className="text-lg w-6 text-center">{icon}</span>
-                          <span className="text-sm font-medium text-[#1C0A00]">{label}</span>
+                          <span className="text-sm font-medium text-[#0f172a]">{label}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <button onClick={() => adjustCount(key, -1)} disabled={count === 0}
@@ -433,7 +433,7 @@ export default function GeneratePaperPage() {
                     <div className={`mb-2 ${form.template === tpl.key ? 'text-brand-600' : 'text-brand-400'}`}>
                       {tpl.icon}
                     </div>
-                    <p className="font-semibold text-sm text-[#1C0A00]">{tpl.label}</p>
+                    <p className="font-semibold text-sm text-[#0f172a]">{tpl.label}</p>
                     <p className="text-xs text-brand-500 mt-1 leading-relaxed">{tpl.description}</p>
                   </button>
                 ))}
@@ -498,7 +498,7 @@ export default function GeneratePaperPage() {
               {generated ? (
                 <div className="text-center py-8">
                   <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                  <h3 className="text-lg font-bold text-[#1C0A00] mb-2">Paper Generated!</h3>
+                  <h3 className="text-lg font-bold text-[#0f172a] mb-2">Paper Generated!</h3>
                   <p className="text-brand-600 mb-6">Your exam paper has been created. Use the editor to tweak it before downloading.</p>
                   <div className="flex justify-center gap-3">
                     <button onClick={() => navigate(`/papers/${generated}/edit`)} className="btn-primary">Open Editor</button>
@@ -513,7 +513,7 @@ export default function GeneratePaperPage() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  <h3 className="font-semibold text-[#1C0A00]">Review & Generate</h3>
+                  <h3 className="font-semibold text-[#0f172a]">Review & Generate</h3>
                   <div className="space-y-1.5">
                     {[
                       ['Title', form.title || '(not set)'],
@@ -531,7 +531,7 @@ export default function GeneratePaperPage() {
                     ].map(([k, v]) => (
                       <div key={k} className="flex items-center justify-between py-1.5 border-b border-brand-50 text-sm">
                         <span className="text-brand-600">{k}</span>
-                        <span className="font-medium text-[#1C0A00] capitalize">{v}</span>
+                        <span className="font-medium text-[#0f172a] capitalize">{v}</span>
                       </div>
                     ))}
                   </div>

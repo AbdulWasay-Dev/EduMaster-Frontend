@@ -43,7 +43,7 @@ export default function SubmissionDetailModal({ submission, assignment, onClose,
               <User className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-[#1C0A00]">{submission.student_name}</h2>
+              <h2 className="text-lg font-bold text-[#0f172a]">{submission.student_name}</h2>
               <p className="text-sm text-brand-500">{submission.student_email} • Submitted: {submission.submitted_at ? new Date(submission.submitted_at).toLocaleString() : '—'}</p>
             </div>
           </div>
@@ -137,7 +137,7 @@ export default function SubmissionDetailModal({ submission, assignment, onClose,
                   </div>
                 ) : (
                   <div className="text-center pb-4">
-                    <p className="text-5xl font-black text-[#1C0A00]">
+                    <p className="text-5xl font-black text-[#0f172a]">
                       {submission.marks_obtained !== null ? submission.marks_obtained : '-'}
                     </p>
                     <p className="text-sm text-brand-500 mt-1 font-medium">out of {assignment.total_marks}</p>
@@ -163,7 +163,7 @@ export default function SubmissionDetailModal({ submission, assignment, onClose,
                   <div className="space-y-3">
                     {Object.entries(submission.ai_rubric_breakdown).map(([criteria, item]: [string, any], i: number) => (
                       <div key={i} className="text-sm">
-                        <div className="flex justify-between font-medium text-[#1C0A00] mb-0.5">
+                        <div className="flex justify-between font-medium text-[#0f172a] mb-0.5">
                           <span>{item.criteria ?? criteria}</span>
                           <span>{item.score}/{item.max_score}</span>
                         </div>

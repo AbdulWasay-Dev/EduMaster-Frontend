@@ -22,12 +22,12 @@ import { listClasses } from '@/lib/api/classes'
 import { formatDate, timeAgo, fileIcon } from '@/lib/utils'
 
 const SUBJECT_GRADIENTS = [
-  'from-orange-500 to-amber-400',
-  'from-brand-500 to-orange-400',
+  'from-brand-500 to-sky-400',
+  'from-blue-600 to-cyan-400',
   'from-violet-500 to-purple-400',
   'from-emerald-500 to-teal-400',
-  'from-blue-500 to-cyan-400',
-  'from-rose-500 to-pink-400',
+  'from-indigo-500 to-blue-400',
+  'from-sky-500 to-blue-300',
 ]
 
 function getGradient(name: string): string {
@@ -107,7 +107,7 @@ export default function SubjectDetailPage() {
   // Stats
   const infoStats = [
     { label: 'Documents',    value: docs.length,         icon: FileText,      color: 'bg-violet-100 text-violet-600'  },
-    { label: 'Papers',       value: subjectPapers.length, icon: ScrollText,    color: 'bg-amber-100 text-amber-600'    },
+    { label: 'Papers',       value: subjectPapers.length, icon: ScrollText,    color: 'bg-blue-100 text-blue-600'      },
     { label: 'Assignments',  value: assignments.length,   icon: ClipboardList, color: 'bg-emerald-100 text-emerald-600' },
     { label: 'Students',     value: subject.student_count ?? 0, icon: Users, color: 'bg-blue-100 text-blue-600'     },
   ]
@@ -212,7 +212,7 @@ export default function SubjectDetailPage() {
               <Icon className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xl font-bold text-[#1C0A00] leading-none">{value}</p>
+              <p className="text-xl font-bold text-[#0f172a] leading-none">{value}</p>
               <p className="text-xs text-brand-500 font-medium mt-0.5">{label}</p>
             </div>
           </motion.div>
@@ -265,7 +265,7 @@ export default function SubjectDetailPage() {
                   <dd className={`text-sm font-medium ${
                     k === 'Status'
                       ? subject.is_active ? 'text-emerald-600' : 'text-gray-400'
-                      : 'text-[#1C0A00]'
+                      : 'text-[#0f172a]'
                   }`}>
                     {k === 'Status' ? (
                       <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${
@@ -300,7 +300,7 @@ export default function SubjectDetailPage() {
                   desc:  'AI-powered exam',
                   icon:  ScrollText,
                   to:    `/papers/generate?subject_id=${id}${subject.class_id ? `&class_id=${subject.class_id}` : ''}`,
-                  color: 'bg-amber-100 text-amber-600',
+                  color: 'bg-blue-100 text-blue-600',
                 },
                 {
                   label: 'Take Attendance',
@@ -326,7 +326,7 @@ export default function SubjectDetailPage() {
                     <Icon className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="font-semibold text-sm text-[#1C0A00]">{label}</p>
+                    <p className="font-semibold text-sm text-[#0f172a]">{label}</p>
                     <p className="text-xs text-brand-500">{desc}</p>
                   </div>
                 </Link>
@@ -335,7 +335,7 @@ export default function SubjectDetailPage() {
 
             {/* Recent activity summary */}
             <div className="card p-4 mt-3">
-              <h3 className="text-sm font-semibold text-[#1C0A00] mb-3 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-[#0f172a] mb-3 flex items-center gap-2">
                 <Clock className="w-4 h-4 text-brand-400" /> Recent Activity
               </h3>
               {docs.length === 0 && subjectPapers.length === 0 && assignments.length === 0 ? (
@@ -359,7 +359,7 @@ export default function SubjectDetailPage() {
                       to={`/papers/${paper.id}`}
                       className="flex items-center gap-2 text-xs text-brand-600 hover:text-brand-800 transition-colors"
                     >
-                      <ScrollText className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+                      <ScrollText className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
                       <span className="truncate flex-1">{paper.title}</span>
                       <span className="text-brand-400 flex-shrink-0">{timeAgo(paper.created_at)}</span>
                     </Link>
@@ -409,7 +409,7 @@ export default function SubjectDetailPage() {
                   <div className="flex items-start gap-3">
                     <span className="text-2xl flex-shrink-0">{fileIcon(doc.file_type)}</span>
                     <div className="min-w-0 flex-1">
-                      <p className="font-semibold text-sm text-[#1C0A00] truncate group-hover:text-brand-700 transition-colors">
+                      <p className="font-semibold text-sm text-[#0f172a] truncate group-hover:text-brand-700 transition-colors">
                         {doc.filename || doc.title}
                       </p>
                       <p className="text-xs text-brand-400 mt-0.5 uppercase font-medium">{doc.file_type}</p>
@@ -451,17 +451,17 @@ export default function SubjectDetailPage() {
                   className="card p-4 hover:shadow-lg hover:border-brand-200 transition-all group"
                 >
                   <div className="flex items-start gap-2 mb-3">
-                    <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
-                      <ScrollText className="w-4.5 h-4.5 text-amber-600" />
+                    <div className="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
+                      <ScrollText className="w-4.5 h-4.5 text-blue-600" />
                     </div>
                     <div className="min-w-0">
-                      <p className="font-semibold text-sm text-[#1C0A00] group-hover:text-brand-700 transition-colors line-clamp-2">
+                      <p className="font-semibold text-sm text-[#0f172a] group-hover:text-brand-700 transition-colors line-clamp-2">
                         {paper.title}
                       </p>
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2 mb-3">
-                    <span className="text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full font-medium">
+                    <span className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full font-medium">
                       {paper.total_marks} marks
                     </span>
                     <span className="text-xs bg-brand-50 text-brand-600 px-2 py-0.5 rounded-full">
@@ -512,12 +512,12 @@ export default function SubjectDetailPage() {
                     <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${
                       a.status === 'published' ? 'bg-emerald-100 text-emerald-600' :
                       a.status === 'closed'    ? 'bg-gray-100 text-gray-500' :
-                                                 'bg-amber-100 text-amber-600'
+                                                 'bg-blue-100 text-blue-600'
                     }`}>
                       <ClipboardList className="w-4.5 h-4.5" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-sm text-[#1C0A00] truncate group-hover:text-brand-700 transition-colors">
+                      <p className="font-semibold text-sm text-[#0f172a] truncate group-hover:text-brand-700 transition-colors">
                         {a.title}
                       </p>
                       <div className="flex items-center gap-2 mt-0.5 flex-wrap">

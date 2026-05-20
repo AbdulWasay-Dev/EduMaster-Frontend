@@ -135,7 +135,7 @@ export default function AnalyticsDashboardPage() {
                     <XAxis dataKey="grade" tick={{ fontSize: 11, fill: '#9a3412' }} tickLine={false} axisLine={false} />
                     <YAxis tick={{ fontSize: 10, fill: '#9a3412' }} tickLine={false} axisLine={false} />
                     <Tooltip
-                      contentStyle={{ border: '1px solid #fed7aa', borderRadius: '8px', fontSize: '12px' }}
+                      contentStyle={{ border: '1px solid #dbeafe', borderRadius: '8px', fontSize: '12px' }}
                       formatter={(v) => [`${v} students`, 'Count']}
                     />
                     <Bar dataKey="count" radius={[4, 4, 0, 0]} name="Students">
@@ -181,7 +181,7 @@ export default function AnalyticsDashboardPage() {
                         {s.name.charAt(0)}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-[#1C0A00] truncate">{s.name}</p>
+                        <p className="text-sm font-medium text-[#0f172a] truncate">{s.name}</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <GradeCircle percentage={s.pct} size={36} />
@@ -215,7 +215,7 @@ export default function AnalyticsDashboardPage() {
                       {s.name.charAt(0)}
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-[#1C0A00]">{s.name}</p>
+                      <p className="text-sm font-medium text-[#0f172a]">{s.name}</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-24 h-2 bg-brand-100 rounded-full overflow-hidden">
@@ -245,7 +245,7 @@ export default function AnalyticsDashboardPage() {
                   <tbody>
                     {paperStats.map(p => (
                       <tr key={p.id} className="border-b border-brand-50 hover:bg-brand-50/50 transition-colors">
-                        <td className="py-3 px-3 font-medium text-[#1C0A00]">{p.title}</td>
+                        <td className="py-3 px-3 font-medium text-[#0f172a]">{p.title}</td>
                         <td className="py-3 px-3 text-brand-600">{p.count}</td>
                         <td className="py-3 px-3">
                           <span className={`font-bold ${p.avg >= 80 ? 'text-emerald-600' : p.avg >= 50 ? 'text-amber-500' : 'text-red-500'}`}>
@@ -282,7 +282,7 @@ export default function AnalyticsDashboardPage() {
                           <Users className="w-4 h-4 text-brand-600" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-sm text-[#1C0A00] truncate">{cls.name}</p>
+                          <p className="font-semibold text-sm text-[#0f172a] truncate">{cls.name}</p>
                           <p className="text-xs text-brand-500">{cls.student_count ?? 0} students · {classSubs.length} graded</p>
                         </div>
                         {avg !== null ? (

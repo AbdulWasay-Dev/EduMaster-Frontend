@@ -98,7 +98,7 @@ export default function EventModal({ open, onOpenChange, event, initialDate }: E
         <Dialog.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 animate-in fade-in" />
         <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-2xl shadow-xl z-50 p-6 animate-in fade-in zoom-in-95">
           <div className="flex items-center justify-between mb-5">
-            <Dialog.Title className="text-lg font-bold text-[#1C0A00]">
+            <Dialog.Title className="text-lg font-bold text-[#0f172a]">
               {event ? 'Edit Event' : 'New Event'}
             </Dialog.Title>
             <Dialog.Close className="p-2 rounded-full hover:bg-brand-50 text-brand-500 transition-colors">

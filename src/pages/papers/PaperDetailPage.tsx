@@ -92,7 +92,7 @@ export default function PaperDetailPage() {
   return (
     <div className="space-y-6">
       {/* Hero */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1C0A00] to-brand-900 p-8 text-white shadow-xl">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0f172a] to-brand-900 p-8 text-white shadow-xl">
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/5 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
         <div className="relative z-10">
           {/* Back + actions */}
@@ -171,7 +171,7 @@ export default function PaperDetailPage() {
               <Icon className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-lg font-bold text-[#1C0A00] leading-none">{value}</p>
+              <p className="text-lg font-bold text-[#0f172a] leading-none">{value}</p>
               <p className="text-xs text-brand-500 mt-0.5">{label}</p>
             </div>
           </motion.div>
@@ -222,7 +222,7 @@ export default function PaperDetailPage() {
                 >
                   <button className="w-full flex items-start gap-3 p-5 text-left hover:bg-brand-25 transition-colors group"
                     onClick={() => toggleQ(q.id)}>
-                    <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-brand-500 to-orange-400 text-white text-xs font-bold shrink-0 shadow-sm">
+                    <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-brand-500 to-sky-400 text-white text-xs font-bold shrink-0 shadow-sm">
                       {i + 1}
                     </span>
                     <div className="flex-1 min-w-0">
@@ -235,7 +235,7 @@ export default function PaperDetailPage() {
                           {q.marks ?? (q as any).max_score ?? 5} mark{(q.marks ?? 5) !== 1 ? 's' : ''}
                         </span>
                       </div>
-                      <p className="text-sm font-medium text-[#1C0A00] leading-relaxed">{q.question_text}</p>
+                      <p className="text-sm font-medium text-[#0f172a] leading-relaxed">{q.question_text}</p>
                     </div>
                     {expanded ? <ChevronUp className="w-4 h-4 text-brand-400 shrink-0 mt-1" /> : <ChevronDown className="w-4 h-4 text-brand-400 shrink-0 mt-1" />}
                   </button>
@@ -302,7 +302,7 @@ export default function PaperDetailPage() {
                 ].map(([k, v]) => (
                   <div key={k} className="flex items-start gap-4 py-2.5">
                     <dt className="text-xs font-semibold text-brand-500 uppercase tracking-wide w-28 shrink-0 pt-0.5">{k}</dt>
-                    <dd className="text-sm font-medium text-[#1C0A00]">{v}</dd>
+                    <dd className="text-sm font-medium text-[#0f172a]">{v}</dd>
                   </div>
                 ))}
               </dl>
@@ -312,7 +312,7 @@ export default function PaperDetailPage() {
               {paper.instructions && (
                 <div className="card p-5 border-l-4 border-brand-400">
                   <h3 className="text-xs font-bold text-brand-600 uppercase tracking-wide mb-2">Instructions</h3>
-                  <p className="text-sm text-[#1C0A00] leading-relaxed">{paper.instructions}</p>
+                  <p className="text-sm text-[#0f172a] leading-relaxed">{paper.instructions}</p>
                 </div>
               )}
               {paper.institution_name && (
@@ -327,7 +327,7 @@ export default function PaperDetailPage() {
                     ].map(([k, v]) => (
                       <div key={k} className="flex gap-3 text-sm">
                         <span className="text-brand-500 font-semibold w-24 shrink-0">{k}</span>
-                        <span className="text-[#1C0A00]">{v}</span>
+                        <span className="text-[#0f172a]">{v}</span>
                       </div>
                     ))}
                   </dl>

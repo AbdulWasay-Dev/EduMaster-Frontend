@@ -94,7 +94,7 @@ export default function DocumentDetailPage() {
             <span className="text-xl">{fileIcon(doc.file_type ?? '')}</span>
           </div>
           <div>
-            <p className="text-sm font-bold text-[#1C0A00]">{doc.file_type?.toUpperCase() ?? '—'}</p>
+            <p className="text-sm font-bold text-[#0f172a]">{doc.file_type?.toUpperCase() ?? '—'}</p>
             <p className="text-xs text-brand-400">File type</p>
           </div>
         </div>
@@ -103,7 +103,7 @@ export default function DocumentDetailPage() {
             <Hash className="w-5 h-5 text-indigo-600" />
           </div>
           <div>
-            <p className="text-sm font-bold text-[#1C0A00]">{chunks.length}</p>
+            <p className="text-sm font-bold text-[#0f172a]">{chunks.length}</p>
             <p className="text-xs text-brand-400">Text chunks</p>
           </div>
         </div>
@@ -112,7 +112,7 @@ export default function DocumentDetailPage() {
             <HardDrive className="w-5 h-5 text-emerald-600" />
           </div>
           <div>
-            <p className="text-sm font-bold text-[#1C0A00]">{doc.file_size ? formatBytes(doc.file_size) : '—'}</p>
+            <p className="text-sm font-bold text-[#0f172a]">{doc.file_size ? formatBytes(doc.file_size) : '—'}</p>
             <p className="text-xs text-brand-400">File size</p>
           </div>
         </div>
@@ -121,7 +121,7 @@ export default function DocumentDetailPage() {
             <Clock className="w-5 h-5 text-amber-600" />
           </div>
           <div>
-            <p className="text-sm font-bold text-[#1C0A00]">{formatDate(doc.created_at)}</p>
+            <p className="text-sm font-bold text-[#0f172a]">{formatDate(doc.created_at)}</p>
             <p className="text-xs text-brand-400">Uploaded</p>
           </div>
         </div>
@@ -150,7 +150,7 @@ export default function DocumentDetailPage() {
                     <span className="text-xs font-mono text-brand-500">Chunk {i + 1}</span>
                     <span className="text-xs text-brand-300 ml-auto">{chunk.char_count} chars</span>
                   </div>
-                  <p className="text-sm text-[#1C0A00] leading-relaxed">{chunk.content}</p>
+                  <p className="text-sm text-[#0f172a] leading-relaxed">{chunk.content}</p>
                 </div>
               ))}
             </div>
@@ -170,7 +170,7 @@ export default function DocumentDetailPage() {
             ].map(([k, v]) => (
               <div key={k} className="flex items-start gap-4 py-3">
                 <span className="text-xs font-semibold text-brand-500 uppercase tracking-wide w-28 shrink-0 pt-0.5">{k}</span>
-                <span className="text-sm text-[#1C0A00] font-medium">{v}</span>
+                <span className="text-sm text-[#0f172a] font-medium">{v}</span>
               </div>
             ))}
           </div>

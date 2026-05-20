@@ -17,8 +17,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           toastOptions={{
             style: {
               background: '#fff',
-              border: '1px solid #fed7aa',
-              color: '#1c0a00',
+              border: '1px solid #dbeafe',
+              color: '#0f172a',
             },
           }}
           richColors

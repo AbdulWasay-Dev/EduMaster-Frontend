@@ -7,7 +7,6 @@ import {
 import { Link, useNavigate } from 'react-router-dom'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { type Subject } from '@/types'
-import { subjectBorderColor } from '@/lib/utils'
 
 interface SubjectCardProps {
   subject: Subject
@@ -15,23 +14,23 @@ interface SubjectCardProps {
   className?: string
 }
 
-// Gradient backgrounds based on subject name hash
+// Blue-led gradients based on subject name hash
 const SUBJECT_GRADIENTS = [
-  'from-orange-500 to-amber-400',
-  'from-brand-500 to-orange-400',
+  'from-brand-500 to-sky-400',
+  'from-blue-600 to-cyan-400',
   'from-violet-500 to-purple-400',
   'from-emerald-500 to-teal-400',
-  'from-blue-500 to-cyan-400',
-  'from-rose-500 to-pink-400',
+  'from-indigo-500 to-blue-400',
+  'from-sky-500 to-blue-300',
 ]
 
 const SUBJECT_BG_LIGHT = [
-  'bg-orange-50',
   'bg-brand-50',
+  'bg-sky-50',
   'bg-violet-50',
   'bg-emerald-50',
   'bg-blue-50',
-  'bg-rose-50',
+  'bg-cyan-50',
 ]
 
 function getSubjectIndex(name: string): number {
@@ -53,7 +52,7 @@ export default function SubjectCard({ subject, onDelete }: SubjectCardProps) {
 
   return (
     <motion.div
-      whileHover={{ y: -4, boxShadow: '0 20px 48px -8px rgba(28,10,0,0.16)' } as any}
+      whileHover={{ y: -4, boxShadow: '0 20px 48px -8px rgba(15,23,42,0.16)' } as any}
       transition={{ duration: 0.2 }}
       className={`card relative group cursor-pointer overflow-hidden border-0 shadow-card`}
       onClick={() => navigate(`/subjects/${subject.id}`)}
@@ -74,7 +73,7 @@ export default function SubjectCard({ subject, onDelete }: SubjectCardProps) {
               <BookOpen className="w-6 h-6 text-white" />
             </div>
             <div className="min-w-0">
-              <h3 className="font-bold text-[#1C0A00] text-base leading-tight truncate">
+              <h3 className="font-bold text-[#0f172a] text-base leading-tight truncate">
                 {subject.name}
               </h3>
               {subject.code && (
@@ -164,7 +163,7 @@ export default function SubjectCard({ subject, onDelete }: SubjectCardProps) {
           {stats.map(({ icon: Icon, label, value }) => (
             <div key={label} className="flex flex-col items-center gap-0.5">
               <Icon className="w-3.5 h-3.5 text-brand-400 mb-0.5" />
-              <span className="text-base font-bold text-[#1C0A00] leading-none">{value}</span>
+              <span className="text-base font-bold text-[#0f172a] leading-none">{value}</span>
               <span className="text-[10px] text-brand-500 font-medium">{label}</span>
             </div>
           ))}

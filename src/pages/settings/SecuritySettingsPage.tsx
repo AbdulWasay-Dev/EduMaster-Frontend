@@ -55,7 +55,7 @@ export default function SecuritySettingsPage() {
         <div className="card p-6 space-y-5">
           <div className="flex items-center gap-2 mb-1">
             <Shield className="w-4 h-4 text-brand-500" />
-            <h2 className="font-semibold text-[#1C0A00]">Change Password</h2>
+            <h2 className="font-semibold text-[#0f172a]">Change Password</h2>
           </div>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
@@ -83,7 +83,7 @@ export default function SecuritySettingsPage() {
         <div className="card p-6">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-[#1C0A00] text-sm">Two-Factor Authentication</h3>
+              <h3 className="font-semibold text-[#0f172a] text-sm">Two-Factor Authentication</h3>
               <p className="text-xs text-brand-500 mt-0.5">Add an extra layer of security to your account</p>
             </div>
             <button
@@ -103,7 +103,7 @@ export default function SecuritySettingsPage() {
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-[#1C0A00]">Sign out of all devices</p>
+              <p className="text-sm font-medium text-[#0f172a]">Sign out of all devices</p>
               <p className="text-xs text-brand-500">This will invalidate all active sessions</p>
             </div>
             <button onClick={handleLogoutAll} className="btn-danger flex items-center gap-2 text-sm">

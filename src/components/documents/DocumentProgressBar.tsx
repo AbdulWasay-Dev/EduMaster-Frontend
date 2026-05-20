@@ -52,7 +52,7 @@ function stageIcon(stage: string) {
 function stageColor(status: string) {
   if (status === 'completed') return 'bg-emerald-500'
   if (status === 'failed')    return 'bg-red-500'
-  return 'bg-gradient-to-r from-brand-500 via-orange-400 to-amber-400'
+  return 'bg-gradient-to-r from-brand-500 via-sky-400 to-cyan-400'
 }
 
 export default function DocumentProgressBar({ documentId, filename, onComplete, onError, className }: Props) {
@@ -140,7 +140,7 @@ export default function DocumentProgressBar({ documentId, filename, onComplete, 
           </div>
 
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-[#1C0A00] truncate">{filename}</p>
+            <p className="text-sm font-semibold text-[#0f172a] truncate">{filename}</p>
 
             <div className="flex items-center gap-2 mt-0.5">
               <AnimatePresence mode="wait">

@@ -15,7 +15,7 @@
   }
 
   body {
-    @apply bg-[#FFFAF5] text-[#1C0A00] antialiased;
+    @apply bg-[#f8fafc] text-[#0f172a] antialiased;
   }
 
   ::-webkit-scrollbar {
@@ -54,11 +54,11 @@
   }
 
   .card-warm {
-    @apply rounded-xl border border-brand-200 bg-[#FFF7ED] shadow-card;
+    @apply rounded-xl border border-brand-100 bg-brand-50 shadow-card;
   }
 
   .input {
-    @apply w-full rounded-lg border border-brand-200 bg-white px-3.5 py-2.5 text-sm text-[#1C0A00] placeholder-brand-400 shadow-sm transition-colors focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 disabled:bg-brand-50 disabled:opacity-70;
+    @apply w-full rounded-lg border border-brand-200 bg-white px-3.5 py-2.5 text-sm text-[#0f172a] placeholder-brand-400 shadow-sm transition-colors focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 disabled:bg-brand-50 disabled:opacity-70;
   }
 
   .label {
@@ -69,7 +69,7 @@
     @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold;
   }
 
-  .badge-orange {
+  .badge-blue {
     @apply badge bg-brand-100 text-brand-700;
   }
 
@@ -94,11 +94,11 @@
   }
 
   .page-title {
-    @apply text-2xl font-bold text-[#1C0A00];
+    @apply text-2xl font-bold text-[#0f172a];
   }
 
   .section-title {
-    @apply text-lg font-semibold text-[#1C0A00];
+    @apply text-lg font-semibold text-[#0f172a];
   }
 
   .text-muted {
@@ -117,15 +117,15 @@
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #f97316, #ef4444);
+  background: linear-gradient(135deg, #0281ff, #38bdf8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 /* Glow effect */
-.glow-orange {
-  box-shadow: 0 0 20px rgba(249, 115, 22, 0.4), 0 0 60px rgba(249, 115, 22, 0.15);
+.glow-blue {
+  box-shadow: 0 0 20px rgba(2, 129, 255, 0.32), 0 0 60px rgba(2, 129, 255, 0.12);
 }
 
 /* Animated dots for AI thinking */

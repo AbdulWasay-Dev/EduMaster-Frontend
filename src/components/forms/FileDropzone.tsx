@@ -76,7 +76,7 @@ export default function FileDropzone({
                 <FileText className="w-8 h-8 text-brand-500 shrink-0" />
               )}
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-[#1C0A00] truncate">{file.name}</p>
+                <p className="text-xs font-medium text-[#0f172a] truncate">{file.name}</p>
                 <p className="text-[10px] text-brand-500">{formatBytes(file.size)}</p>
               </div>
               <button

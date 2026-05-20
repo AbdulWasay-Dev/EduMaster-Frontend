@@ -67,7 +67,7 @@ export default function GradingOverviewPage() {
   return (
     <div className="space-y-6">
       {/* Hero */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[#1C0A00] to-brand-900 rounded-3xl p-8 text-white shadow-xl">
+      <div className="relative overflow-hidden bg-gradient-to-br from-[#0f172a] to-brand-900 rounded-3xl p-8 text-white shadow-xl">
         <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-white/5 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-emerald-500/10 translate-y-1/2 -translate-x-1/4 pointer-events-none" />
         <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -111,9 +111,9 @@ export default function GradingOverviewPage() {
       {submissions.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { label: 'Total Submissions', value: submissions.length, icon: Layers,      grad: 'from-brand-500 to-orange-400'   },
+            { label: 'Total Submissions', value: submissions.length, icon: Layers,      grad: 'from-brand-500 to-sky-400'      },
             { label: 'Graded',           value: graded.length,      icon: CheckCircle2, grad: 'from-emerald-500 to-teal-400'   },
-            { label: 'Pending Review',   value: pending.length + review.length, icon: AlertCircle, grad: 'from-amber-500 to-yellow-400' },
+            { label: 'Pending Review',   value: pending.length + review.length, icon: AlertCircle, grad: 'from-blue-600 to-cyan-400' },
             { label: 'Average Score',    value: `${avgScore}%`,     icon: TrendingUp,  grad: 'from-blue-500 to-cyan-400'      },
           ].map(({ label, value, icon: Icon, grad }) => (
             <motion.div key={label} whileHover={{ y: -2 } as any} className="card p-4 flex items-center gap-3">
@@ -121,7 +121,7 @@ export default function GradingOverviewPage() {
                 <Icon className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-xl font-bold text-[#1C0A00] leading-none">{value}</p>
+                <p className="text-xl font-bold text-[#0f172a] leading-none">{value}</p>
                 <p className="text-xs text-brand-500 mt-0.5 font-medium">{label}</p>
               </div>
             </motion.div>
@@ -134,14 +134,14 @@ export default function GradingOverviewPage() {
         <div className="card p-5">
           <div className="flex items-center justify-between mb-3">
             <h2 className="section-title flex items-center gap-2"><BarChart2 className="w-4 h-4 text-brand-500" /> Score Distribution</h2>
-            <span className="text-xs text-brand-400">Highest: <strong className="text-[#1C0A00]">{highScore}%</strong></span>
+            <span className="text-xs text-brand-400">Highest: <strong className="text-[#0f172a]">{highScore}%</strong></span>
           </div>
           <div className="flex gap-1.5 h-10 items-end">
             {['0-20','21-40','41-60','61-80','81-100'].map(range => {
               const [lo, hi] = range.split('-').map(Number)
               const count = graded.filter(s => { const p = getPct(s); return p >= lo && p <= hi }).length
               const pct = graded.length ? (count / graded.length) * 100 : 0
-              const color = lo >= 81 ? 'bg-emerald-500' : lo >= 61 ? 'bg-blue-500' : lo >= 41 ? 'bg-amber-500' : lo >= 21 ? 'bg-orange-500' : 'bg-red-500'
+              const color = lo >= 81 ? 'bg-emerald-500' : lo >= 61 ? 'bg-blue-500' : lo >= 41 ? 'bg-sky-500' : lo >= 21 ? 'bg-indigo-400' : 'bg-red-500'
               return (
                 <div key={range} className="flex-1 flex flex-col items-center gap-1">
                   <span className="text-[10px] text-brand-400 font-medium">{count}</span>
@@ -198,7 +198,7 @@ export default function GradingOverviewPage() {
           <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-5">
             <CheckSquare className="w-10 h-10 text-emerald-300" />
           </div>
-          <h2 className="text-xl font-bold text-[#1C0A00] mb-2">No graded submissions yet</h2>
+          <h2 className="text-xl font-bold text-[#0f172a] mb-2">No graded submissions yet</h2>
           <p className="text-brand-500 max-w-sm mx-auto mb-6">Upload scanned answer sheets to start AI-powered grading. Results appear here instantly.</p>
           <Link to="/grading/new" className="btn-primary inline-flex items-center gap-2">
             <Plus className="w-4 h-4" /> Start Grading
@@ -207,7 +207,7 @@ export default function GradingOverviewPage() {
       ) : filtered.length === 0 ? (
         <div className="card p-12 text-center">
           <Search className="w-10 h-10 text-brand-200 mx-auto mb-3" />
-          <p className="font-semibold text-[#1C0A00] mb-1">No submissions match</p>
+          <p className="font-semibold text-[#0f172a] mb-1">No submissions match</p>
           <button onClick={() => { setSearch(''); setClassFilter(''); setPaperFilter(''); setStatusFilter('all') }}
             className="btn-ghost text-sm mt-2">Clear filters</button>
         </div>
@@ -242,7 +242,7 @@ export default function GradingOverviewPage() {
                     {/* Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <p className="font-bold text-sm text-[#1C0A00]">
+                        <p className="font-bold text-sm text-[#0f172a]">
                           {s.student_name || 'Unknown Student'}
                         </p>
                         <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full border ${sc.color}`}>

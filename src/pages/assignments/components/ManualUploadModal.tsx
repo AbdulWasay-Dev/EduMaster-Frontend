@@ -38,7 +38,7 @@ export default function ManualUploadModal({ assignmentId, students, onClose, onS
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden relative animate-in fade-in zoom-in-95 duration-200">
         <div className="flex items-center justify-between p-4 border-b border-brand-50">
-          <h2 className="text-lg font-semibold text-[#1C0A00] flex items-center gap-2">
+          <h2 className="text-lg font-semibold text-[#0f172a] flex items-center gap-2">
             <UploadCloud className="w-5 h-5 text-brand-500" /> Manual Submission Upload
           </h2>
           <button onClick={onClose} className="p-1.5 text-brand-400 hover:text-brand-600 rounded-lg hover:bg-brand-50 transition-colors">

@@ -42,7 +42,7 @@ const COLOR_MAP: Record<NotificationType, string> = {
   assignment_published: 'bg-violet-100 text-violet-600',
   assignment_graded:  'bg-violet-100 text-violet-600',
   class_created:      'bg-sky-100 text-sky-600',
-  calendar_event:     'bg-orange-100 text-orange-600',
+  calendar_event:     'bg-blue-100 text-blue-600',
   system:             'bg-gray-100 text-gray-500',
 }
 
@@ -138,7 +138,7 @@ export default function NotificationDropdown() {
             <div className="flex items-center justify-between px-4 py-3 border-b border-brand-100 shrink-0">
               <div className="flex items-center gap-2">
                 <Bell className="w-4 h-4 text-brand-600" />
-                <span className="text-sm font-semibold text-[#1C0A00]">Notifications</span>
+                <span className="text-sm font-semibold text-[#0f172a]">Notifications</span>
                 {unreadCount > 0 && (
                   <span className="bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
                     {unreadCount}
@@ -202,7 +202,7 @@ export default function NotificationDropdown() {
 
                         {/* Text */}
                         <div className="flex-1 min-w-0">
-                          <p className={cn('text-xs font-semibold leading-tight', notif.is_read ? 'text-brand-700' : 'text-[#1C0A00]')}>
+                          <p className={cn('text-xs font-semibold leading-tight', notif.is_read ? 'text-brand-700' : 'text-[#0f172a]')}>
                             {notif.title}
                             {!notif.is_read && (
                               <span className="ml-1.5 inline-block w-1.5 h-1.5 bg-brand-500 rounded-full align-middle" />

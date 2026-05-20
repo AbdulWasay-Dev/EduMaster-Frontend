@@ -9,10 +9,13 @@ import { ArrowLeft } from 'lucide-react'
 import PageHeader from '@/components/shared/PageHeader'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import { createSubject, getSubject, updateSubject } from '@/lib/api/subjects'
+import { listClasses } from '@/lib/api/classes'
+import type { Class } from '@/types'
 
 const schema = z.object({
   name: z.string().min(2, 'Name is required'),
   code: z.string().optional(),
+  class_id: z.string().optional(),
   description: z.string().optional(),
 })
 type FormValues = z.infer<typeof schema>
@@ -28,13 +31,24 @@ export default function CreateSubjectPage() {
     queryFn: () => getSubject(id!),
     enabled: isEdit,
   })
+  const { data: classes = [] } = useQuery<Class[]>({
+    queryKey: ['classes'],
+    queryFn: () => listClasses(),
+  })
 
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormValues>({
     resolver: zodResolver(schema),
   })
 
   useEffect(() => {
-    if (existing) reset({ name: existing.name, code: existing.code ?? '', description: existing.description ?? '' })
+    if (existing) {
+      reset({
+        name: existing.name,
+        code: existing.code ?? '',
+        class_id: existing.class_id ?? '',
+        description: existing.description ?? '',
+      })
+    }
   }, [existing, reset])
 
   const saveMut = useMutation({
@@ -42,6 +56,7 @@ export default function CreateSubjectPage() {
       isEdit ? updateSubject(id!, values) : createSubject(values),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['subjects'] })
+      qc.invalidateQueries({ queryKey: ['classes'] })
       toast.success(isEdit ? 'Subject updated!' : 'Subject created!')
       navigate('/subjects')
     },
@@ -72,6 +87,14 @@ export default function CreateSubjectPage() {
         <div>
           <label className="label">Subject Code</label>
           <input {...register('code')} className="input" placeholder="e.g. BIO-101" />
+        </div>
+
+        <div>
+          <label className="label">Class</label>
+          <select {...register('class_id')} className="input">
+            <option value="">No class assigned</option>
+            {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+          </select>
         </div>
 
         <div>

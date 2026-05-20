@@ -19,8 +19,8 @@ import type { Document, Subject } from '@/types'
 
 const FILE_COLORS: Record<string, { bg: string; text: string; border: string }> = {
   pdf:  { bg: 'bg-red-100',    text: 'text-red-700',    border: 'border-red-200'    },
-  pptx: { bg: 'bg-orange-100', text: 'text-orange-700', border: 'border-orange-200' },
-  ppt:  { bg: 'bg-orange-100', text: 'text-orange-700', border: 'border-orange-200' },
+  pptx: { bg: 'bg-blue-100', text: 'text-blue-700', border: 'border-blue-200' },
+  ppt:  { bg: 'bg-blue-100', text: 'text-blue-700', border: 'border-blue-200' },
   docx: { bg: 'bg-blue-100',   text: 'text-blue-700',   border: 'border-blue-200'   },
   doc:  { bg: 'bg-blue-100',   text: 'text-blue-700',   border: 'border-blue-200'   },
   png:  { bg: 'bg-emerald-100',text: 'text-emerald-700',border: 'border-emerald-200'},
@@ -139,9 +139,9 @@ export default function DocumentsLibraryPage() {
       {!isLoading && docs.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { label: 'Total',      value: docs.length,                                      color: 'from-brand-500 to-orange-400'   },
+            { label: 'Total',      value: docs.length,                                      color: 'from-brand-500 to-sky-400'      },
             { label: 'Ready',      value: docs.filter(d => d.processing_status === 'completed').length, color: 'from-emerald-500 to-teal-400' },
-            { label: 'Processing', value: docs.filter(d => d.processing_status === 'processing').length, color: 'from-amber-500 to-yellow-400' },
+            { label: 'Processing', value: docs.filter(d => d.processing_status === 'processing').length, color: 'from-blue-600 to-cyan-400' },
             { label: 'Subjects',   value: new Set(docs.map(d => d.subject_id).filter(Boolean)).size, color: 'from-blue-500 to-cyan-400' },
           ].map(({ label, value, color }) => (
             <div key={label} className="card p-4 flex items-center gap-3">
@@ -149,7 +149,7 @@ export default function DocumentsLibraryPage() {
                 <FileText className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-xl font-bold text-[#1C0A00] leading-none">{value}</p>
+                <p className="text-xl font-bold text-[#0f172a] leading-none">{value}</p>
                 <p className="text-xs text-brand-500 mt-0.5 font-medium">{label}</p>
               </div>
             </div>
@@ -213,7 +213,7 @@ export default function DocumentsLibraryPage() {
       ) : filtered.length === 0 ? (
         <div className="card p-12 text-center">
           <FolderOpen className="w-10 h-10 text-brand-200 mx-auto mb-3" />
-          <p className="font-semibold text-[#1C0A00] mb-1">No documents match</p>
+          <p className="font-semibold text-[#0f172a] mb-1">No documents match</p>
           <button onClick={() => { setSearch(''); setSubjectFilter('') }} className="btn-ghost text-sm mt-2">Clear filters</button>
         </div>
       ) : view === 'list' ? (
@@ -238,7 +238,7 @@ export default function DocumentsLibraryPage() {
                   <div className="col-span-5 flex items-center gap-2 min-w-0">
                     <span className="text-xl flex-shrink-0">{fileIcon(doc.file_type ?? '')}</span>
                     <Link to={`/documents/${doc.id}`}
-                      className="font-medium text-[#1C0A00] hover:text-brand-500 truncate text-sm">
+                      className="font-medium text-[#0f172a] hover:text-brand-500 truncate text-sm">
                       {doc.filename || doc.title}
                     </Link>
                   </div>
@@ -305,7 +305,7 @@ export default function DocumentsLibraryPage() {
                   </div>
 
                   <Link to={`/documents/${doc.id}`}>
-                    <h3 className="font-semibold text-sm text-[#1C0A00] hover:text-brand-500 line-clamp-2 leading-snug transition-colors">
+                    <h3 className="font-semibold text-sm text-[#0f172a] hover:text-brand-500 line-clamp-2 leading-snug transition-colors">
                       {doc.filename || doc.title}
                     </h3>
                   </Link>

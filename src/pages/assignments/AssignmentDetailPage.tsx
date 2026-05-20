@@ -120,7 +120,7 @@ export default function AssignmentDetailPage() {
             </button>
             <div>
               <div className="flex items-center gap-3 mb-1">
-                <h1 className="text-2xl font-bold text-[#1C0A00]">{assignment.title}</h1>
+                <h1 className="text-2xl font-bold text-[#0f172a]">{assignment.title}</h1>
                 <span className={cn(
                   "px-2.5 py-0.5 rounded-full text-xs font-medium border",
                   assignment.status === 'draft' ? "bg-slate-50 text-slate-600 border-slate-200" :
@@ -134,7 +134,7 @@ export default function AssignmentDetailPage() {
                 <span className="flex items-center gap-1">
                   <FileText className="w-4 h-4" /> {assignment.total_marks} marks
                 </span>
-                {assignment.due_date && <span className="text-orange-600">· Due: {new Date(assignment.due_date).toLocaleDateString()}</span>}
+                {assignment.due_date && <span className="text-blue-600">· Due: {new Date(assignment.due_date).toLocaleDateString()}</span>}
                 {className && (
                   <span className="inline-flex items-center gap-1 text-xs font-medium text-brand-700 bg-brand-50 border border-brand-100 px-2 py-0.5 rounded-full">
                     🎓 {className}
@@ -241,7 +241,7 @@ export default function AssignmentDetailPage() {
                             <User className="w-5 h-5" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold text-[#1C0A00] truncate">{sub.student_name || 'Student'}</p>
+                            <p className="text-sm font-semibold text-[#0f172a] truncate">{sub.student_name || 'Student'}</p>
                             <div className="flex items-center gap-2 mt-0.5">
                               <p className="text-xs text-brand-500 truncate max-w-xs">{sub.student_email || sub.roll_number}</p>
                               <span className="text-xs text-brand-300">•</span>
@@ -300,7 +300,7 @@ export default function AssignmentDetailPage() {
                 ].map((s, i) => (
                   <div key={i} className="bg-white rounded-xl border border-brand-100 p-5 shadow-sm">
                     <p className="text-xs font-medium text-brand-500 uppercase tracking-wider">{s.label}</p>
-                    <p className="text-3xl font-bold text-[#1C0A00] mt-2">{s.value}</p>
+                    <p className="text-3xl font-bold text-[#0f172a] mt-2">{s.value}</p>
                   </div>
                 ))}
               </div>

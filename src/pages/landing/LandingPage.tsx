@@ -147,40 +147,6 @@ export default function LandingPage() {
         <div className="hero-background" aria-hidden="true">
           <div className="hero-bg-grid" />
 
-          <div className="hero-workspace-panel">
-            <div className="hero-workspace-header">
-              <div className="hero-window-dots">
-                <span />
-                <span />
-                <span />
-              </div>
-              <span className="hero-workspace-title">AI Teaching Workspace</span>
-              <span className="hero-workspace-status">Live</span>
-            </div>
-            <div className="hero-workspace-body">
-              <div className="hero-metric-card">
-                <ScrollText className="w-4 h-4" />
-                <span>Paper creator</span>
-                <strong>15 questions</strong>
-              </div>
-              <div className="hero-metric-card">
-                <CheckSquare className="w-4 h-4" />
-                <span>Grading queue</span>
-                <strong>87/100</strong>
-              </div>
-              <div className="hero-metric-card">
-                <Users className="w-4 h-4" />
-                <span>Attendance</span>
-                <strong>96%</strong>
-              </div>
-              <div className="hero-metric-card">
-                <Bot className="w-4 h-4" />
-                <span>Class AI</span>
-                <strong>Ready</strong>
-              </div>
-            </div>
-          </div>
-
           <div className="hero-snapshot hero-snapshot-paper">
             <div className="hero-snapshot-label">
               <ScrollText className="w-4 h-4" />

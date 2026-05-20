@@ -87,7 +87,7 @@ export default function ProfileSettingsPage() {
             </button>
           </div>
           <div className="text-center">
-            <p className="font-semibold text-[#1C0A00]">{user?.name}</p>
+            <p className="font-semibold text-[#0f172a]">{user?.name}</p>
             <p className="text-xs text-brand-500">{user?.email}</p>
             <p className="text-xs text-brand-400 mt-1 capitalize">{user?.designation || user?.role || 'Teacher'}</p>
             {user?.school_name && <p className="text-xs text-brand-500 mt-2">{user.school_name}</p>}
@@ -95,7 +95,7 @@ export default function ProfileSettingsPage() {
         </div>
 
         <form onSubmit={handleSubmit(v => saveMut.mutate(v))} className="lg:col-span-2 card p-6 space-y-5">
-          <div className="flex items-center gap-2 text-[#1C0A00]">
+          <div className="flex items-center gap-2 text-[#0f172a]">
             <User className="w-4 h-4 text-brand-500" />
             <h2 className="text-sm font-bold">Account</h2>
           </div>
@@ -112,7 +112,7 @@ export default function ProfileSettingsPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-[#1C0A00] pt-2">
+          <div className="flex items-center gap-2 text-[#0f172a] pt-2">
             <Building2 className="w-4 h-4 text-brand-500" />
             <h2 className="text-sm font-bold">Institution</h2>
           </div>
@@ -150,7 +150,7 @@ export default function ProfileSettingsPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-[#1C0A00] pt-2">
+          <div className="flex items-center gap-2 text-[#0f172a] pt-2">
             <Briefcase className="w-4 h-4 text-brand-500" />
             <h2 className="text-sm font-bold">Teaching Profile</h2>
           </div>

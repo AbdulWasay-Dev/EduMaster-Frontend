@@ -5,6 +5,7 @@ export interface CreateClassPayload {
   name: string
   description?: string
   grade_level?: string
+  subject_id?: string
   subject_area?: string
   academic_year?: string
 }

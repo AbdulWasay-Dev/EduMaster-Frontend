@@ -53,6 +53,7 @@ export default function CreateClassPage() {
       isEdit ? updateClass(id!, values) : createClass(values),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['classes'] })
+      qc.invalidateQueries({ queryKey: ['subjects'] })
       toast.success(isEdit ? 'Class updated!' : 'Class created!')
       navigate('/classes')
     },

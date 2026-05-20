@@ -127,7 +127,7 @@ export default function CreateAssignmentPage() {
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-[#1C0A00]">New Assignment</h1>
+          <h1 className="text-2xl font-bold text-[#0f172a]">New Assignment</h1>
           <p className="text-sm text-brand-500">Create an assignment — let AI write the instructions for you</p>
         </div>
       </div>

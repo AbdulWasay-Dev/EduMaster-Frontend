@@ -78,10 +78,10 @@ export default function SubjectsListPage() {
   const activeCount   = subjects.filter(s => s.is_active).length
 
   const stats = [
-    { label: 'Total Subjects', value: subjects.length, icon: BookOpen,      color: 'from-brand-500 to-orange-400',   text: 'text-brand-600',   bg: 'bg-brand-50'   },
+    { label: 'Total Subjects', value: subjects.length, icon: BookOpen,      color: 'from-brand-500 to-sky-400',      text: 'text-brand-600',   bg: 'bg-brand-50'   },
     { label: 'Active',         value: activeCount,     icon: CheckCircle2,  color: 'from-emerald-500 to-teal-400',   text: 'text-emerald-600', bg: 'bg-emerald-50' },
     { label: 'Documents',      value: totalDocs,       icon: FileText,      color: 'from-violet-500 to-purple-400',  text: 'text-violet-600',  bg: 'bg-violet-50'  },
-    { label: 'Papers',         value: totalPapers,     icon: ScrollText,    color: 'from-amber-500 to-yellow-400',   text: 'text-amber-600',   bg: 'bg-amber-50'   },
+    { label: 'Papers',         value: totalPapers,     icon: ScrollText,    color: 'from-blue-600 to-cyan-400',      text: 'text-blue-600',    bg: 'bg-blue-50'    },
   ]
 
   const container = {
@@ -119,7 +119,7 @@ export default function SubjectsListPage() {
                 <Icon className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-xl font-bold text-[#1C0A00] leading-none">{value}</p>
+                <p className="text-xl font-bold text-[#0f172a] leading-none">{value}</p>
                 <p className={`text-xs font-medium mt-0.5 ${text}`}>{label}</p>
               </div>
             </div>
@@ -196,7 +196,7 @@ export default function SubjectsListPage() {
       ) : filtered.length === 0 ? (
         <div className="card p-12 text-center">
           <Search className="w-10 h-10 text-brand-200 mx-auto mb-3" />
-          <p className="text-[#1C0A00] font-semibold mb-1">No subjects match your search</p>
+          <p className="text-[#0f172a] font-semibold mb-1">No subjects match your search</p>
           <p className="text-sm text-brand-500 mb-4">Try different keywords or clear the filters</p>
           <button
             onClick={() => { setSearch(''); setFilterActive('all') }}
@@ -260,12 +260,12 @@ function SubjectListRow({
   index: number
 }) {
   const GRADIENTS = [
-    'from-orange-500 to-amber-400',
-    'from-brand-500 to-orange-400',
+    'from-brand-500 to-sky-400',
+    'from-blue-600 to-cyan-400',
     'from-violet-500 to-purple-400',
     'from-emerald-500 to-teal-400',
-    'from-blue-500 to-cyan-400',
-    'from-rose-500 to-pink-400',
+    'from-indigo-500 to-blue-400',
+    'from-sky-500 to-blue-300',
   ]
   const gradient = GRADIENTS[subject.name.split('').reduce((a, c) => a + c.charCodeAt(0), 0) % GRADIENTS.length]
 
@@ -282,7 +282,7 @@ function SubjectListRow({
       {/* Main info */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-semibold text-[#1C0A00] truncate">{subject.name}</span>
+          <span className="font-semibold text-[#0f172a] truncate">{subject.name}</span>
           {subject.code && (
             <span className="text-xs font-mono text-brand-500 bg-brand-50 px-1.5 py-0.5 rounded">{subject.code}</span>
           )}

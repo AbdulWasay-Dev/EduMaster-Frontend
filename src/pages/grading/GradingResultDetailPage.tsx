@@ -113,7 +113,7 @@ export default function GradingResultDetailPage() {
       <div className={`relative overflow-hidden rounded-3xl p-8 text-white shadow-xl ${
         pct >= 80 ? 'bg-gradient-to-br from-emerald-700 to-teal-600' :
         pct >= 60 ? 'bg-gradient-to-br from-blue-700 to-cyan-600'    :
-        pct >= 40 ? 'bg-gradient-to-br from-amber-700 to-orange-600' :
+        pct >= 40 ? 'bg-gradient-to-br from-blue-700 to-sky-600' :
                    'bg-gradient-to-br from-red-700 to-rose-600'
       }`}>
         <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-white/5 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
@@ -220,7 +220,7 @@ export default function GradingResultDetailPage() {
           <p className="text-xs font-bold text-brand-600 uppercase tracking-wide mb-2 flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5" /> AI Feedback Summary
           </p>
-          <p className="text-sm text-[#1C0A00] leading-relaxed">{feedback}</p>
+          <p className="text-sm text-[#0f172a] leading-relaxed">{feedback}</p>
         </div>
       )}
 
@@ -284,7 +284,7 @@ export default function GradingResultDetailPage() {
                           <span className="text-[10px] text-brand-400">AI: {Math.round((d.confidence ?? d.ai_confidence ?? 0) * 100)}%</span>
                         )}
                       </div>
-                      <p className="text-sm font-medium text-[#1C0A00] line-clamp-2">{d.question_text}</p>
+                      <p className="text-sm font-medium text-[#0f172a] line-clamp-2">{d.question_text}</p>
                     </div>
                     {isExpanded ? <ChevronUp className="w-4 h-4 text-brand-300 shrink-0 mt-1" /> : <ChevronDown className="w-4 h-4 text-brand-300 shrink-0 mt-1" />}
                   </button>
@@ -301,7 +301,7 @@ export default function GradingResultDetailPage() {
                           {answer ? (
                             <div className="bg-white rounded-xl border border-brand-100 p-3">
                               <p className="text-xs font-bold text-brand-600 mb-1.5">Student's Answer</p>
-                              <p className="text-sm text-[#1C0A00]">{answer}</p>
+                              <p className="text-sm text-[#0f172a]">{answer}</p>
                             </div>
                           ) : (
                             <div className="bg-gray-50 rounded-xl border border-gray-200 p-3">
@@ -321,7 +321,7 @@ export default function GradingResultDetailPage() {
                           {d.evidence_quote && (
                             <div className="bg-white rounded-xl border border-brand-100 p-3">
                               <p className="text-xs font-bold text-brand-600 mb-1.5">OCR Evidence</p>
-                              <p className="text-sm text-[#1C0A00] font-mono">{d.evidence_quote}</p>
+                              <p className="text-sm text-[#0f172a] font-mono">{d.evidence_quote}</p>
                             </div>
                           )}
 
@@ -387,7 +387,7 @@ export default function GradingResultDetailPage() {
                 ].map(([k, v]) => (
                   <div key={k} className="flex items-start gap-4 py-2.5">
                     <dt className="text-xs font-semibold text-brand-500 uppercase tracking-wide w-24 shrink-0 pt-0.5">{k}</dt>
-                    <dd className="text-sm font-medium text-[#1C0A00]">{v}</dd>
+                    <dd className="text-sm font-medium text-[#0f172a]">{v}</dd>
                   </div>
                 ))}
               </dl>
@@ -396,7 +396,7 @@ export default function GradingResultDetailPage() {
               {feedback && (
                 <div className="card p-5 border-l-4 border-brand-400">
                   <h3 className="text-xs font-bold text-brand-600 uppercase tracking-wide mb-2">AI Feedback</h3>
-                  <p className="text-sm text-[#1C0A00] leading-relaxed">{feedback}</p>
+                  <p className="text-sm text-[#0f172a] leading-relaxed">{feedback}</p>
                 </div>
               )}
               <div className="card p-5">

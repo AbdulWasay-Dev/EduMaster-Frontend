@@ -37,7 +37,7 @@ const COLOR_MAP: Record<NotificationType, string> = {
   assignment_published: 'bg-violet-100 text-violet-600',
   assignment_graded:  'bg-violet-100 text-violet-600',
   class_created:      'bg-sky-100 text-sky-600',
-  calendar_event:     'bg-orange-100 text-orange-600',
+  calendar_event:     'bg-blue-100 text-blue-600',
   system:             'bg-gray-100 text-gray-500',
 }
 
@@ -230,7 +230,7 @@ export default function NotificationsPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <p className={cn('text-sm font-semibold leading-tight', notif.is_read ? 'text-brand-700' : 'text-[#1C0A00]')}>
+                        <p className={cn('text-sm font-semibold leading-tight', notif.is_read ? 'text-brand-700' : 'text-[#0f172a]')}>
                           {notif.title}
                           {!notif.is_read && (
                             <span className="ml-2 w-2 h-2 bg-brand-500 rounded-full inline-block align-middle" />

@@ -106,7 +106,7 @@ export default function AIAssistantPage() {
             <Bot className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h3 className="font-semibold text-[#1C0A00] text-sm">EduMaster AI</h3>
+            <h3 className="font-semibold text-[#0f172a] text-sm">EduMaster AI</h3>
             <p className="text-xs text-brand-500">Powered by your uploaded documents</p>
           </div>
           <button onClick={() => createSession()} className="ml-auto btn-ghost text-xs flex items-center gap-1 lg:hidden">
@@ -122,7 +122,7 @@ export default function AIAssistantPage() {
                 <Bot className="w-8 h-8 text-brand-500" />
               </div>
               <div>
-                <h3 className="font-bold text-[#1C0A00]">Ask anything about your materials</h3>
+                <h3 className="font-bold text-[#0f172a]">Ask anything about your materials</h3>
                 <p className="text-sm text-brand-500 mt-1 max-w-xs">
                   I'll search through your uploaded documents and provide accurate, cited answers.
                 </p>
@@ -163,7 +163,7 @@ export default function AIAssistantPage() {
                   <div className={`max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                     msg.role === 'user'
                       ? 'bg-brand-500 text-white rounded-tr-sm'
-                      : 'bg-brand-50 text-[#1C0A00] rounded-tl-sm'
+                      : 'bg-brand-50 text-[#0f172a] rounded-tl-sm'
                   }`}>
                     {msg.role === 'assistant' ? (
                       <ReactMarkdown remarkPlugins={[remarkGfm]} className="prose prose-sm max-w-none">
@@ -210,7 +210,7 @@ export default function AIAssistantPage() {
               onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend() } }}
               placeholder="Ask a question about your materials… (Enter to send)"
               rows={2}
-              className="flex-1 bg-transparent resize-none text-sm text-[#1C0A00] placeholder:text-brand-400 outline-none px-2 py-1"
+              className="flex-1 bg-transparent resize-none text-sm text-[#0f172a] placeholder:text-brand-400 outline-none px-2 py-1"
             />
             <button
               onClick={handleSend}

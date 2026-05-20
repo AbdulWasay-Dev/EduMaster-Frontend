@@ -3,7 +3,9 @@ import type { Subject } from '@/types'
 
 export interface CreateSubjectPayload {
   name: string
+  code?: string
   description?: string
+  class_id?: string
   grade_level?: string
   subject_area?: string
   academic_year?: string

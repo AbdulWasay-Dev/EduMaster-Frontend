@@ -95,7 +95,7 @@ export default function PaperDefaultsPage() {
         <div className="card p-5 space-y-4">
           <div className="flex items-center gap-2">
             <ScrollText className="w-4 h-4 text-brand-500" />
-            <h2 className="text-sm font-bold text-[#1C0A00]">Default Paper Template</h2>
+            <h2 className="text-sm font-bold text-[#0f172a]">Default Paper Template</h2>
           </div>
           <p className="text-xs text-brand-500">This template will be pre-selected every time you generate a new paper.</p>
           <div className="grid grid-cols-2 gap-3">
@@ -114,10 +114,10 @@ export default function PaperDefaultsPage() {
                     {...register('default_paper_template')}
                     type="radio"
                     value={t.key}
-                    className="mt-0.5 accent-orange-500"
+                    className="mt-0.5 accent-brand-500"
                   />
                   <div>
-                    <p className="text-sm font-medium text-[#1C0A00]">{t.label}</p>
+                    <p className="text-sm font-medium text-[#0f172a]">{t.label}</p>
                     <p className="text-xs text-brand-500 mt-0.5">{t.desc}</p>
                   </div>
                 </label>
@@ -130,7 +130,7 @@ export default function PaperDefaultsPage() {
         <div className="card p-5 space-y-4">
           <div className="flex items-center gap-2">
             <Sliders className="w-4 h-4 text-brand-500" />
-            <h2 className="text-sm font-bold text-[#1C0A00]">Default Paper Details</h2>
+            <h2 className="text-sm font-bold text-[#0f172a]">Default Paper Details</h2>
           </div>
           <p className="text-xs text-brand-500">These values auto-fill the Details step of the paper generation wizard.</p>
 
@@ -170,7 +170,7 @@ export default function PaperDefaultsPage() {
         {/* Student Fields */}
         <div className="card p-5 space-y-4">
           <div className="flex items-center gap-2">
-            <h2 className="text-sm font-bold text-[#1C0A00]">Default Student Answer Fields</h2>
+            <h2 className="text-sm font-bold text-[#0f172a]">Default Student Answer Fields</h2>
           </div>
           <p className="text-xs text-brand-500">Choose which fields appear on each student's answer sheet header by default.</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -188,7 +188,7 @@ export default function PaperDefaultsPage() {
                   type="checkbox"
                   checked={selectedFields.includes(key)}
                   readOnly
-                  className="accent-orange-500 pointer-events-none"
+                  className="accent-brand-500 pointer-events-none"
                 />
                 {label}
               </label>

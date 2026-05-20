@@ -75,7 +75,7 @@ export default function AssignmentsListPage() {
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 max-w-6xl mx-auto pb-12">
       {/* Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[#1C0A00] to-brand-900 rounded-3xl p-8 text-white shadow-xl">
+      <div className="relative overflow-hidden bg-gradient-to-br from-[#0f172a] to-brand-900 rounded-3xl p-8 text-white shadow-xl">
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/5 -translate-y-1/2 translate-x-1/4" />
         <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-white/5 translate-y-1/2 -translate-x-1/4" />
         <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -162,7 +162,7 @@ export default function AssignmentsListPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-3 mb-1.5 flex-wrap">
-                          <h3 className="text-base font-bold text-[#1C0A00] truncate group-hover/link:text-brand-600 transition-colors">
+                          <h3 className="text-base font-bold text-[#0f172a] truncate group-hover/link:text-brand-600 transition-colors">
                             {a.title}
                           </h3>
                           <span className={cn('inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border', sc.color)}>
@@ -186,7 +186,7 @@ export default function AssignmentsListPage() {
                             <ScrollText className="w-3 h-3" /> {a.total_marks} Marks
                           </span>
                           {a.due_date && (
-                            <span className="inline-flex items-center gap-1 text-xs text-orange-600 font-medium">
+                            <span className="inline-flex items-center gap-1 text-xs text-blue-600 font-medium">
                               <CalendarDays className="w-3 h-3" /> Due: {new Date(a.due_date).toLocaleDateString()}
                             </span>
                           )}
@@ -221,7 +221,7 @@ export default function AssignmentsListPage() {
           <div className="w-20 h-20 bg-brand-50 rounded-full flex items-center justify-center mx-auto mb-5">
             <FileText className="w-10 h-10 text-brand-300" />
           </div>
-          <h2 className="text-xl font-bold text-[#1C0A00] mb-2">
+          <h2 className="text-xl font-bold text-[#0f172a] mb-2">
             {searchQuery || classFilter || statusFilter ? 'No assignments match filters' : 'No assignments yet'}
           </h2>
           <p className="text-brand-500 max-w-sm mx-auto mb-6">

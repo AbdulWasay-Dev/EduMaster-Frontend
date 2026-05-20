@@ -73,10 +73,10 @@ export default function BillingPage() {
                   <div className="w-8 h-8 rounded-lg bg-brand-100 flex items-center justify-center">
                     <Icon className="w-4 h-4 text-brand-500" />
                   </div>
-                  <span className="font-bold text-[#1C0A00]">{plan.name}</span>
+                  <span className="font-bold text-[#0f172a]">{plan.name}</span>
                 </div>
                 <div>
-                  <span className="text-3xl font-black text-[#1C0A00]">{plan.price}</span>
+                  <span className="text-3xl font-black text-[#0f172a]">{plan.price}</span>
                   <span className="text-brand-500 text-sm">{plan.period}</span>
                   <p className="text-xs text-brand-600 mt-1">{plan.description}</p>
                 </div>
@@ -141,7 +141,7 @@ export default function BillingPage() {
             {INVOICES.map(inv => (
               <div key={inv.id} className="flex items-center justify-between py-2 border-b border-brand-50 last:border-0">
                 <div>
-                  <p className="text-sm font-medium text-[#1C0A00]">{inv.id}</p>
+                  <p className="text-sm font-medium text-[#0f172a]">{inv.id}</p>
                   <p className="text-xs text-brand-500">{inv.date}</p>
                 </div>
                 <div className="flex items-center gap-3">
