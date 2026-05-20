@@ -226,17 +226,18 @@ export default function LandingPage() {
       <LogoCarousel
         title="Trusted by educators worldwide"
         logos={[
-          'https://cdn.worldvectorlogo.com/logos/microsoft-5.svg',
-          'https://cdn.worldvectorlogo.com/logos/openai-2.svg',
-          'https://cdn.worldvectorlogo.com/logos/notion-2.svg',
-          'https://cdn.worldvectorlogo.com/logos/slack-new-logo.svg',
-          'https://cdn.worldvectorlogo.com/logos/zoom-app.svg',
-          'https://cdn.worldvectorlogo.com/logos/github-icon-1.svg',
-          'https://cdn.worldvectorlogo.com/logos/stripe-4.svg',
-          'https://cdn.worldvectorlogo.com/logos/aws-2.svg',
           'https://cdn.worldvectorlogo.com/logos/python-5.svg',
-          'https://cdn.worldvectorlogo.com/logos/react-2.svg',
-          'https://cdn.worldvectorlogo.com/logos/typescript.svg',
+          'https://cdn.worldvectorlogo.com/logos/fastapi.svg',
+          'https://cdn.worldvectorlogo.com/logos/gemini-icon-logo.svg',
+          'https://cdn.worldvectorlogo.com/logos/openai-2.svg',
+          'https://cdn.worldvectorlogo.com/logos/langchain-1.svg',
+          'https://cdn.worldvectorlogo.com/logos/amazon-database.svg',
+          'https://cdn.worldvectorlogo.com/logos/github-icon-1.svg',
+          'https://cdn.worldvectorlogo.com/logos/react-native-1.svg',
+          'https://cdn.worldvectorlogo.com/logos/css-3.svg',
+          'https://cdn.worldvectorlogo.com/logos/slack-new-logo.svg',
+          'https://cdn.worldvectorlogo.com/logos/official-gmail-icon-2020-.svg',
+          'https://cdn.worldvectorlogo.com/logos/microsoft-5.svg',
           'https://cdn.worldvectorlogo.com/logos/vercel.svg',
         ]}
         speed={30}
