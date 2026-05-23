@@ -6,17 +6,21 @@ export default {
     extend: {
       colors: {
         brand: {
-          50:  '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#0281FF',
-          600: '#0270e0',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a5f',
-          950: '#0f172a',
+          50:  '#EAF3FF',
+          100: '#D6E9FF',
+          200: '#ACD4FF',
+          300: '#78B9FF',
+          400: '#3E96F5',
+          500: '#0A66C2',
+          600: '#0859A6',
+          700: '#074A8A',
+          800: '#073D72',
+          900: '#082F57',
+          950: '#041B33',
+        },
+        primary: {
+          DEFAULT: '#0A66C2',
+          foreground: '#ffffff',
         },
         accent: {
           400: '#f87171',
@@ -29,7 +33,7 @@ export default {
           600: '#d97706',
         },
         sidebar: {
-          bg:     '#0281FF',
+          bg:     '#0A66C2',
           border: 'rgba(255,255,255,0.15)',
           active: '#ffffff',
           text:   'rgba(255,255,255,0.7)',
@@ -41,8 +45,8 @@ export default {
         mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
       },
       backgroundImage: {
-        'hero-gradient': 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0281FF 100%)',
-        'card-gradient': 'linear-gradient(135deg, #0281FF 0%, #0270e0 100%)',
+        'hero-gradient': 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0A66C2 100%)',
+        'card-gradient': 'linear-gradient(135deg, #0A66C2 0%, #0859A6 100%)',
       },
       animation: {
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -61,8 +65,8 @@ export default {
         },
       },
       boxShadow: {
-        'brand': '0 4px 24px -4px rgba(2,129,255,0.25)',
-        'brand-lg': '0 8px 40px -8px rgba(2,129,255,0.35)',
+        'brand': '0 4px 24px -4px rgba(10,102,194,0.25)',
+        'brand-lg': '0 8px 40px -8px rgba(10,102,194,0.35)',
         'card': '0 1px 3px 0 rgba(15,23,42,0.06), 0 1px 2px -1px rgba(15,23,42,0.06)',
         'card-hover': '0 10px 40px -8px rgba(15,23,42,0.1)',
       },

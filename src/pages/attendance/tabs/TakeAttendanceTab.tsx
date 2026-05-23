@@ -12,7 +12,7 @@ const STATUS_CONFIG: Record<AttendanceStatus, { label: string; icon: React.React
   present: { label: 'Present', icon: <CheckCircle className="w-4 h-4" />, activeClass: 'bg-emerald-500 text-white shadow shadow-emerald-200',  key: 'P' },
   absent:  { label: 'Absent',  icon: <XCircle className="w-4 h-4" />,     activeClass: 'bg-rose-500 text-white shadow shadow-rose-200',         key: 'A' },
   late:    { label: 'Late',    icon: <Clock className="w-4 h-4" />,        activeClass: 'bg-amber-500 text-white shadow shadow-amber-200',       key: 'L' },
-  excused: { label: 'Excused', icon: <FileText className="w-4 h-4" />,     activeClass: 'bg-blue-500 text-white shadow shadow-blue-200',         key: 'E' },
+  excused: { label: 'Excused', icon: <FileText className="w-4 h-4" />,     activeClass: 'bg-brand-500 text-white shadow shadow-brand',          key: 'E' },
 }
 
 type AttendanceState = Record<string, { status: AttendanceStatus; remarks: string }>
@@ -117,7 +117,7 @@ export default function TakeAttendanceTab({ classId, subjectId }: Props) {
             </button>
             <button
               onClick={() => setSelectedDate(new Date().toISOString().split('T')[0])}
-              className="text-xs px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-lg font-semibold hover:bg-indigo-100 transition-colors"
+              className="text-xs px-3 py-1.5 bg-brand-50 text-brand-600 rounded-lg font-semibold hover:bg-brand-100 transition-colors"
             >Today</button>
           </div>
 
@@ -128,7 +128,7 @@ export default function TakeAttendanceTab({ classId, subjectId }: Props) {
                 st === 'present' ? 'bg-emerald-50 text-emerald-700' :
                 st === 'absent'  ? 'bg-rose-50 text-rose-700' :
                 st === 'late'    ? 'bg-amber-50 text-amber-700' :
-                                   'bg-blue-50 text-blue-700'
+                                   'bg-brand-50 text-brand-700'
               }`}>
                 {STATUS_CONFIG[st].icon}
                 <span>{n}</span>
@@ -164,7 +164,7 @@ export default function TakeAttendanceTab({ classId, subjectId }: Props) {
                   st === 'present' ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200' :
                   st === 'absent'  ? 'bg-rose-100 text-rose-700 hover:bg-rose-200' :
                   st === 'late'    ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' :
-                                     'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                                     'bg-brand-100 text-brand-700 hover:bg-brand-200'
                 }`}
               >{STATUS_CONFIG[st].label}</button>
             ))}
@@ -183,14 +183,14 @@ export default function TakeAttendanceTab({ classId, subjectId }: Props) {
         </div>
 
         {/* Quick-key hint */}
-        <div className="px-4 py-2 bg-indigo-50/50 border-b border-indigo-100/60 flex items-center gap-2 text-xs text-indigo-600">
+        <div className="px-4 py-2 bg-brand-50/70 border-b border-brand-100 flex items-center gap-2 text-xs text-brand-600">
           <Zap className="w-3.5 h-3.5" />
           <span>Keyboard shortcuts: <strong>P</strong> = Present · <strong>A</strong> = Absent · <strong>L</strong> = Late · <strong>E</strong> = Excused</span>
         </div>
 
         {isLoading ? (
           <div className="p-16 flex justify-center">
-            <Loader2 className="w-8 h-8 text-indigo-400 animate-spin" />
+            <Loader2 className="w-8 h-8 text-brand-400 animate-spin" />
           </div>
         ) : filteredStudents.length === 0 ? (
           <div className="p-12 text-center text-slate-400">
@@ -247,13 +247,13 @@ function StudentRow({ index, student, state, onStatus, onRemarks }: RowProps) {
   const rowBg = state.status === 'present' ? 'hover:bg-emerald-50/30' :
                 state.status === 'absent'  ? 'bg-rose-50/20 hover:bg-rose-50/40' :
                 state.status === 'late'    ? 'bg-amber-50/20 hover:bg-amber-50/40' :
-                                             'bg-blue-50/20 hover:bg-blue-50/40'
+                                             'bg-brand-50/30 hover:bg-brand-50/50'
 
   return (
     <div
       tabIndex={0}
       onKeyDown={handleKey}
-      className={`flex flex-col sm:flex-row sm:items-center gap-3 px-5 py-3.5 transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-300 ${rowBg}`}
+      className={`flex flex-col sm:flex-row sm:items-center gap-3 px-5 py-3.5 transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-brand-300 ${rowBg}`}
     >
       {/* Index + Avatar */}
       <div className="flex items-center gap-3 w-full sm:w-56 flex-shrink-0">
@@ -262,7 +262,7 @@ function StudentRow({ index, student, state, onStatus, onRemarks }: RowProps) {
           state.status === 'present' ? 'bg-emerald-100 text-emerald-700' :
           state.status === 'absent'  ? 'bg-rose-100 text-rose-700' :
           state.status === 'late'    ? 'bg-amber-100 text-amber-700' :
-                                       'bg-blue-100 text-blue-700'
+                                       'bg-brand-100 text-brand-700'
         }`}>{initials}</div>
         <div className="min-w-0">
           <p className="font-semibold text-slate-800 text-sm truncate">{name}</p>

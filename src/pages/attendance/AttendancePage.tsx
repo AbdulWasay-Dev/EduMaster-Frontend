@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'react-router-dom'
 import { ClipboardCheck, BarChart3, Users, History, BookOpen, ChevronDown } from 'lucide-react'
@@ -35,6 +35,7 @@ export default function AttendancePage() {
   }, [searchParams])
 
   const { data: classes = [] } = useQuery({ queryKey: ['classes'], queryFn: () => listClasses() })
+  const { data: allSubjects = [] } = useQuery({ queryKey: ['subjects'], queryFn: () => listSubjects() })
   const { data: classSubjects = [], isLoading: isLoadingSubjects } = useQuery({
     queryKey: ['subjects', selectedClass],
     queryFn: () => listSubjects(selectedClass || undefined),
@@ -42,7 +43,21 @@ export default function AttendancePage() {
   })
 
   const selectedClassObj   = (classes as Class[]).find(c => c.id === selectedClass)
-  const classSubjectList   = classSubjects as Subject[]
+  const classSubjectList = useMemo(() => {
+    const byId = new Map<string, Subject>()
+    const add = (subject?: Subject) => {
+      if (subject?.id) byId.set(subject.id, subject)
+    }
+
+    ;(classSubjects as Subject[]).forEach(add)
+    ;(allSubjects as Subject[]).forEach(subject => {
+      if (subject.class_id === selectedClass || subject.id === selectedClassObj?.subject_id) {
+        add(subject)
+      }
+    })
+
+    return Array.from(byId.values()).sort((a, b) => a.name.localeCompare(b.name))
+  }, [allSubjects, classSubjects, selectedClass, selectedClassObj?.subject_id])
   const selectedSubjectObj = classSubjectList.find(s => s.id === selectedSubject)
 
   useEffect(() => {
@@ -51,22 +66,27 @@ export default function AttendancePage() {
       return
     }
 
+    if (!isLoadingSubjects && selectedClass && !selectedSubject && classSubjectList.length > 0) {
+      setSelectedSubject(classSubjectList[0].id)
+      return
+    }
+
     if (!isLoadingSubjects && selectedSubject && !selectedSubjectObj) {
       setSelectedSubject('')
     }
-  }, [isLoadingSubjects, selectedClass, selectedSubject, selectedSubjectObj])
+  }, [classSubjectList, isLoadingSubjects, selectedClass, selectedSubject, selectedSubjectObj])
 
   const filtersReady = !!selectedClass && !!selectedSubject && !!selectedSubjectObj
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/20 to-indigo-50/30">
+    <div className="min-h-screen bg-gradient-to-br from-brand-50 via-white to-brand-100/40">
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-6">
 
         {/* ── Header ── */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <div className="flex items-center gap-3 mb-1">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-lg shadow-indigo-200">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center shadow-lg shadow-brand">
                 <ClipboardCheck className="w-5 h-5 text-white" />
               </div>
               <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Attendance</h1>
@@ -77,7 +97,7 @@ export default function AttendancePage() {
           {/* Global Stats Strip */}
           {filtersReady && (
             <div className="flex items-center gap-2 text-sm text-slate-500 bg-white/70 border border-slate-200 rounded-xl px-4 py-2 shadow-sm">
-              <BookOpen className="w-4 h-4 text-indigo-500" />
+              <BookOpen className="w-4 h-4 text-brand-500" />
               <span className="font-medium text-slate-700">{selectedClassObj?.name}</span>
               <span>·</span>
               <span>{selectedSubjectObj?.name}</span>
@@ -111,7 +131,7 @@ export default function AttendancePage() {
                   className="input w-full appearance-none pr-9 font-medium disabled:bg-slate-50"
                   value={selectedSubject}
                   onChange={e => setSelectedSubject(e.target.value)}
-                  disabled={!selectedClass}
+                  disabled={!selectedClass || isLoadingSubjects}
                 >
                   <option value="">— Select a subject —</option>
                   {classSubjectList.map(s => (
@@ -119,7 +139,7 @@ export default function AttendancePage() {
                   ))}
                 </select>
                 {selectedClass && !isLoadingSubjects && classSubjectList.length === 0 && (
-                  <p className="mt-2 text-xs text-amber-600">No subjects are assigned to this class yet.</p>
+                  <p className="mt-2 text-xs text-amber-600">No subjects are assigned to this class yet. Assign a subject to this class before taking attendance.</p>
                 )}
                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               </div>
@@ -135,7 +155,7 @@ export default function AttendancePage() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 whitespace-nowrap ${
                 activeTab === tab.id
-                  ? 'bg-gradient-to-br from-indigo-500 to-blue-600 text-white shadow-md shadow-indigo-200'
+                  ? 'bg-gradient-to-br from-brand-500 to-brand-600 text-white shadow-md shadow-brand'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
               }`}
             >
@@ -148,8 +168,8 @@ export default function AttendancePage() {
         {/* ── Tab Content ── */}
         {!filtersReady ? (
           <div className="bg-white/80 rounded-2xl border border-slate-200/60 shadow-sm p-16 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-100 to-blue-100 flex items-center justify-center mx-auto mb-4">
-              <ClipboardCheck className="w-8 h-8 text-indigo-400" />
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-100 to-brand-200 flex items-center justify-center mx-auto mb-4">
+              <ClipboardCheck className="w-8 h-8 text-brand-500" />
             </div>
             <h3 className="text-lg font-semibold text-slate-800 mb-2">Select Class &amp; Subject</h3>
             <p className="text-slate-400 max-w-sm mx-auto">Choose a class and subject above to begin managing attendance records and viewing analytics.</p>

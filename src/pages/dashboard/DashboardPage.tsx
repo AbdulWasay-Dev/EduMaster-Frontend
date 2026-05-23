@@ -53,8 +53,8 @@ function getNotifications(pendingCount: number, papersCount: number) {
     notifs.push({
       id: 'papers',
       icon: ScrollText,
-      iconBg: '#EFF6FF',
-      iconColor: '#0281FF',
+      iconBg: '#EAF3FF',
+      iconColor: '#0A66C2',
       title: `${papersCount} paper${papersCount > 1 ? 's' : ''} generated this week`,
       time: 'This week',
       to: '/papers',
@@ -133,8 +133,8 @@ export default function DashboardPage() {
     ...papers.slice(0, 3).map(p => ({
       id: `paper-${p.id}`,
       icon: ScrollText,
-      iconBg: '#EFF6FF',
-      iconColor: '#0281FF',
+      iconBg: '#EAF3FF',
+      iconColor: '#0A66C2',
       title: `Created paper "${p.title}"`,
       subtitle: `${p.questions?.length ?? 0} questions · ${p.total_marks} marks`,
       time: formatDate(p.created_at),
@@ -172,7 +172,7 @@ export default function DashboardPage() {
             <Link to={to}>
               <div
                 className="group relative overflow-hidden rounded-2xl p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer"
-                style={{ background: 'linear-gradient(135deg, #0281FF 0%, #0270e0 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #0A66C2 0%, #0859A6 100%)' }}
               >
                 <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-white/10" />
                 <div className="absolute bottom-0 left-0 w-16 h-16 rounded-full bg-white/5 -translate-x-4 translate-y-4" />
@@ -195,12 +195,12 @@ export default function DashboardPage() {
         <div className="lg:col-span-3 bg-white rounded-2xl border border-[#e2e8f0] p-5 sm:p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#EFF6FF' }}>
-                <Bell className="w-4 h-4" style={{ color: '#0281FF' }} />
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#EAF3FF' }}>
+                <Bell className="w-4 h-4" style={{ color: '#0A66C2' }} />
               </div>
               <h2 className="text-[15px] font-bold text-[#0f172a]">Notifications</h2>
             </div>
-            <Link to="/notifications" className="text-[12px] font-medium flex items-center gap-0.5 hover:underline" style={{ color: '#0281FF' }}>
+            <Link to="/notifications" className="text-[12px] font-medium flex items-center gap-0.5 hover:underline" style={{ color: '#0A66C2' }}>
               View all <ChevronRight className="w-3 h-3" />
             </Link>
           </div>
@@ -213,7 +213,7 @@ export default function DashboardPage() {
                 <Link
                   key={n.id}
                   to={n.to}
-                  className="flex items-center gap-3 p-3 rounded-xl border border-[#f1f5f9] hover:border-[#0281FF]/20 hover:bg-[#f8fafc] transition-all group"
+                  className="flex items-center gap-3 p-3 rounded-xl border border-[#f1f5f9] hover:border-[#0A66C2]/20 hover:bg-[#f8fafc] transition-all group"
                 >
                   <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: n.iconBg }}>
                     <n.icon className="w-4 h-4" style={{ color: n.iconColor }} />
@@ -233,12 +233,12 @@ export default function DashboardPage() {
         <div className="lg:col-span-2 bg-white rounded-2xl border border-[#e2e8f0] p-5 sm:p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#EFF6FF' }}>
-                <Calendar className="w-4 h-4" style={{ color: '#0281FF' }} />
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#EAF3FF' }}>
+                <Calendar className="w-4 h-4" style={{ color: '#0A66C2' }} />
               </div>
               <h2 className="text-[15px] font-bold text-[#0f172a]">Calendar</h2>
             </div>
-            <Link to="/schedule" className="text-[12px] font-medium flex items-center gap-0.5 hover:underline" style={{ color: '#0281FF' }}>
+            <Link to="/schedule" className="text-[12px] font-medium flex items-center gap-0.5 hover:underline" style={{ color: '#0A66C2' }}>
               Full view <ChevronRight className="w-3 h-3" />
             </Link>
           </div>
@@ -250,7 +250,7 @@ export default function DashboardPage() {
                 key={d.date}
                 className="flex flex-col items-center gap-1 py-2 px-2.5 sm:px-3 rounded-xl transition-all cursor-pointer"
                 style={{
-                  background: d.isToday ? '#0281FF' : 'transparent',
+                  background: d.isToday ? '#0A66C2' : 'transparent',
                   color: d.isToday ? 'white' : '#64748b',
                 }}
               >
@@ -270,7 +270,7 @@ export default function DashboardPage() {
                   to={`/classes/${cls.id}`}
                   className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-[#f8fafc] transition-all"
                 >
-                  <div className="w-1 h-8 rounded-full" style={{ background: '#0281FF' }} />
+                  <div className="w-1 h-8 rounded-full" style={{ background: '#0A66C2' }} />
                   <div className="flex-1 min-w-0">
                     <p className="text-[13px] font-semibold text-[#0f172a] truncate">{cls.name}</p>
                     <p className="text-[11px] text-[#94a3b8]">{cls.grade_level} · {cls.student_count ?? 0} students</p>
@@ -302,7 +302,7 @@ export default function DashboardPage() {
               <Link
                 key={a.id}
                 to={a.to}
-                className="flex items-center gap-3 p-3 rounded-xl border border-[#f1f5f9] hover:border-[#0281FF]/20 hover:bg-[#f8fafc] transition-all group"
+                className="flex items-center gap-3 p-3 rounded-xl border border-[#f1f5f9] hover:border-[#0A66C2]/20 hover:bg-[#f8fafc] transition-all group"
               >
                 <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: a.iconBg }}>
                   <a.icon className="w-4 h-4" style={{ color: a.iconColor }} />
@@ -323,7 +323,7 @@ export default function DashboardPage() {
               <Link
                 key={a.id}
                 to={a.to}
-                className="block p-3 rounded-xl border border-[#f1f5f9] hover:border-[#0281FF]/20 transition-all"
+                className="block p-3 rounded-xl border border-[#f1f5f9] hover:border-[#0A66C2]/20 transition-all"
               >
                 <div className="flex items-center gap-2 mb-1.5">
                   <div className="w-7 h-7 rounded-md flex items-center justify-center shrink-0" style={{ background: a.iconBg }}>
@@ -343,7 +343,7 @@ export default function DashboardPage() {
         <div>
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-[15px] font-bold text-[#0f172a]">My Classes</h2>
-            <Link to="/classes" className="text-[12px] font-medium flex items-center gap-0.5 hover:underline" style={{ color: '#0281FF' }}>
+            <Link to="/classes" className="text-[12px] font-medium flex items-center gap-0.5 hover:underline" style={{ color: '#0A66C2' }}>
               View all <ChevronRight className="w-3 h-3" />
             </Link>
           </div>
@@ -356,8 +356,8 @@ export default function DashboardPage() {
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#EFF6FF' }}>
-                        <BookOpen className="w-4 h-4" style={{ color: '#0281FF' }} />
+                      <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#EAF3FF' }}>
+                        <BookOpen className="w-4 h-4" style={{ color: '#0A66C2' }} />
                       </div>
                       <h3 className="font-semibold text-[14px] text-[#0f172a]">{cls.name}</h3>
                     </div>
@@ -372,9 +372,9 @@ export default function DashboardPage() {
               </Link>
             ))}
             <Link to="/classes/new">
-              <div className="bg-white rounded-2xl border border-dashed border-[#cbd5e1] p-5 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-[#0281FF] hover:bg-[#f8fafc] transition-all group min-h-[120px]">
-                <Plus className="w-6 h-6 text-[#94a3b8] group-hover:text-[#0281FF] transition-colors" />
-                <span className="text-[13px] font-semibold text-[#94a3b8] group-hover:text-[#0281FF] transition-colors">New Class</span>
+              <div className="bg-white rounded-2xl border border-dashed border-[#cbd5e1] p-5 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-[#0A66C2] hover:bg-[#f8fafc] transition-all group min-h-[120px]">
+                <Plus className="w-6 h-6 text-[#94a3b8] group-hover:text-[#0A66C2] transition-colors" />
+                <span className="text-[13px] font-semibold text-[#94a3b8] group-hover:text-[#0A66C2] transition-colors">New Class</span>
               </div>
             </Link>
           </div>
@@ -384,8 +384,8 @@ export default function DashboardPage() {
       {/* ── Empty state ── */}
       {!isLoading && classes.length === 0 && papers.length === 0 && (
         <div className="bg-white rounded-2xl border border-[#e2e8f0] p-10 text-center">
-          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: '#EFF6FF' }}>
-            <BookOpen className="w-8 h-8" style={{ color: '#0281FF' }} />
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: '#EAF3FF' }}>
+            <BookOpen className="w-8 h-8" style={{ color: '#0A66C2' }} />
           </div>
           <h3 className="text-[18px] font-bold text-[#0f172a] mb-2">Welcome! Let's get started.</h3>
           <p className="text-[14px] text-[#64748b] mb-6 max-w-sm mx-auto">

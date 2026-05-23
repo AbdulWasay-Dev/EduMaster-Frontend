@@ -96,8 +96,8 @@ function FAQItem({ q, a }: { q: string; a: string }) {
   return (
     <div className="border-b border-gray-100 last:border-0">
       <button onClick={() => setOpen(v => !v)} className="w-full flex items-center justify-between py-5 text-left gap-4 group">
-        <span className="font-semibold text-[#0a1628] group-hover:text-[#2d7dd2] transition-colors">{q}</span>
-        <ChevronDown className={`w-5 h-5 text-[#2d7dd2] shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+        <span className="font-semibold text-[#0a1628] group-hover:text-[#0A66C2] transition-colors">{q}</span>
+        <ChevronDown className={`w-5 h-5 text-[#0A66C2] shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && <p className="pb-5 text-[15px] text-[#5a7a9e] leading-relaxed">{a}</p>}
     </div>
@@ -119,19 +119,19 @@ export default function LandingPage() {
       <nav className={`landing-nav fixed top-0 left-0 right-0 z-50 ${scrolled ? 'scrolled' : ''}`}>
         <div className="max-w-[1200px] mx-auto px-6 h-[68px] flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#0281FF' }}>
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#0A66C2' }}>
               <BookOpen className="w-[18px] h-[18px] text-white" />
             </div>
             <span className="font-extrabold text-[20px] text-[#0a1628]">EduMaster</span>
           </Link>
           <div className="hidden md:flex items-center gap-7 text-[14px] font-medium text-[#3d5a80]">
-            <a href="#features" className="hover:text-[#2d7dd2] transition-colors">Features</a>
-            <a href="#how-it-works" className="hover:text-[#2d7dd2] transition-colors">How it works</a>
-            <a href="#testimonials" className="hover:text-[#2d7dd2] transition-colors">Testimonials</a>
-            <a href="#faq" className="hover:text-[#2d7dd2] transition-colors">FAQ</a>
+            <a href="#features" className="hover:text-[#0A66C2] transition-colors">Features</a>
+            <a href="#how-it-works" className="hover:text-[#0A66C2] transition-colors">How it works</a>
+            <a href="#testimonials" className="hover:text-[#0A66C2] transition-colors">Testimonials</a>
+            <a href="#faq" className="hover:text-[#0A66C2] transition-colors">FAQ</a>
           </div>
           <div className="flex items-center gap-3">
-            <Link to="/login" className="hidden sm:inline-flex text-[14px] font-semibold text-[#3d5a80] hover:text-[#2d7dd2] transition-colors px-4 py-2">
+            <Link to="/login" className="hidden sm:inline-flex text-[14px] font-semibold text-[#3d5a80] hover:text-[#0A66C2] transition-colors px-4 py-2">
               Login
             </Link>
             <Link to="/register" style={{ background: '#0f172a', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 600, fontSize: '13px', padding: '10px 22px', display: 'inline-flex', alignItems: 'center', gap: '6px', textDecoration: 'none', transition: 'all 0.2s', boxShadow: 'none' }}>
@@ -291,7 +291,7 @@ export default function LandingPage() {
       <section id="how-it-works" className="py-24 px-6 bg-[#f7fafd]">
         <div className="max-w-[1140px] mx-auto">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
-            <p className="text-[#2d7dd2] font-semibold text-[13px] uppercase tracking-widest mb-3">How It Works</p>
+            <p className="text-[#0A66C2] font-semibold text-[13px] uppercase tracking-widest mb-3">How It Works</p>
             <h2 className="text-[40px] font-extrabold text-[#0a1628] tracking-tight">Looks So Good, It's Like Cheating</h2>
             <p className="text-[17px] text-[#5a7a9e] mt-3 max-w-[500px] mx-auto">Set up in minutes. Save hours every week. Here's how.</p>
           </motion.div>
@@ -303,7 +303,7 @@ export default function LandingPage() {
               { icon: BarChart3, num: '04', title: 'Track & Analyze', desc: 'Monitor class performance, attendance trends, and student progress.' },
             ].map(step => (
               <motion.div key={step.num} variants={fadeUp} className="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ background: '#0281FF' }}>
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ background: '#0A66C2' }}>
                   <step.icon className="w-5 h-5 text-white" />
                 </div>
                 <p className="text-[32px] font-extrabold text-[#e8f0f8] mb-2">{step.num}</p>
@@ -320,7 +320,7 @@ export default function LandingPage() {
       <section id="testimonials" className="py-16 px-6">
         <div className="max-w-[1140px] mx-auto">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-4">
-            <p className="text-[#0281FF] font-semibold text-[13px] uppercase tracking-widest mb-3">Customer Testimonials</p>
+            <p className="text-[#0A66C2] font-semibold text-[13px] uppercase tracking-widest mb-3">Customer Testimonials</p>
             <h2 className="text-[40px] font-extrabold text-[#0f172a] tracking-tight">Real Results. Real Educators.</h2>
           </motion.div>
           <AnimatedTestimonials testimonials={TESTIMONIALS} autoplay />
@@ -331,7 +331,7 @@ export default function LandingPage() {
       <section id="faq" className="py-24 px-6 bg-[#f7fafd]">
         <div className="max-w-[680px] mx-auto">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
-            <p className="text-[#2d7dd2] font-semibold text-[13px] uppercase tracking-widest mb-3">FAQ</p>
+            <p className="text-[#0A66C2] font-semibold text-[13px] uppercase tracking-widest mb-3">FAQ</p>
             <h2 className="text-[36px] font-extrabold text-[#0a1628] tracking-tight">Common Questions</h2>
           </motion.div>
           <div className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm">
@@ -353,7 +353,7 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
           className="max-w-[700px] mx-auto text-center relative z-[1]"
         >
-          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg" style={{ background: '#0281FF' }}>
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg" style={{ background: '#0A66C2' }}>
             <GraduationCap className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-[36px] md:text-[44px] font-extrabold text-white leading-tight tracking-tight">
@@ -379,7 +379,7 @@ export default function LandingPage() {
         <div className="footer-grid">
           <div className="footer-brand">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#0281FF' }}>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#0A66C2' }}>
                 <BookOpen className="w-[18px] h-[18px] text-white" />
               </div>
               <span className="font-extrabold text-[18px] text-white">EduMaster</span>

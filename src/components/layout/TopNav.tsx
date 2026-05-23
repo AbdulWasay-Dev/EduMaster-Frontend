@@ -72,7 +72,7 @@ export default function TopNav() {
           <div className="flex items-center gap-2 pl-2" style={{ borderLeft: '1px solid #e2e8f0' }}>
             <div
               className="w-8 h-8 rounded-full text-white text-[11px] font-bold flex items-center justify-center cursor-pointer"
-              style={{ background: '#0281FF' }}
+              style={{ background: '#0A66C2' }}
             >
               {getInitials(user.name)}
             </div>

@@ -139,10 +139,10 @@ export default function DocumentsLibraryPage() {
       {!isLoading && docs.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { label: 'Total',      value: docs.length,                                      color: 'from-brand-500 to-sky-400'      },
+            { label: 'Total',      value: docs.length,                                      color: 'from-brand-500 to-brand-300'      },
             { label: 'Ready',      value: docs.filter(d => d.processing_status === 'completed').length, color: 'from-emerald-500 to-teal-400' },
-            { label: 'Processing', value: docs.filter(d => d.processing_status === 'processing').length, color: 'from-blue-600 to-cyan-400' },
-            { label: 'Subjects',   value: new Set(docs.map(d => d.subject_id).filter(Boolean)).size, color: 'from-blue-500 to-cyan-400' },
+            { label: 'Processing', value: docs.filter(d => d.processing_status === 'processing').length, color: 'from-brand-600 to-brand-400' },
+            { label: 'Subjects',   value: new Set(docs.map(d => d.subject_id).filter(Boolean)).size, color: 'from-brand-500 to-brand-300' },
           ].map(({ label, value, color }) => (
             <div key={label} className="card p-4 flex items-center gap-3">
               <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow-sm flex-shrink-0`}>

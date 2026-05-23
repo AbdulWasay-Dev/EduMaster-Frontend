@@ -109,12 +109,12 @@ export default function StudentAssignmentDetailPage() {
 
       {/* Existing submission (not yet graded) */}
       {hasSubmission && !isGraded && (
-        <div className="bg-sky-50 border border-sky-200 rounded-xl p-6">
+        <div className="bg-brand-50 border border-brand-200 rounded-xl p-6">
           <div className="flex items-center gap-2 mb-3">
-            <Clock className="w-5 h-5 text-sky-600" />
-            <h2 className="text-sm font-semibold text-sky-800">Submitted — Awaiting Grading</h2>
+            <Clock className="w-5 h-5 text-brand-600" />
+            <h2 className="text-sm font-semibold text-brand-800">Submitted — Awaiting Grading</h2>
           </div>
-          <p className="text-sm text-sky-700 whitespace-pre-wrap">
+          <p className="text-sm text-brand-700 whitespace-pre-wrap">
             {assignment.submission?.submission_text}
           </p>
         </div>
@@ -129,13 +129,13 @@ export default function StudentAssignmentDetailPage() {
             onChange={(e) => setSubmissionText(e.target.value)}
             rows={10}
             placeholder="Type your answer here..."
-            className="w-full rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent resize-y"
+            className="w-full rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent resize-y"
           />
           <div className="flex justify-end mt-4">
             <button
               onClick={() => submitMutation.mutate()}
               disabled={!submissionText.trim() || submitMutation.isPending}
-              className="px-5 py-2.5 rounded-lg bg-sky-500 text-white font-semibold text-sm hover:bg-sky-600 disabled:opacity-60 transition-colors flex items-center gap-2"
+              className="px-5 py-2.5 rounded-lg bg-brand-500 text-white font-semibold text-sm hover:bg-brand-600 disabled:opacity-60 transition-colors flex items-center gap-2"
             >
               {submitMutation.isPending ? (
                 <LoadingSpinner size="sm" />

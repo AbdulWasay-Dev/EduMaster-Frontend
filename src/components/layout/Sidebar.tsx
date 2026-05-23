@@ -45,7 +45,7 @@ export default function Sidebar() {
         collapsed ? 'w-[60px]' : 'w-[260px]',
       )}
       style={{
-        background: 'linear-gradient(180deg, #0281FF 0%, #0270e0 100%)',
+        background: 'linear-gradient(180deg, #0A66C2 0%, #0859A6 100%)',
         borderRight: '1px solid rgba(255,255,255,0.1)',
       }}
     >
@@ -77,7 +77,7 @@ export default function Sidebar() {
               cn(
                 'flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium transition-all duration-150 group',
                 isActive
-                  ? 'bg-white text-[#0281FF] shadow-sm'
+                  ? 'bg-white text-[#0A66C2] shadow-sm'
                   : 'text-white/70 hover:text-white hover:bg-white/10',
                 collapsed && 'justify-center px-2',
               )
@@ -88,7 +88,7 @@ export default function Sidebar() {
               <>
                 <Icon className={cn(
                   'w-4 h-4 shrink-0',
-                  isActive ? 'text-[#0281FF]' : 'text-white/50 group-hover:text-white',
+                  isActive ? 'text-[#0A66C2]' : 'text-white/50 group-hover:text-white',
                 )} />
                 {!collapsed && <span>{label}</span>}
               </>
@@ -136,7 +136,7 @@ export default function Sidebar() {
       <button
         onClick={toggleSidebar}
         className="absolute -right-3 top-16 z-10 w-6 h-6 rounded-full flex items-center justify-center transition-colors shadow-md"
-        style={{ background: 'white', color: '#0281FF' }}
+        style={{ background: 'white', color: '#0A66C2' }}
         title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
       >
         {collapsed

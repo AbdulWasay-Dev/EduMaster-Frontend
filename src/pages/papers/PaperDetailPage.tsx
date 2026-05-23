@@ -222,7 +222,7 @@ export default function PaperDetailPage() {
                 >
                   <button className="w-full flex items-start gap-3 p-5 text-left hover:bg-brand-25 transition-colors group"
                     onClick={() => toggleQ(q.id)}>
-                    <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-brand-500 to-sky-400 text-white text-xs font-bold shrink-0 shadow-sm">
+                    <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-brand-500 to-brand-300 text-white text-xs font-bold shrink-0 shadow-sm">
                       {i + 1}
                     </span>
                     <div className="flex-1 min-w-0">

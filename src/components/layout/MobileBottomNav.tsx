@@ -17,7 +17,7 @@ export default function MobileBottomNav() {
     <nav
       className="lg:hidden fixed bottom-0 inset-x-0 z-30 flex items-center justify-around px-2 py-2"
       style={{
-        background: '#0281FF',
+        background: '#0A66C2',
         borderTop: '1px solid rgba(255,255,255,0.15)',
       }}
     >

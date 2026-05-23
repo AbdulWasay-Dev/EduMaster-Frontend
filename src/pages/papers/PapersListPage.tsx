@@ -25,12 +25,12 @@ const DIFFICULTY_COLORS: Record<string, string> = {
 }
 
 const CARD_GRADIENTS = [
-  'from-brand-500 to-sky-400',
+  'from-brand-500 to-brand-300',
   'from-violet-500 to-purple-400',
-  'from-blue-500 to-cyan-400',
+  'from-brand-500 to-brand-300',
   'from-emerald-500 to-teal-400',
   'from-rose-500 to-pink-400',
-  'from-blue-600 to-cyan-400',
+  'from-brand-600 to-brand-400',
 ]
 const cardGradient = (title: string) =>
   CARD_GRADIENTS[title.split('').reduce((a, c) => a + c.charCodeAt(0), 0) % CARD_GRADIENTS.length]
@@ -128,10 +128,10 @@ export default function PapersListPage() {
       {papers.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { label: 'Total Papers',  value: papers.length,    icon: ScrollText, grad: 'from-brand-500 to-sky-400'      },
+            { label: 'Total Papers',  value: papers.length,    icon: ScrollText, grad: 'from-brand-500 to-brand-300'      },
             { label: 'Published',     value: publishedCount,   icon: Globe,      grad: 'from-emerald-500 to-teal-400'   },
             { label: 'Total Questions', value: totalQuestions, icon: FileText,   grad: 'from-violet-500 to-purple-400'  },
-            { label: 'Total Marks',   value: totalMarks,       icon: BarChart2,  grad: 'from-blue-500 to-cyan-400'      },
+            { label: 'Total Marks',   value: totalMarks,       icon: BarChart2,  grad: 'from-brand-500 to-brand-300'      },
           ].map(({ label, value, icon: Icon, grad }) => (
             <div key={label} className="card p-4 flex items-center gap-3">
               <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${grad} flex items-center justify-center shadow-sm`}>

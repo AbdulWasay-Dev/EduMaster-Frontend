@@ -42,7 +42,7 @@ export default function AnalyticsTab({ classId, subjectId }: Props) {
           <div className="flex gap-2 flex-wrap pb-0.5">
             {([['7 days',7],['30 days',30],['60 days',60],['90 days',90]] as const).map(([label, days]) => (
               <button key={days} onClick={() => { setStartDate(new Date(Date.now()-days*864e5).toISOString().split('T')[0]); setEndDate(today) }}
-                className="text-xs px-3 py-2 rounded-lg bg-indigo-50 text-indigo-600 font-semibold hover:bg-indigo-100 transition-colors">
+                className="text-xs px-3 py-2 rounded-lg bg-brand-50 text-brand-600 font-semibold hover:bg-brand-100 transition-colors">
                 Last {label}
               </button>
             ))}
@@ -52,14 +52,14 @@ export default function AnalyticsTab({ classId, subjectId }: Props) {
 
       {isLoading ? (
         <div className="bg-white/90 border border-slate-200/60 rounded-2xl p-16 flex justify-center">
-          <Loader2 className="w-8 h-8 text-indigo-400 animate-spin" />
+          <Loader2 className="w-8 h-8 text-brand-400 animate-spin" />
         </div>
       ) : (
         <>
           {/* KPI Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <KpiCard label="Overall Rate" value={`${overview?.overall_rate ?? 0}%`} sub={`${overview?.total_sessions ?? 0} sessions total`}
-              color="indigo" icon={<TrendingUp className="w-5 h-5" />}
+              color="brand" icon={<TrendingUp className="w-5 h-5" />}
               trend={overview?.overall_rate && overview.overall_rate >= 75 ? 'up' : 'down'} />
             <KpiCard label="Present" value={String(analytics?.present ?? 0)} sub="records" color="emerald" icon={<Users className="w-5 h-5" />} />
             <KpiCard label="Absent" value={String(analytics?.absent ?? 0)} sub="records" color="rose" icon={<AlertTriangle className="w-5 h-5" />} />
@@ -71,7 +71,7 @@ export default function AnalyticsTab({ classId, subjectId }: Props) {
             {/* Status distribution */}
             <div className="lg:col-span-2 bg-white/90 border border-slate-200/60 rounded-2xl shadow-sm p-6">
               <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                <BarChart2 className="w-4 h-4 text-indigo-500" />
+                <BarChart2 className="w-4 h-4 text-brand-500" />
                 Status Distribution
               </h3>
               {analytics && (
@@ -80,7 +80,7 @@ export default function AnalyticsTab({ classId, subjectId }: Props) {
                     ['Present', analytics.present, 'emerald'],
                     ['Absent',  analytics.absent,  'rose'],
                     ['Late',    analytics.late,    'amber'],
-                    ['Excused', analytics.excused, 'blue'],
+                    ['Excused', analytics.excused, 'brand'],
                   ] as const).map(([label, count, color]) => {
                     const total = (analytics.present + analytics.absent + analytics.late + analytics.excused) || 1
                     const pct = Math.round(count / total * 100)
@@ -126,7 +126,7 @@ export default function AnalyticsTab({ classId, subjectId }: Props) {
             {/* Trend chart */}
             <div className="lg:col-span-3 bg-white/90 border border-slate-200/60 rounded-2xl shadow-sm p-6">
               <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                <Activity className="w-4 h-4 text-indigo-500" />
+                <Activity className="w-4 h-4 text-brand-500" />
                 Attendance Trend
               </h3>
               {analytics?.trend && analytics.trend.length > 0 ? (
@@ -143,7 +143,7 @@ export default function AnalyticsTab({ classId, subjectId }: Props) {
           {overview?.heatmap && overview.heatmap.length > 0 && (
             <div className="bg-white/90 border border-slate-200/60 rounded-2xl shadow-sm p-6">
               <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-indigo-500" />
+                <Calendar className="w-4 h-4 text-brand-500" />
                 Attendance Heatmap <span className="text-xs text-slate-400 font-normal ml-1">(last 12 weeks)</span>
               </h3>
               <AttendanceHeatmap heatmap={overview.heatmap} />
@@ -185,7 +185,7 @@ export default function AnalyticsTab({ classId, subjectId }: Props) {
             <div className="bg-white/90 border border-slate-200/60 rounded-2xl shadow-sm overflow-hidden">
               <div className="px-6 py-4 border-b border-slate-100">
                 <h3 className="font-bold text-slate-800 flex items-center gap-2">
-                  <Users className="w-4 h-4 text-indigo-500" />
+                  <Users className="w-4 h-4 text-brand-500" />
                   All Students Summary
                 </h3>
               </div>
@@ -205,7 +205,7 @@ export default function AnalyticsTab({ classId, subjectId }: Props) {
                         <td className="px-5 py-3 text-emerald-600 font-semibold">{s.present}</td>
                         <td className="px-5 py-3 text-rose-600 font-semibold">{s.absent}</td>
                         <td className="px-5 py-3 text-amber-600 font-semibold">{s.late}</td>
-                        <td className="px-5 py-3 text-blue-600 font-semibold">{s.excused}</td>
+                        <td className="px-5 py-3 text-brand-600 font-semibold">{s.excused}</td>
                         <td className="px-5 py-3">
                           <div className="flex items-center gap-2">
                             <div className="w-20 h-1.5 bg-slate-100 rounded-full overflow-hidden">
@@ -268,13 +268,13 @@ function TrendChart({ trend }: { trend: ClassAnalytics['trend'] }) {
                 <p className="text-emerald-300">P: {t.present}</p>
                 <p className="text-rose-300">A: {t.absent}</p>
                 <p className="text-amber-300">L: {t.late}</p>
-                <p className="text-blue-300">E: {t.excused}</p>
+                <p className="text-brand-300">E: {t.excused}</p>
                 <p className="font-bold">{t.rate}%</p>
               </div>
               <div className="w-full flex flex-col-reverse gap-0">
                 <div className="w-full bg-emerald-400 rounded-t-sm transition-all" style={{ height: `${presentH}%`, minHeight: presentH > 0 ? '2px' : '0' }} />
                 <div className="w-full bg-amber-400 transition-all"    style={{ height: `${lateH}%`,    minHeight: lateH > 0    ? '2px' : '0' }} />
-                <div className="w-full bg-blue-400 transition-all"     style={{ height: `${excusedH}%`, minHeight: excusedH > 0 ? '2px' : '0' }} />
+                <div className="w-full bg-brand-400 transition-all"     style={{ height: `${excusedH}%`, minHeight: excusedH > 0 ? '2px' : '0' }} />
                 <div className="w-full bg-rose-400 rounded-t-sm transition-all" style={{ height: `${absentH}%`,  minHeight: absentH > 0  ? '2px' : '0' }} />
               </div>
             </div>
@@ -291,7 +291,7 @@ function TrendChart({ trend }: { trend: ClassAnalytics['trend'] }) {
       </div>
       {/* Legend */}
       <div className="flex items-center gap-4 mt-2 text-xs text-slate-500">
-        {[['Present','bg-emerald-400'],['Absent','bg-rose-400'],['Late','bg-amber-400'],['Excused','bg-blue-400']].map(([l,c]) => (
+        {[['Present','bg-emerald-400'],['Absent','bg-rose-400'],['Late','bg-amber-400'],['Excused','bg-brand-400']].map(([l,c]) => (
           <span key={l} className="flex items-center gap-1"><span className={`w-2.5 h-2.5 rounded-sm ${c}`} />{l}</span>
         ))}
       </div>

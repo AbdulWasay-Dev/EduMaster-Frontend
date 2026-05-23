@@ -7,7 +7,7 @@ const STATUS_COLORS: Record<string, string> = {
   present: 'bg-emerald-100 text-emerald-700',
   absent:  'bg-rose-100 text-rose-700',
   late:    'bg-amber-100 text-amber-700',
-  excused: 'bg-blue-100 text-blue-700',
+  excused: 'bg-brand-100 text-brand-700',
 }
 
 interface Props { classId: string; subjectId: string }
@@ -84,7 +84,7 @@ export default function RecordsTab({ classId, subjectId }: Props) {
       {/* Records */}
       {isLoading ? (
         <div className="bg-white/90 border border-slate-200/60 rounded-2xl p-16 flex justify-center">
-          <Loader2 className="w-8 h-8 text-indigo-400 animate-spin" />
+          <Loader2 className="w-8 h-8 text-brand-400 animate-spin" />
         </div>
       ) : sortedDates.length === 0 ? (
         <div className="bg-white/90 border border-slate-200/60 rounded-2xl p-12 text-center text-slate-400">
@@ -102,7 +102,7 @@ export default function RecordsTab({ classId, subjectId }: Props) {
                 {/* Session Header */}
                 <div className="flex items-center justify-between px-5 py-3 bg-slate-50/80 border-b border-slate-100">
                   <div className="flex items-center gap-3">
-                    <Calendar className="w-4 h-4 text-indigo-400" />
+                    <Calendar className="w-4 h-4 text-brand-400" />
                     <span className="font-semibold text-slate-800">
                       {new Date(date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                     </span>
@@ -121,7 +121,7 @@ export default function RecordsTab({ classId, subjectId }: Props) {
                     const cnt = recs.filter((r: any) => r.status === st).length
                     const pct = recs.length ? (cnt / recs.length) * 100 : 0
                     return pct > 0 ? (
-                      <div key={st} style={{ width: `${pct}%` }} className={`${st === 'present' ? 'bg-emerald-400' : st === 'absent' ? 'bg-rose-400' : st === 'late' ? 'bg-amber-400' : 'bg-blue-400'}`} />
+                      <div key={st} style={{ width: `${pct}%` }} className={`${st === 'present' ? 'bg-emerald-400' : st === 'absent' ? 'bg-rose-400' : st === 'late' ? 'bg-amber-400' : 'bg-brand-400'}`} />
                     ) : null
                   })}
                 </div>

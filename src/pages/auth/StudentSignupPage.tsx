@@ -85,23 +85,23 @@ export default function StudentSignupPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-100 relative overflow-hidden px-4">
-      <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-sky-500/15 rounded-full blur-3xl animate-float" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-50 via-brand-50 to-brand-100 relative overflow-hidden px-4">
+      <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-brand-500/15 rounded-full blur-3xl animate-float" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-brand-400/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
 
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         className="relative z-10 w-full max-w-md"
       >
-        <div className="bg-white rounded-2xl shadow-xl border border-sky-100 p-8">
+        <div className="bg-white rounded-2xl shadow-xl border border-brand-100 p-8">
           {/* Logo */}
           <div className="flex flex-col items-center mb-8">
-            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-sky-500 shadow-lg mb-3">
+            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-brand-500 shadow-lg mb-3">
               <GraduationCap className="w-6 h-6 text-white" />
             </div>
             <h1 className="text-2xl font-bold text-slate-800">
-              Student <span className="text-sky-500">Sign Up</span>
+              Student <span className="text-brand-500">Sign Up</span>
             </h1>
             <p className="text-sm text-slate-500 mt-1">
               {step === 1 ? 'Enter your class code to get started' : `Joining: ${className}`}
@@ -110,15 +110,15 @@ export default function StudentSignupPage() {
 
           {/* Step indicators */}
           <div className="flex items-center justify-center gap-3 mb-6">
-            <div className={`flex items-center gap-1.5 text-xs font-medium ${step >= 1 ? 'text-sky-500' : 'text-slate-300'}`}>
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs ${step > 1 ? 'bg-green-500' : 'bg-sky-500'}`}>
+            <div className={`flex items-center gap-1.5 text-xs font-medium ${step >= 1 ? 'text-brand-500' : 'text-slate-300'}`}>
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs ${step > 1 ? 'bg-green-500' : 'bg-brand-500'}`}>
                 {step > 1 ? <CheckCircle2 className="w-4 h-4" /> : '1'}
               </div>
               Class Code
             </div>
             <div className="w-8 h-px bg-slate-200" />
-            <div className={`flex items-center gap-1.5 text-xs font-medium ${step >= 2 ? 'text-sky-500' : 'text-slate-300'}`}>
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${step >= 2 ? 'bg-sky-500 text-white' : 'bg-slate-200 text-slate-400'}`}>
+            <div className={`flex items-center gap-1.5 text-xs font-medium ${step >= 2 ? 'text-brand-500' : 'text-slate-300'}`}>
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${step >= 2 ? 'bg-brand-500 text-white' : 'bg-slate-200 text-slate-400'}`}>
                 2
               </div>
               Your Details
@@ -144,12 +144,12 @@ export default function StudentSignupPage() {
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Class Code</label>
                   <div className="relative">
-                    <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-sky-400" />
+                    <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-400" />
                     <input
                       {...codeForm.register('class_code')}
                       type="text"
                       placeholder="e.g. ABC123"
-                      className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent uppercase tracking-widest font-mono"
+                      className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent uppercase tracking-widest font-mono"
                       autoFocus
                     />
                   </div>
@@ -161,7 +161,7 @@ export default function StudentSignupPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-2.5 rounded-lg bg-sky-500 text-white font-semibold text-sm hover:bg-sky-600 disabled:opacity-60 transition-colors flex items-center justify-center gap-2"
+                  className="w-full py-2.5 rounded-lg bg-brand-500 text-white font-semibold text-sm hover:bg-brand-600 disabled:opacity-60 transition-colors flex items-center justify-center gap-2"
                 >
                   {loading ? <LoadingSpinner size="sm" /> : 'Verify Code'}
                 </button>
@@ -178,12 +178,12 @@ export default function StudentSignupPage() {
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-sky-400" />
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-400" />
                     <input
                       {...signupForm.register('full_name')}
                       type="text"
                       placeholder="Your full name"
-                      className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                      className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                     />
                   </div>
                   {signupForm.formState.errors.full_name && (
@@ -194,12 +194,12 @@ export default function StudentSignupPage() {
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-sky-400" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-400" />
                     <input
                       {...signupForm.register('email')}
                       type="email"
                       placeholder="you@school.edu"
-                      className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                      className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                     />
                   </div>
                   {signupForm.formState.errors.email && (
@@ -212,7 +212,7 @@ export default function StudentSignupPage() {
                   <PasswordInput
                     {...signupForm.register('password')}
                     placeholder="Choose a password"
-                    className="w-full rounded-lg border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                    className="w-full rounded-lg border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                   />
                   {signupForm.formState.errors.password && (
                     <p className="text-xs text-red-500 mt-1">{signupForm.formState.errors.password.message}</p>
@@ -224,7 +224,7 @@ export default function StudentSignupPage() {
                   <PasswordInput
                     {...signupForm.register('confirm_password')}
                     placeholder="Confirm your password"
-                    className="w-full rounded-lg border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                    className="w-full rounded-lg border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                   />
                   {signupForm.formState.errors.confirm_password && (
                     <p className="text-xs text-red-500 mt-1">{signupForm.formState.errors.confirm_password.message}</p>
@@ -242,7 +242,7 @@ export default function StudentSignupPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="flex-1 py-2.5 rounded-lg bg-sky-500 text-white font-semibold text-sm hover:bg-sky-600 disabled:opacity-60 transition-colors flex items-center justify-center gap-2"
+                    className="flex-1 py-2.5 rounded-lg bg-brand-500 text-white font-semibold text-sm hover:bg-brand-600 disabled:opacity-60 transition-colors flex items-center justify-center gap-2"
                   >
                     {loading ? <LoadingSpinner size="sm" /> : 'Create Account'}
                   </button>
@@ -254,7 +254,7 @@ export default function StudentSignupPage() {
           <div className="mt-6 text-center">
             <p className="text-sm text-slate-500">
               Already have an account?{' '}
-              <Link to="/student/login" className="text-sky-500 font-medium hover:underline">
+              <Link to="/student/login" className="text-brand-500 font-medium hover:underline">
                 Sign In
               </Link>
             </p>

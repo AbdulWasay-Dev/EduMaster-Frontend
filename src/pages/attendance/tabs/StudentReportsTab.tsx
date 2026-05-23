@@ -54,7 +54,7 @@ export default function StudentReportsTab({ classId, subjectId }: Props) {
               <button
                 key={label}
                 onClick={() => { setStartDate(new Date(Date.now() - (days as number) * 864e5).toISOString().split('T')[0]); setEndDate(today) }}
-                className="text-xs px-3 py-2 rounded-lg bg-indigo-50 text-indigo-600 font-semibold hover:bg-indigo-100 transition-colors"
+                className="text-xs px-3 py-2 rounded-lg bg-brand-50 text-brand-600 font-semibold hover:bg-brand-100 transition-colors"
               >{label as string}</button>
             ))}
           </div>
@@ -71,7 +71,7 @@ export default function StudentReportsTab({ classId, subjectId }: Props) {
                 <button
                   key={col}
                   onClick={() => toggleSort(col)}
-                  className={`text-xs px-2 py-1 rounded font-medium transition-colors ${sortBy === col ? 'bg-indigo-100 text-indigo-700' : 'text-slate-400 hover:text-slate-600'}`}
+                  className={`text-xs px-2 py-1 rounded font-medium transition-colors ${sortBy === col ? 'bg-brand-100 text-brand-700' : 'text-slate-400 hover:text-slate-600'}`}
                 >
                   {label}<SortIndicator col={col} />
                 </button>
@@ -80,14 +80,14 @@ export default function StudentReportsTab({ classId, subjectId }: Props) {
           </div>
 
           {isLoading ? (
-            <div className="p-8 flex justify-center"><Loader2 className="w-6 h-6 text-indigo-400 animate-spin" /></div>
+            <div className="p-8 flex justify-center"><Loader2 className="w-6 h-6 text-brand-400 animate-spin" /></div>
           ) : (
             <div className="divide-y divide-slate-50 max-h-[600px] overflow-y-auto">
               {sorted.map(s => (
                 <button
                   key={s.student_id}
                   onClick={() => setSelectedStudentId(s.student_id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 transition-colors text-left hover:bg-slate-50 ${selectedStudentId === s.student_id ? 'bg-indigo-50/80 border-r-2 border-indigo-400' : ''}`}
+                  className={`w-full flex items-center gap-3 px-4 py-3 transition-colors text-left hover:bg-slate-50 ${selectedStudentId === s.student_id ? 'bg-brand-50/80 border-r-2 border-brand-400' : ''}`}
                 >
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${
                     s.attendance_pct >= 90 ? 'bg-emerald-100 text-emerald-700' :
@@ -147,7 +147,7 @@ function StudentDetail({ studentId, classId, subjectId, startDate, endDate, onCl
 
   if (isLoading) return (
     <div className="bg-white/90 border border-slate-200/60 rounded-2xl p-12 flex justify-center items-center">
-      <Loader2 className="w-8 h-8 text-indigo-400 animate-spin" />
+      <Loader2 className="w-8 h-8 text-brand-400 animate-spin" />
     </div>
   )
   if (!data) return null
@@ -158,7 +158,7 @@ function StudentDetail({ studentId, classId, subjectId, startDate, endDate, onCl
   return (
     <div className="bg-white/90 border border-slate-200/60 rounded-2xl shadow-sm overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-gradient-to-r from-indigo-50 to-blue-50">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-gradient-to-r from-brand-50 to-brand-100">
         <div>
           <h3 className="font-bold text-slate-900 text-lg">{data.student_name}</h3>
           {data.roll_number && <p className="text-sm text-slate-400">Roll No: {data.roll_number}</p>}
@@ -180,7 +180,7 @@ function StudentDetail({ studentId, classId, subjectId, startDate, endDate, onCl
           ['Present', data.present, 'emerald'],
           ['Absent',  data.absent,  'rose'],
           ['Late',    data.late,    'amber'],
-          ['Excused', data.excused, 'blue'],
+          ['Excused', data.excused, 'brand'],
         ] as const).map(([label, count, color]) => (
           <div key={label} className="py-3 text-center">
             <p className={`text-xl font-black text-${color}-600`}>{count}</p>
@@ -236,7 +236,7 @@ function StudentDetail({ studentId, classId, subjectId, startDate, endDate, onCl
                 r.status === 'present' ? 'bg-emerald-100 text-emerald-700' :
                 r.status === 'absent'  ? 'bg-rose-100 text-rose-700' :
                 r.status === 'late'    ? 'bg-amber-100 text-amber-700' :
-                                         'bg-blue-100 text-blue-700'
+                                         'bg-brand-100 text-brand-700'
               }`}>{r.status}</span>
               {r.remarks && <span className="text-xs text-slate-400 italic truncate">{r.remarks}</span>}
             </div>

@@ -59,7 +59,7 @@ export default function StudentAskAIPage() {
         <select
           value={subjectId}
           onChange={(e) => setSubjectId(e.target.value)}
-          className="w-full sm:w-64 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+          className="w-full sm:w-64 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
         >
           <option value="">Select a subject...</option>
           {(subjects || []).map((s: { id: string; name: string }) => (
@@ -83,7 +83,7 @@ export default function StudentAskAIPage() {
           >
             <div className={`max-w-[80%] rounded-xl px-4 py-3 text-sm whitespace-pre-wrap ${
               m.role === 'user'
-                ? 'bg-sky-500 text-white'
+                ? 'bg-brand-500 text-white'
                 : 'bg-slate-100 text-slate-800'
             }`}>
               {m.content}
@@ -107,12 +107,12 @@ export default function StudentAskAIPage() {
           onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
           placeholder={subjectId ? 'Type your question...' : 'Select a subject first'}
           disabled={!subjectId}
-          className="flex-1 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 disabled:opacity-50"
+          className="flex-1 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-50"
         />
         <button
           onClick={handleSend}
           disabled={!question.trim() || !subjectId || askMutation.isPending}
-          className="px-4 py-2.5 rounded-lg bg-sky-500 text-white hover:bg-sky-600 disabled:opacity-60 transition-colors"
+          className="px-4 py-2.5 rounded-lg bg-brand-500 text-white hover:bg-brand-600 disabled:opacity-60 transition-colors"
         >
           <Send className="w-4 h-4" />
         </button>

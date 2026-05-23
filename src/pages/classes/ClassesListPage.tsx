@@ -22,12 +22,12 @@ import type { Class, ScheduleEvent } from '@/types'
 
 // Blue-led palette keyed by class name hash
 const CLASS_GRADIENTS = [
-  'from-brand-500 to-sky-400',
+  'from-brand-500 to-brand-300',
   'from-violet-500 to-purple-400',
   'from-emerald-500 to-teal-400',
-  'from-blue-600 to-cyan-400',
+  'from-brand-600 to-brand-400',
   'from-indigo-500 to-blue-400',
-  'from-sky-500 to-blue-300',
+  'from-brand-500 to-brand-300',
 ]
 function classGradient(name: string) {
   const h = name.split('').reduce((a, c) => a + c.charCodeAt(0), 0)
@@ -107,9 +107,9 @@ export default function ClassesListPage() {
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
           className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { label: 'Total Classes', value: classes.length, icon: Layers,      grad: 'from-brand-500 to-sky-400' },
+            { label: 'Total Classes', value: classes.length, icon: Layers,      grad: 'from-brand-500 to-brand-300' },
             { label: 'Active',        value: activeCount,    icon: CheckCircle2, grad: 'from-emerald-500 to-teal-400' },
-            { label: 'Students',      value: totalStudents,  icon: Users,        grad: 'from-blue-500 to-cyan-400'    },
+            { label: 'Students',      value: totalStudents,  icon: Users,        grad: 'from-brand-500 to-brand-300'    },
             { label: 'Scheduled',     value: events.filter(e => e.type === 'class').length, icon: Calendar, grad: 'from-violet-500 to-purple-400' },
           ].map(({ label, value, icon: Icon, grad }) => (
             <div key={label} className="card p-4 flex items-center gap-3">

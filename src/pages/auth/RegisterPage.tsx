@@ -44,7 +44,7 @@ const emptyToUndefined = (value?: string) => {
 }
 
 const inputCls =
-  'w-full h-[46px] px-3.5 rounded-xl border border-[#e2e8f0] bg-white text-[14px] text-[#0f172a] placeholder:text-[#94a3b8] outline-none transition-all focus:border-[#0281FF] focus:ring-2 focus:ring-[#0281FF]/10'
+  'w-full h-[46px] px-3.5 rounded-xl border border-[#e2e8f0] bg-white text-[14px] text-[#0f172a] placeholder:text-[#94a3b8] outline-none transition-all focus:border-[#0A66C2] focus:ring-2 focus:ring-[#0A66C2]/10'
 const inputIconCls = inputCls + ' pl-10'
 const labelCls = 'block text-[13px] font-semibold text-[#0f172a] mb-1.5'
 const errorCls = 'text-[12px] text-[#ef4444] mt-1'
@@ -124,7 +124,7 @@ export default function RegisterPage() {
         {/* Logo */}
         <div className="flex flex-col items-center mb-6">
           <Link to="/" className="flex items-center gap-2.5 mb-5">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#0281FF' }}>
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#0A66C2' }}>
               <BookOpen className="w-[18px] h-[18px] text-white" />
             </div>
             <span className="font-extrabold text-[20px] text-[#0f172a]">EduMaster</span>
@@ -145,7 +145,7 @@ export default function RegisterPage() {
                 <div
                   className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all duration-300 text-white"
                   style={{
-                    background: i <= step ? '#0281FF' : '#e2e8f0',
+                    background: i <= step ? '#0A66C2' : '#e2e8f0',
                   }}
                 >
                   {i < step ? (
@@ -156,7 +156,7 @@ export default function RegisterPage() {
                 </div>
                 <span
                   className="text-[11px] font-semibold mt-1.5 hidden sm:block"
-                  style={{ color: i <= step ? '#0281FF' : '#94a3b8' }}
+                  style={{ color: i <= step ? '#0A66C2' : '#94a3b8' }}
                 >
                   {s.label}
                 </span>
@@ -164,7 +164,7 @@ export default function RegisterPage() {
               {i < STEPS.length - 1 && (
                 <div
                   className="w-12 sm:w-16 h-[2px] mx-2 sm:mx-3 rounded-full transition-all duration-300 self-start mt-[18px] sm:mt-[20px]"
-                  style={{ background: i < step ? '#0281FF' : '#e2e8f0' }}
+                  style={{ background: i < step ? '#0A66C2' : '#e2e8f0' }}
                 />
               )}
             </div>
@@ -312,12 +312,12 @@ export default function RegisterPage() {
 
                   {/* Terms */}
                   <div className="flex items-start gap-2.5 pt-2">
-                    <input {...register('terms')} id="terms" type="checkbox" className="w-4 h-4 mt-0.5 rounded border-[#cbd5e1] accent-[#0281FF]" />
+                    <input {...register('terms')} id="terms" type="checkbox" className="w-4 h-4 mt-0.5 rounded border-[#cbd5e1] accent-[#0A66C2]" />
                     <label htmlFor="terms" className="text-[13px] text-[#64748b] cursor-pointer leading-relaxed">
                       I agree to the{' '}
-                      <a href="#" className="font-medium hover:underline" style={{ color: '#0281FF' }}>Terms of Service</a>
+                      <a href="#" className="font-medium hover:underline" style={{ color: '#0A66C2' }}>Terms of Service</a>
                       {' '}and{' '}
-                      <a href="#" className="font-medium hover:underline" style={{ color: '#0281FF' }}>Privacy Policy</a>
+                      <a href="#" className="font-medium hover:underline" style={{ color: '#0A66C2' }}>Privacy Policy</a>
                     </label>
                   </div>
                   {errors.terms && <p className={errorCls}>{errors.terms.message}</p>}
@@ -364,7 +364,7 @@ export default function RegisterPage() {
 
         <p className="text-center text-[14px] text-[#64748b] mt-6 pb-6">
           Already have an account?{' '}
-          <Link to="/login" className="font-semibold hover:underline" style={{ color: '#0281FF' }}>Sign in</Link>
+          <Link to="/login" className="font-semibold hover:underline" style={{ color: '#0A66C2' }}>Sign in</Link>
         </p>
       </motion.div>
     </div>

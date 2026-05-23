@@ -83,8 +83,8 @@
   justify-content: center;
   align-items: center;
   background:
-    linear-gradient(145deg, rgba(5, 12, 32, 0.98) 0%, rgba(6, 41, 88, 0.96) 42%, rgba(2, 129, 255, 0.92) 100%),
-    linear-gradient(90deg, #0f172a 0%, #0281ff 100%);
+    linear-gradient(145deg, rgba(5, 12, 32, 0.98) 0%, rgba(6, 41, 88, 0.96) 42%, rgba(10, 102, 194, 0.92) 100%),
+    linear-gradient(90deg, #0f172a 0%, #0A66C2 100%);
   border-radius: 24px;
 }
 
@@ -142,7 +142,7 @@
 }
 
 .hero-snapshot-label svg {
-  color: #0281ff;
+  color: #0A66C2;
 }
 
 .hero-snapshot img {
@@ -263,7 +263,7 @@
 
 /* Gradient text — blue version */
 .landing-gradient-text {
-  background: linear-gradient(135deg, #2d7dd2 0%, #56a8e8 50%, #7ec8f8 100%);
+  background: linear-gradient(135deg, #0A66C2 0%, #3E96F5 50%, #78B9FF 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -271,7 +271,7 @@
 
 /* Primary CTA button */
 .landing-btn-primary {
-  background: linear-gradient(135deg, #2d7dd2 0%, #1a6bc4 100%);
+  background: linear-gradient(135deg, #0A66C2 0%, #0859A6 100%);
   color: white;
   border: none;
   border-radius: 12px;
@@ -280,7 +280,7 @@
   padding: 14px 32px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 20px rgba(45, 125, 210, 0.35);
+  box-shadow: 0 4px 20px rgba(10, 102, 194, 0.35);
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -289,14 +289,14 @@
 
 .landing-btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(45, 125, 210, 0.5);
-  background: linear-gradient(135deg, #3589de 0%, #2070cc 100%);
+  box-shadow: 0 8px 30px rgba(10, 102, 194, 0.5);
+  background: linear-gradient(135deg, #1B75D0 0%, #0A66C2 100%);
 }
 
 .landing-btn-secondary {
   background: white;
-  color: #1a4b8c;
-  border: 1.5px solid rgba(45, 125, 210, 0.2);
+  color: #074A8A;
+  border: 1.5px solid rgba(10, 102, 194, 0.2);
   border-radius: 12px;
   font-weight: 600;
   font-size: 15px;
@@ -310,7 +310,7 @@
 }
 
 .landing-btn-secondary:hover {
-  border-color: rgba(45, 125, 210, 0.4);
+  border-color: rgba(10, 102, 194, 0.4);
   background: #f0f7ff;
   transform: translateY(-1px);
 }
@@ -461,7 +461,7 @@
 
 /* Each color — rich, vibrant, with depth */
 .feature-image-bg.blue {
-  background: linear-gradient(160deg, #1e3a8a 0%, #2563eb 35%, #3b82f6 55%, #93c5fd 80%, #bfdbfe 100%);
+  background: linear-gradient(160deg, #073D72 0%, #0A66C2 35%, #3E96F5 60%, #78B9FF 100%);
 }
 
 .feature-image-bg.teal {
@@ -473,7 +473,7 @@
 }
 
 .feature-image-bg.amber {
-  background: linear-gradient(160deg, #1e3a8a 0%, #2563eb 35%, #60a5fa 55%, #bfdbfe 80%, #e0b896 100%);
+  background: linear-gradient(160deg, #073D72 0%, #0A66C2 35%, #3E96F5 60%, #D6E9FF 100%);
 }
 
 .feature-image-bg.rose {
@@ -481,7 +481,7 @@
 }
 
 .feature-image-bg.sky {
-  background: linear-gradient(160deg, #075985 0%, #0284c7 35%, #38bdf8 55%, #7dd3fc 80%, #e0f2fe 100%);
+  background: linear-gradient(160deg, #073D72 0%, #0A66C2 35%, #3E96F5 60%, #78B9FF 100%);
 }
 
 /* Glassmorphism backing layer — behind the white card for depth */
@@ -556,7 +556,7 @@
 .testimonial-stat .value {
   font-size: 24px;
   font-weight: 800;
-  color: #3b82f6;
+  color: #0A66C2;
 }
 
 .testimonial-stat .label {
@@ -584,7 +584,7 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #2d7dd2, #56a8e8);
+  background: linear-gradient(135deg, #0A66C2, #3E96F5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -606,7 +606,7 @@
 
 /* Bottom CTA */
 .bottom-cta {
-  background: linear-gradient(150deg, #1a6de3 0%, #3b82f6 30%, #5b9bf5 60%, #94b8f5 100%);
+  background: linear-gradient(150deg, #073D72 0%, #0A66C2 36%, #3E96F5 68%, #78B9FF 100%);
   padding: 100px 24px;
   position: relative;
   overflow: hidden;

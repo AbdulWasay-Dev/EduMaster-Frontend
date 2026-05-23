@@ -11,7 +11,7 @@ const statusBadge = (status: string) => {
     case 'graded':
       return <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700"><CheckCircle2 className="w-3 h-3" /> Graded</span>
     case 'submitted':
-      return <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-sky-50 text-sky-700"><Clock className="w-3 h-3" /> Submitted</span>
+      return <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-brand-50 text-brand-700"><Clock className="w-3 h-3" /> Submitted</span>
     default:
       return <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700"><AlertCircle className="w-3 h-3" /> Pending</span>
   }
@@ -80,12 +80,12 @@ export default function StudentAssignmentsPage() {
                 to={`/student/assignments/${a.id}`}
                 className={cn(
                   'flex items-center gap-4 bg-white rounded-xl border p-4 shadow-sm hover:shadow-md transition-shadow',
-                  a.submission_status === 'graded' ? 'border-green-100' : 'border-sky-100',
+                  a.submission_status === 'graded' ? 'border-green-100' : 'border-brand-100',
                 )}
               >
                 <div className={cn(
                   'flex items-center justify-center w-10 h-10 rounded-lg shrink-0',
-                  a.submission_status === 'graded' ? 'bg-green-100 text-green-600' : 'bg-sky-100 text-sky-600',
+                  a.submission_status === 'graded' ? 'bg-green-100 text-green-600' : 'bg-brand-100 text-brand-600',
                 )}>
                   <FileText className="w-5 h-5" />
                 </div>

@@ -35,14 +35,14 @@ export function GenerativeMountainScene() {
     // GEOMETRY — high-res plane for smooth mountains
     const geometry = new THREE.PlaneGeometry(12, 8, 128, 128);
 
-    // SHADER MATERIAL — hero blue color (#0281FF → #7dd3fc range)
+    // SHADER MATERIAL — hero blue color (#0A66C2 → #78B9FF range)
     const material = new THREE.ShaderMaterial({
       side: THREE.DoubleSide,
       wireframe: false,
       uniforms: {
         time: { value: 0 },
         pointLightPosition: { value: new THREE.Vector3(0, 0, 5) },
-        color: { value: new THREE.Color("#7dd3fc") },
+        color: { value: new THREE.Color("#78B9FF") },
       },
       vertexShader: `
         uniform float time;

@@ -78,10 +78,10 @@ export default function SubjectsListPage() {
   const activeCount   = subjects.filter(s => s.is_active).length
 
   const stats = [
-    { label: 'Total Subjects', value: subjects.length, icon: BookOpen,      color: 'from-brand-500 to-sky-400',      text: 'text-brand-600',   bg: 'bg-brand-50'   },
+    { label: 'Total Subjects', value: subjects.length, icon: BookOpen,      color: 'from-brand-500 to-brand-300',      text: 'text-brand-600',   bg: 'bg-brand-50'   },
     { label: 'Active',         value: activeCount,     icon: CheckCircle2,  color: 'from-emerald-500 to-teal-400',   text: 'text-emerald-600', bg: 'bg-emerald-50' },
     { label: 'Documents',      value: totalDocs,       icon: FileText,      color: 'from-violet-500 to-purple-400',  text: 'text-violet-600',  bg: 'bg-violet-50'  },
-    { label: 'Papers',         value: totalPapers,     icon: ScrollText,    color: 'from-blue-600 to-cyan-400',      text: 'text-blue-600',    bg: 'bg-blue-50'    },
+    { label: 'Papers',         value: totalPapers,     icon: ScrollText,    color: 'from-brand-600 to-brand-400',      text: 'text-blue-600',    bg: 'bg-blue-50'    },
   ]
 
   const container = {
@@ -260,12 +260,12 @@ function SubjectListRow({
   index: number
 }) {
   const GRADIENTS = [
-    'from-brand-500 to-sky-400',
-    'from-blue-600 to-cyan-400',
+    'from-brand-500 to-brand-300',
+    'from-brand-600 to-brand-400',
     'from-violet-500 to-purple-400',
     'from-emerald-500 to-teal-400',
     'from-indigo-500 to-blue-400',
-    'from-sky-500 to-blue-300',
+    'from-brand-500 to-brand-300',
   ]
   const gradient = GRADIENTS[subject.name.split('').reduce((a, c) => a + c.charCodeAt(0), 0) % GRADIENTS.length]
 

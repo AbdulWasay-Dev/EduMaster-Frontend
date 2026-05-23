@@ -22,12 +22,12 @@ import { listClasses } from '@/lib/api/classes'
 import { formatDate, timeAgo, fileIcon } from '@/lib/utils'
 
 const SUBJECT_GRADIENTS = [
-  'from-brand-500 to-sky-400',
-  'from-blue-600 to-cyan-400',
+  'from-brand-500 to-brand-300',
+  'from-brand-600 to-brand-400',
   'from-violet-500 to-purple-400',
   'from-emerald-500 to-teal-400',
   'from-indigo-500 to-blue-400',
-  'from-sky-500 to-blue-300',
+  'from-brand-500 to-brand-300',
 ]
 
 function getGradient(name: string): string {

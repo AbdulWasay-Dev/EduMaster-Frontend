@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 
 function gradeColor(grade: string) {
   if (grade.startsWith('A')) return 'text-green-600 bg-green-50'
-  if (grade.startsWith('B')) return 'text-sky-600 bg-sky-50'
+  if (grade.startsWith('B')) return 'text-brand-600 bg-brand-50'
   if (grade.startsWith('C')) return 'text-amber-600 bg-amber-50'
   return 'text-red-600 bg-red-50'
 }
@@ -36,7 +36,7 @@ export default function StudentScoresPage() {
         {avg != null && (
           <div className="text-right">
             <p className="text-xs text-slate-400">Average</p>
-            <p className="text-3xl font-bold text-sky-500">{avg}%</p>
+            <p className="text-3xl font-bold text-brand-500">{avg}%</p>
           </div>
         )}
       </div>

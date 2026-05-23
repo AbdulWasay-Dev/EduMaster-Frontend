@@ -117,7 +117,7 @@
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #0281ff, #38bdf8);
+  background: linear-gradient(135deg, #0A66C2, #78B9FF);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -125,7 +125,7 @@
 
 /* Glow effect */
 .glow-blue {
-  box-shadow: 0 0 20px rgba(2, 129, 255, 0.32), 0 0 60px rgba(2, 129, 255, 0.12);
+  box-shadow: 0 0 20px rgba(10, 102, 194, 0.32), 0 0 60px rgba(10, 102, 194, 0.12);
 }
 
 /* Animated dots for AI thinking */

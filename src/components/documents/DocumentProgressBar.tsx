@@ -52,7 +52,7 @@ function stageIcon(stage: string) {
 function stageColor(status: string) {
   if (status === 'completed') return 'bg-emerald-500'
   if (status === 'failed')    return 'bg-red-500'
-  return 'bg-gradient-to-r from-brand-500 via-sky-400 to-cyan-400'
+  return 'bg-gradient-to-r from-brand-500 via-brand-400 to-brand-300'
 }
 
 export default function DocumentProgressBar({ documentId, filename, onComplete, onError, className }: Props) {

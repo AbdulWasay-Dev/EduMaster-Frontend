@@ -63,7 +63,7 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="flex flex-col items-center mb-6">
           <Link to="/" className="flex items-center gap-2.5 mb-5">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#0281FF' }}>
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#0A66C2' }}>
               <BookOpen className="w-[18px] h-[18px] text-white" />
             </div>
             <span className="font-extrabold text-[20px] text-[#0f172a]">EduMaster</span>
@@ -96,7 +96,7 @@ export default function LoginPage() {
                   type="email"
                   placeholder="you@school.edu"
                   autoComplete="email"
-                  className="w-full h-[46px] pl-10 pr-4 rounded-xl border border-[#e2e8f0] bg-white text-[14px] text-[#0f172a] placeholder:text-[#94a3b8] outline-none transition-all focus:border-[#0281FF] focus:ring-2 focus:ring-[#0281FF]/10"
+                  className="w-full h-[46px] pl-10 pr-4 rounded-xl border border-[#e2e8f0] bg-white text-[14px] text-[#0f172a] placeholder:text-[#94a3b8] outline-none transition-all focus:border-[#0A66C2] focus:ring-2 focus:ring-[#0A66C2]/10"
                 />
               </div>
               {errors.email && <p className="text-[12px] text-[#ef4444] mt-1">{errors.email.message}</p>}
@@ -105,7 +105,7 @@ export default function LoginPage() {
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="block text-[13px] font-semibold text-[#0f172a]">Password</label>
-                <Link to="/forgot-password" className="text-[12px] font-medium hover:underline" style={{ color: '#0281FF' }}>
+                <Link to="/forgot-password" className="text-[12px] font-medium hover:underline" style={{ color: '#0A66C2' }}>
                   Forgot password?
                 </Link>
               </div>
@@ -119,7 +119,7 @@ export default function LoginPage() {
             </div>
 
             <div className="flex items-center gap-2.5">
-              <input {...register('remember')} id="remember" type="checkbox" className="w-4 h-4 rounded border-[#cbd5e1] accent-[#0281FF]" />
+              <input {...register('remember')} id="remember" type="checkbox" className="w-4 h-4 rounded border-[#cbd5e1] accent-[#0A66C2]" />
               <label htmlFor="remember" className="text-[13px] text-[#64748b] cursor-pointer">Remember me</label>
             </div>
 
@@ -153,7 +153,7 @@ export default function LoginPage() {
 
         <p className="text-center text-[14px] text-[#64748b] mt-6">
           Don't have an account?{' '}
-          <Link to="/register" className="font-semibold hover:underline" style={{ color: '#0281FF' }}>Create one free</Link>
+          <Link to="/register" className="font-semibold hover:underline" style={{ color: '#0A66C2' }}>Create one free</Link>
         </p>
       </motion.div>
     </div>

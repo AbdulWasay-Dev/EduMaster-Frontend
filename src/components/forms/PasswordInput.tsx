@@ -32,7 +32,7 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             type={show ? 'text' : 'password'}
             value={value}
             onChange={onChange}
-            className="w-full h-[44px] px-3.5 pr-10 rounded-xl border border-[#e2e8f0] bg-white text-[14px] text-[#0f172a] placeholder:text-[#94a3b8] outline-none transition-all focus:border-[#0281FF] focus:ring-2 focus:ring-[#0281FF]/10"
+            className="w-full h-[44px] px-3.5 pr-10 rounded-xl border border-[#e2e8f0] bg-white text-[14px] text-[#0f172a] placeholder:text-[#94a3b8] outline-none transition-all focus:border-[#0A66C2] focus:ring-2 focus:ring-[#0A66C2]/10"
             {...props}
           />
           <button

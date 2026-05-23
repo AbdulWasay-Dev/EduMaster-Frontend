@@ -111,10 +111,10 @@ export default function GradingOverviewPage() {
       {submissions.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { label: 'Total Submissions', value: submissions.length, icon: Layers,      grad: 'from-brand-500 to-sky-400'      },
+            { label: 'Total Submissions', value: submissions.length, icon: Layers,      grad: 'from-brand-500 to-brand-300'      },
             { label: 'Graded',           value: graded.length,      icon: CheckCircle2, grad: 'from-emerald-500 to-teal-400'   },
-            { label: 'Pending Review',   value: pending.length + review.length, icon: AlertCircle, grad: 'from-blue-600 to-cyan-400' },
-            { label: 'Average Score',    value: `${avgScore}%`,     icon: TrendingUp,  grad: 'from-blue-500 to-cyan-400'      },
+            { label: 'Pending Review',   value: pending.length + review.length, icon: AlertCircle, grad: 'from-brand-600 to-brand-400' },
+            { label: 'Average Score',    value: `${avgScore}%`,     icon: TrendingUp,  grad: 'from-brand-500 to-brand-300'      },
           ].map(({ label, value, icon: Icon, grad }) => (
             <motion.div key={label} whileHover={{ y: -2 } as any} className="card p-4 flex items-center gap-3">
               <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${grad} flex items-center justify-center shadow-sm`}>

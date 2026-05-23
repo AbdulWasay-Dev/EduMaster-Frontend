@@ -41,7 +41,7 @@ export default function StudentDashboardPage() {
       label: 'Average Score',
       value: dashboard?.average_score != null ? `${dashboard.average_score}%` : 'N/A',
       icon: Trophy,
-      color: 'bg-sky-500',
+      color: 'bg-brand-500',
       link: '/student/scores',
     },
     {
@@ -81,7 +81,7 @@ export default function StudentDashboardPage() {
               </div>
               <div>
                 <p className="text-xs text-slate-400 font-medium">{s.label}</p>
-                <p className="text-xl font-bold text-slate-800 group-hover:text-sky-600 transition-colors">
+                <p className="text-xl font-bold text-slate-800 group-hover:text-brand-600 transition-colors">
                   {s.value}
                 </p>
               </div>
@@ -96,7 +96,7 @@ export default function StudentDashboardPage() {
         <div className="flex flex-wrap gap-3">
           <Link
             to="/student/assignments"
-            className="px-4 py-2 rounded-lg bg-sky-500 text-white text-sm font-medium hover:bg-sky-600 transition-colors"
+            className="px-4 py-2 rounded-lg bg-brand-500 text-white text-sm font-medium hover:bg-brand-600 transition-colors"
           >
             View Assignments
           </Link>

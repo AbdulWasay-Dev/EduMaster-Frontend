@@ -34,9 +34,9 @@ export default function StatCard({
         <p className="text-[12px] font-semibold text-[#64748b] uppercase tracking-wider">{title}</p>
         <div
           className="w-10 h-10 rounded-xl flex items-center justify-center"
-          style={{ background: '#EFF6FF' }}
+          style={{ background: '#EAF3FF' }}
         >
-          <Icon className="w-5 h-5" style={{ color: '#0281FF' }} />
+          <Icon className="w-5 h-5" style={{ color: '#0A66C2' }} />
         </div>
       </div>
       <div className="flex items-end gap-2">

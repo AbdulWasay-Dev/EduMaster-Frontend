@@ -44,24 +44,24 @@ export default function StudentLoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-100 relative overflow-hidden px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-50 via-brand-50 to-brand-100 relative overflow-hidden px-4">
       {/* Decorative blobs */}
-      <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-sky-500/15 rounded-full blur-3xl animate-float" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+      <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-brand-500/15 rounded-full blur-3xl animate-float" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-brand-400/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
 
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         className="relative z-10 w-full max-w-md"
       >
-        <div className="bg-white rounded-2xl shadow-xl border border-sky-100 p-8">
+        <div className="bg-white rounded-2xl shadow-xl border border-brand-100 p-8">
           {/* Logo */}
           <div className="flex flex-col items-center mb-8">
-            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-sky-500 shadow-lg mb-3">
+            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-brand-500 shadow-lg mb-3">
               <GraduationCap className="w-6 h-6 text-white" />
             </div>
             <h1 className="text-2xl font-bold text-slate-800">
-              Student <span className="text-sky-500">Portal</span>
+              Student <span className="text-brand-500">Portal</span>
             </h1>
             <p className="text-sm text-slate-500 mt-1">Sign in to your student account</p>
           </div>
@@ -76,12 +76,12 @@ export default function StudentLoginPage() {
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">Email address</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-sky-400" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-400" />
                 <input
                   {...register('email')}
                   type="email"
                   placeholder="you@school.edu"
-                  className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                  className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                   autoComplete="email"
                 />
               </div>
@@ -93,7 +93,7 @@ export default function StudentLoginPage() {
               <PasswordInput
                 {...register('password')}
                 placeholder="Your password"
-                className="w-full rounded-lg border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
               />
               {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password.message}</p>}
             </div>
@@ -101,7 +101,7 @@ export default function StudentLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 rounded-lg bg-sky-500 text-white font-semibold text-sm hover:bg-sky-600 disabled:opacity-60 transition-colors flex items-center justify-center gap-2"
+              className="w-full py-2.5 rounded-lg bg-brand-500 text-white font-semibold text-sm hover:bg-brand-600 disabled:opacity-60 transition-colors flex items-center justify-center gap-2"
             >
               {loading ? <LoadingSpinner size="sm" /> : 'Sign In'}
             </button>
@@ -110,13 +110,13 @@ export default function StudentLoginPage() {
           <div className="mt-6 text-center space-y-2">
             <p className="text-sm text-slate-500">
               Don't have an account?{' '}
-              <Link to="/student/signup" className="text-sky-500 font-medium hover:underline">
+              <Link to="/student/signup" className="text-brand-500 font-medium hover:underline">
                 Sign Up
               </Link>
             </p>
             <p className="text-sm text-slate-500">
               Are you a teacher?{' '}
-              <Link to="/login" className="text-sky-500 font-medium hover:underline">
+              <Link to="/login" className="text-brand-500 font-medium hover:underline">
                 Teacher Login
               </Link>
             </p>
