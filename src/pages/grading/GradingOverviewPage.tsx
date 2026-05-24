@@ -3,9 +3,9 @@ import { useQuery } from '@tanstack/react-query'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Plus, CheckSquare, Eye, AlertCircle, TrendingUp, Search,
-  Users, BookOpen, Filter, Clock, CheckCircle2, XCircle,
-  BarChart2, FileText, ChevronRight, Scan, Layers,
+  Plus, CheckSquare, Search,
+  Users, BookOpen, Clock, CheckCircle2,
+  FileText, ChevronRight, Scan,
 } from 'lucide-react'
 import GradeCircle from '@/components/shared/GradeCircle'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
@@ -50,8 +50,6 @@ export default function GradingOverviewPage() {
   const avgScore = graded.length
     ? Math.round(graded.reduce((a, s) => a + getPct(s), 0) / graded.length)
     : 0
-  const highScore = graded.length ? Math.max(...graded.map(getPct)) : 0
-
   const filtered = useMemo(() => submissions.filter(s => {
     if (statusFilter !== 'all' && s.status !== statusFilter) return false
     if (classFilter && s.class_id !== classFilter) return false
@@ -84,7 +82,7 @@ export default function GradingOverviewPage() {
               {[
                 { label: 'Total',   value: submissions.length, color: 'bg-white/15' },
                 { label: 'Graded',  value: graded.length,      color: 'bg-emerald-500/30' },
-                { label: 'Pending', value: pending.length,     color: 'bg-amber-500/25' },
+                { label: 'Pending', value: pending.length + review.length, color: 'bg-amber-500/25' },
                 { label: 'Avg %',   value: `${avgScore}%`,     color: 'bg-white/10' },
               ].map(({ label, value, color }) => (
                 <div key={label} className={`${color} rounded-xl px-4 py-2 text-center`}>
@@ -106,53 +104,6 @@ export default function GradingOverviewPage() {
           </div>
         </div>
       </div>
-
-      {/* Stats cards */}
-      {submissions.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {[
-            { label: 'Total Submissions', value: submissions.length, icon: Layers,      grad: 'from-brand-500 to-brand-300'      },
-            { label: 'Graded',           value: graded.length,      icon: CheckCircle2, grad: 'from-emerald-500 to-teal-400'   },
-            { label: 'Pending Review',   value: pending.length + review.length, icon: AlertCircle, grad: 'from-brand-600 to-brand-400' },
-            { label: 'Average Score',    value: `${avgScore}%`,     icon: TrendingUp,  grad: 'from-brand-500 to-brand-300'      },
-          ].map(({ label, value, icon: Icon, grad }) => (
-            <motion.div key={label} whileHover={{ y: -2 } as any} className="card p-4 flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${grad} flex items-center justify-center shadow-sm`}>
-                <Icon className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <p className="text-xl font-bold text-[#0f172a] leading-none">{value}</p>
-                <p className="text-xs text-brand-500 mt-0.5 font-medium">{label}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      )}
-
-      {/* Grade distribution bar */}
-      {graded.length > 0 && (
-        <div className="card p-5">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="section-title flex items-center gap-2"><BarChart2 className="w-4 h-4 text-brand-500" /> Score Distribution</h2>
-            <span className="text-xs text-brand-400">Highest: <strong className="text-[#0f172a]">{highScore}%</strong></span>
-          </div>
-          <div className="flex gap-1.5 h-10 items-end">
-            {['0-20','21-40','41-60','61-80','81-100'].map(range => {
-              const [lo, hi] = range.split('-').map(Number)
-              const count = graded.filter(s => { const p = getPct(s); return p >= lo && p <= hi }).length
-              const pct = graded.length ? (count / graded.length) * 100 : 0
-              const color = lo >= 81 ? 'bg-emerald-500' : lo >= 61 ? 'bg-blue-500' : lo >= 41 ? 'bg-sky-500' : lo >= 21 ? 'bg-indigo-400' : 'bg-red-500'
-              return (
-                <div key={range} className="flex-1 flex flex-col items-center gap-1">
-                  <span className="text-[10px] text-brand-400 font-medium">{count}</span>
-                  <div className={`w-full ${color} rounded-t-md transition-all`} style={{ height: `${Math.max(pct, 4)}%` }} />
-                  <span className="text-[9px] text-brand-400">{range}</span>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      )}
 
       {/* Filters */}
       {submissions.length > 0 && (
@@ -231,7 +182,7 @@ export default function GradingOverviewPage() {
                   onClick={() => navigate(`/grading/${s.id}`)}
                 >
                   {/* Accent bar keyed to grade */}
-                  <div className={`h-1 w-full ${pct >= 80 ? 'bg-emerald-500' : pct >= 60 ? 'bg-blue-500' : pct >= 40 ? 'bg-amber-500' : 'bg-red-500'}`} />
+                  <div className={`h-1 w-full ${pct >= 80 ? 'bg-emerald-500' : pct >= 60 ? 'bg-brand-500' : pct >= 40 ? 'bg-amber-500' : 'bg-red-500'}`} />
 
                   <div className="flex items-center gap-4 p-4">
                     {/* Grade circle */}

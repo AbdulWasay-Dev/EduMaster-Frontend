@@ -8,7 +8,7 @@ import {
   AlertCircle, Loader2, FolderOpen,
 } from 'lucide-react'
 import { toast } from 'sonner'
-import PageHeader from '@/components/shared/PageHeader'
+import DashboardHero from '@/components/shared/DashboardHero'
 import EmptyState from '@/components/shared/EmptyState'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import DocumentProgressBar from '@/components/documents/DocumentProgressBar'
@@ -19,10 +19,10 @@ import type { Document, Subject } from '@/types'
 
 const FILE_COLORS: Record<string, { bg: string; text: string; border: string }> = {
   pdf:  { bg: 'bg-red-100',    text: 'text-red-700',    border: 'border-red-200'    },
-  pptx: { bg: 'bg-blue-100', text: 'text-blue-700', border: 'border-blue-200' },
-  ppt:  { bg: 'bg-blue-100', text: 'text-blue-700', border: 'border-blue-200' },
-  docx: { bg: 'bg-blue-100',   text: 'text-blue-700',   border: 'border-blue-200'   },
-  doc:  { bg: 'bg-blue-100',   text: 'text-blue-700',   border: 'border-blue-200'   },
+  pptx: { bg: 'bg-brand-100', text: 'text-brand-700', border: 'border-brand-200' },
+  ppt:  { bg: 'bg-brand-100', text: 'text-brand-700', border: 'border-brand-200' },
+  docx: { bg: 'bg-brand-100', text: 'text-brand-700', border: 'border-brand-200' },
+  doc:  { bg: 'bg-brand-100', text: 'text-brand-700', border: 'border-brand-200' },
   png:  { bg: 'bg-emerald-100',text: 'text-emerald-700',border: 'border-emerald-200'},
   jpg:  { bg: 'bg-emerald-100',text: 'text-emerald-700',border: 'border-emerald-200'},
   jpeg: { bg: 'bg-emerald-100',text: 'text-emerald-700',border: 'border-emerald-200'},
@@ -83,6 +83,9 @@ export default function DocumentsLibraryPage() {
 
   // Docs that are currently processing
   const processingDocs = docs.filter(d => d.processing_status === 'processing')
+  const readyCount = docs.filter(d => d.processing_status === 'completed').length
+  const processingCount = processingDocs.length
+  const subjectCount = new Set(docs.map(d => d.subject_id).filter(Boolean)).size
 
 
   // Build subject name lookup
@@ -115,47 +118,41 @@ export default function DocumentsLibraryPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
+      <DashboardHero
+        eyebrow="Document Center"
         title="Document Library"
-        subtitle="Upload study materials — AI generates exam questions from these"
-        action={
+        description="Upload and manage study materials for search, paper generation, and grading workflows."
+        icon={<FileText className="w-4 h-4 text-brand-100" />}
+        metrics={[
+          { label: 'Total', value: docs.length },
+          { label: 'Ready', value: readyCount, tone: 'emerald' },
+          { label: 'Processing', value: processingCount, tone: 'amber' },
+          { label: 'Subjects', value: subjectCount, tone: 'brand' },
+        ]}
+        actions={
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1 bg-brand-50 p-1 rounded-lg">
-              <button onClick={() => setView('grid')} className={`p-1.5 rounded ${view === 'grid' ? 'bg-white shadow-sm' : ''}`}>
-                <LayoutGrid className="w-4 h-4 text-brand-600" />
+            <div className="flex items-center gap-1 bg-white/10 border border-white/10 p-1 rounded-xl">
+              <button
+                onClick={() => setView('grid')}
+                className={`p-1.5 rounded-lg transition-all ${view === 'grid' ? 'bg-white text-brand-700 shadow-sm' : 'text-white/75 hover:text-white hover:bg-white/10'}`}
+                title="Grid view"
+              >
+                <LayoutGrid className="w-4 h-4" />
               </button>
-              <button onClick={() => setView('list')} className={`p-1.5 rounded ${view === 'list' ? 'bg-white shadow-sm' : ''}`}>
-                <LayoutList className="w-4 h-4 text-brand-600" />
+              <button
+                onClick={() => setView('list')}
+                className={`p-1.5 rounded-lg transition-all ${view === 'list' ? 'bg-white text-brand-700 shadow-sm' : 'text-white/75 hover:text-white hover:bg-white/10'}`}
+                title="List view"
+              >
+                <LayoutList className="w-4 h-4" />
               </button>
             </div>
-            <Link to="/documents/upload" className="btn-primary flex items-center gap-2">
+            <Link to="/documents/upload" className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-brand-500 hover:bg-brand-400 text-white shadow-[0_0_24px_rgba(10,102,194,0.4)] transition-all text-sm font-bold">
               <Plus className="w-4 h-4" /> Upload
             </Link>
           </div>
         }
       />
-
-      {/* Stats row */}
-      {!isLoading && docs.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {[
-            { label: 'Total',      value: docs.length,                                      color: 'from-brand-500 to-brand-300'      },
-            { label: 'Ready',      value: docs.filter(d => d.processing_status === 'completed').length, color: 'from-emerald-500 to-teal-400' },
-            { label: 'Processing', value: docs.filter(d => d.processing_status === 'processing').length, color: 'from-brand-600 to-brand-400' },
-            { label: 'Subjects',   value: new Set(docs.map(d => d.subject_id).filter(Boolean)).size, color: 'from-brand-500 to-brand-300' },
-          ].map(({ label, value, color }) => (
-            <div key={label} className="card p-4 flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow-sm flex-shrink-0`}>
-                <FileText className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <p className="text-xl font-bold text-[#0f172a] leading-none">{value}</p>
-                <p className="text-xs text-brand-500 mt-0.5 font-medium">{label}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
 
       {/* ── Currently processing queue ── */}
       <AnimatePresence>

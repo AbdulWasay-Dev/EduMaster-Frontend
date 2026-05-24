@@ -5,9 +5,10 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   Plus, Clock, CheckCircle2, XCircle, FileText, Trash2,
   Settings, ChevronRight, BarChart3, Search, Users, BookOpen,
-  CalendarDays, ScrollText, Layers, AlertCircle,
+  CalendarDays, ScrollText,
 } from 'lucide-react'
 import { toast } from 'sonner'
+import DashboardHero from '@/components/shared/DashboardHero'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import { listAssignments, deleteAssignment, publishAssignment } from '@/lib/api/assignments'
 import { listClasses } from '@/lib/api/classes'
@@ -73,42 +74,32 @@ export default function AssignmentsListPage() {
   const closedCount    = assignments.filter(a => a.status === 'closed').length
 
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 max-w-6xl mx-auto pb-12">
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
       {/* Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[#0f172a] to-brand-900 rounded-3xl p-8 text-white shadow-xl">
-        <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/5 -translate-y-1/2 translate-x-1/4" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-white/5 translate-y-1/2 -translate-x-1/4" />
-        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">Assignment Center</h1>
-            <p className="text-brand-100/80 max-w-xl">Create and manage assignments, track student submissions, and auto-grade using AI.</p>
-            {/* Mini stats in header */}
-            <div className="flex items-center gap-4 mt-4">
-              {[
-                { label: 'Total',     value: assignments.length, color: 'bg-white/20' },
-                { label: 'Published', value: publishedCount,     color: 'bg-green-500/30' },
-                { label: 'Draft',     value: draftCount,         color: 'bg-white/10' },
-                { label: 'Closed',    value: closedCount,        color: 'bg-red-500/30' },
-              ].map(({ label, value, color }) => (
-                <div key={label} className={`${color} rounded-xl px-3 py-1.5 text-center`}>
-                  <p className="text-lg font-bold">{value}</p>
-                  <p className="text-[10px] text-white/70 uppercase tracking-wide">{label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="flex items-center gap-3 w-full md:w-auto">
+      <DashboardHero
+        eyebrow="Assignment Center"
+        title="Assignments"
+        description="Create and manage assignments, track student submissions, and auto-grade using AI."
+        icon={<FileText className="w-4 h-4 text-brand-100" />}
+        metrics={[
+          { label: 'Total', value: assignments.length },
+          { label: 'Published', value: publishedCount, tone: 'emerald' },
+          { label: 'Draft', value: draftCount, tone: 'brand' },
+          { label: 'Closed', value: closedCount, tone: 'amber' },
+        ]}
+        actions={
+          <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
             <button onClick={() => setShowEmailConfig(true)}
               className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm transition-all text-sm font-medium border border-white/10">
               <Settings className="w-4 h-4" /> Email Sync
             </button>
             <button onClick={() => navigate('/assignments/new')}
-              className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-white shadow-[0_0_20px_rgba(249,115,22,0.3)] transition-all text-sm font-bold">
+              className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-brand-500 hover:bg-brand-400 text-white shadow-[0_0_24px_rgba(10,102,194,0.4)] transition-all text-sm font-bold">
               <Plus className="w-4 h-4" /> New Assignment
             </button>
           </div>
-        </div>
-      </div>
+        }
+      />
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center bg-white p-4 rounded-2xl border border-brand-100 shadow-sm">
@@ -178,15 +169,15 @@ export default function AssignmentsListPage() {
                             </span>
                           )}
                           {subjectName && (
-                            <span className="inline-flex items-center gap-1 text-xs font-medium text-indigo-700 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-full">
-                              <BookOpen className="w-3 h-3 text-indigo-400" /> {subjectName}
+                            <span className="inline-flex items-center gap-1 text-xs font-medium text-brand-700 bg-brand-50 border border-brand-100 px-2 py-0.5 rounded-full">
+                              <BookOpen className="w-3 h-3 text-brand-400" /> {subjectName}
                             </span>
                           )}
                           <span className="inline-flex items-center gap-1 text-xs text-brand-500">
                             <ScrollText className="w-3 h-3" /> {a.total_marks} Marks
                           </span>
                           {a.due_date && (
-                            <span className="inline-flex items-center gap-1 text-xs text-blue-600 font-medium">
+                            <span className="inline-flex items-center gap-1 text-xs text-brand-600 font-medium">
                               <CalendarDays className="w-3 h-3" /> Due: {new Date(a.due_date).toLocaleDateString()}
                             </span>
                           )}

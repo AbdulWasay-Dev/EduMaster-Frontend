@@ -3,12 +3,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Plus, BookOpen, Search, Filter, FileText,
-  ScrollText, Users, TrendingUp, LayoutGrid, List,
-  GraduationCap, CheckCircle2, XCircle,
+  Plus, BookOpen, Search, FileText,
+  ScrollText, Users, LayoutGrid, List,
 } from 'lucide-react'
 import { toast } from 'sonner'
-import PageHeader from '@/components/shared/PageHeader'
+import DashboardHero from '@/components/shared/DashboardHero'
 import EmptyState from '@/components/shared/EmptyState'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import SubjectCard from '@/components/subjects/SubjectCard'
@@ -74,15 +73,7 @@ export default function SubjectsListPage() {
   // Aggregate stats
   const totalDocs     = subjects.reduce((a, s) => a + (s.document_count ?? 0), 0)
   const totalPapers   = subjects.reduce((a, s) => a + (s.paper_count ?? 0), 0)
-  const totalStudents = subjects.reduce((a, s) => a + (s.student_count ?? 0), 0)
   const activeCount   = subjects.filter(s => s.is_active).length
-
-  const stats = [
-    { label: 'Total Subjects', value: subjects.length, icon: BookOpen,      color: 'from-brand-500 to-brand-300',      text: 'text-brand-600',   bg: 'bg-brand-50'   },
-    { label: 'Active',         value: activeCount,     icon: CheckCircle2,  color: 'from-emerald-500 to-teal-400',   text: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { label: 'Documents',      value: totalDocs,       icon: FileText,      color: 'from-violet-500 to-purple-400',  text: 'text-violet-600',  bg: 'bg-violet-50'  },
-    { label: 'Papers',         value: totalPapers,     icon: ScrollText,    color: 'from-brand-600 to-brand-400',      text: 'text-blue-600',    bg: 'bg-blue-50'    },
-  ]
 
   const container = {
     hidden: { opacity: 0 },
@@ -95,37 +86,26 @@ export default function SubjectsListPage() {
 
   return (
     <div className="space-y-6">
-      {/* Page header */}
-      <PageHeader
+      <DashboardHero
+        eyebrow="Subject Center"
         title="Subjects"
-        subtitle={`Manage and organise ${subjects.length} teaching subject${subjects.length !== 1 ? 's' : ''}`}
-        action={
-          <Link to="/subjects/new" className="btn-primary flex items-center gap-2">
+        description="Manage teaching subjects, linked documents, generated papers, and class coverage from one place."
+        icon={<BookOpen className="w-4 h-4 text-brand-100" />}
+        metrics={[
+          { label: 'Total', value: subjects.length },
+          { label: 'Active', value: activeCount, tone: 'emerald' },
+          { label: 'Documents', value: totalDocs, tone: 'brand' },
+          { label: 'Papers', value: totalPapers, tone: 'violet' },
+        ]}
+        actions={
+          <Link
+            to="/subjects/new"
+            className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-brand-500 hover:bg-brand-400 text-white shadow-[0_0_24px_rgba(10,102,194,0.4)] transition-all text-sm font-bold"
+          >
             <Plus className="w-4 h-4" /> New Subject
           </Link>
         }
       />
-
-      {/* Stats bar */}
-      {!isLoading && subjects.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="grid grid-cols-2 sm:grid-cols-4 gap-3"
-        >
-          {stats.map(({ label, value, icon: Icon, color, text, bg }) => (
-            <div key={label} className="card p-4 flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow-sm flex-shrink-0`}>
-                <Icon className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <p className="text-xl font-bold text-[#0f172a] leading-none">{value}</p>
-                <p className={`text-xs font-medium mt-0.5 ${text}`}>{label}</p>
-              </div>
-            </div>
-          ))}
-        </motion.div>
-      )}
 
       {/* Search / Filter / View controls */}
       {!isLoading && subjects.length > 0 && (
@@ -262,9 +242,9 @@ function SubjectListRow({
   const GRADIENTS = [
     'from-brand-500 to-brand-300',
     'from-brand-600 to-brand-400',
-    'from-violet-500 to-purple-400',
+    'from-brand-700 to-brand-500',
     'from-emerald-500 to-teal-400',
-    'from-indigo-500 to-blue-400',
+    'from-brand-400 to-brand-600',
     'from-brand-500 to-brand-300',
   ]
   const gradient = GRADIENTS[subject.name.split('').reduce((a, c) => a + c.charCodeAt(0), 0) % GRADIENTS.length]

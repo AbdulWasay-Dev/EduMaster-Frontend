@@ -110,7 +110,7 @@ export default function AssignmentDetailPage() {
   const ungradedCount = (submissions || []).filter((s) => s.status === 'submitted').length
 
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 max-w-6xl mx-auto pb-12">
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
       {/* Header */}
       <div className="bg-white p-6 rounded-2xl border border-brand-100 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
@@ -134,14 +134,14 @@ export default function AssignmentDetailPage() {
                 <span className="flex items-center gap-1">
                   <FileText className="w-4 h-4" /> {assignment.total_marks} marks
                 </span>
-                {assignment.due_date && <span className="text-blue-600">· Due: {new Date(assignment.due_date).toLocaleDateString()}</span>}
+                {assignment.due_date && <span className="text-brand-600">· Due: {new Date(assignment.due_date).toLocaleDateString()}</span>}
                 {className && (
                   <span className="inline-flex items-center gap-1 text-xs font-medium text-brand-700 bg-brand-50 border border-brand-100 px-2 py-0.5 rounded-full">
                     🎓 {className}
                   </span>
                 )}
                 {subjectName && (
-                  <span className="inline-flex items-center gap-1 text-xs font-medium text-indigo-700 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-brand-700 bg-brand-50 border border-brand-100 px-2 py-0.5 rounded-full">
                     📚 {subjectName}
                   </span>
                 )}
@@ -220,7 +220,7 @@ export default function AssignmentDetailPage() {
                   <button
                     onClick={() => gradeAllMut.mutate()}
                     disabled={gradeAllMut.isPending}
-                    className="btn-primary flex items-center gap-2 text-sm bg-gradient-to-r from-blue-600 to-indigo-600 border-none shadow-md shadow-blue-200"
+                    className="btn-primary flex items-center gap-2 text-sm bg-gradient-to-r from-brand-600 to-brand-500 border-none shadow-md shadow-brand"
                   >
                     {gradeAllMut.isPending ? <LoadingSpinner size="sm" /> : <Zap className="w-4 h-4" />}
                     AI Grade All ({ungradedCount})

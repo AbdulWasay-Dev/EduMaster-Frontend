@@ -4,19 +4,17 @@ import { Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Plus, Users, GraduationCap, CheckSquare, ScrollText,
-  ClipboardList, Clock, Calendar, Search, BookOpen,
-  BarChart2, ClipboardCheck, ChevronRight, Layers,
-  MoreVertical, Trash2, Pencil, CheckCircle2,
+  ClipboardList, Clock, Calendar, Search,
+  ClipboardCheck, ChevronRight,
+  MoreVertical, Trash2, Pencil,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { format, parseISO, isToday } from 'date-fns'
-import PageHeader from '@/components/shared/PageHeader'
+import DashboardHero from '@/components/shared/DashboardHero'
 import EmptyState from '@/components/shared/EmptyState'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import { listClasses, deleteClass } from '@/lib/api/classes'
-import { listSubjects } from '@/lib/api/subjects'
-import { listStudents } from '@/lib/api/students'
 import { listEvents } from '@/lib/api/schedule'
 import type { Class, ScheduleEvent } from '@/types'
 
@@ -26,7 +24,7 @@ const CLASS_GRADIENTS = [
   'from-violet-500 to-purple-400',
   'from-emerald-500 to-teal-400',
   'from-brand-600 to-brand-400',
-  'from-indigo-500 to-blue-400',
+  'from-brand-700 to-brand-500',
   'from-brand-500 to-brand-300',
 ]
 function classGradient(name: string) {
@@ -89,41 +87,27 @@ export default function ClassesListPage() {
 
   const activeCount = classes.filter(c => c.is_active).length
   const totalStudents = classes.reduce((a, c) => a + (c.student_count ?? 0), 0)
+  const scheduledCount = events.filter(e => e.type === 'class').length
 
   return (
     <div className="space-y-6">
-      <PageHeader
+      <DashboardHero
+        eyebrow="Class Center"
         title="My Classes"
-        subtitle={`${classes.length} class${classes.length !== 1 ? 'es' : ''} · ${totalStudents} total students`}
-        action={
-          <Link to="/classes/new" className="btn-primary flex items-center gap-2">
+        description="Manage classroom groups, active rosters, student counts, and scheduled sessions."
+        icon={<GraduationCap className="w-4 h-4 text-brand-100" />}
+        metrics={[
+          { label: 'Total', value: classes.length },
+          { label: 'Active', value: activeCount, tone: 'emerald' },
+          { label: 'Students', value: totalStudents, tone: 'brand' },
+          { label: 'Scheduled', value: scheduledCount, tone: 'violet' },
+        ]}
+        actions={
+          <Link to="/classes/new" className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-brand-500 hover:bg-brand-400 text-white shadow-[0_0_24px_rgba(10,102,194,0.4)] transition-all text-sm font-bold">
             <Plus className="w-4 h-4" /> New Class
           </Link>
         }
       />
-
-      {/* Stats */}
-      {!isLoading && classes.length > 0 && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-          className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {[
-            { label: 'Total Classes', value: classes.length, icon: Layers,      grad: 'from-brand-500 to-brand-300' },
-            { label: 'Active',        value: activeCount,    icon: CheckCircle2, grad: 'from-emerald-500 to-teal-400' },
-            { label: 'Students',      value: totalStudents,  icon: Users,        grad: 'from-brand-500 to-brand-300'    },
-            { label: 'Scheduled',     value: events.filter(e => e.type === 'class').length, icon: Calendar, grad: 'from-violet-500 to-purple-400' },
-          ].map(({ label, value, icon: Icon, grad }) => (
-            <div key={label} className="card p-4 flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${grad} flex items-center justify-center shadow-sm`}>
-                <Icon className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <p className="text-xl font-bold text-[#0f172a] leading-none">{value}</p>
-                <p className="text-xs text-brand-500 mt-0.5 font-medium">{label}</p>
-              </div>
-            </div>
-          ))}
-        </motion.div>
-      )}
 
       {/* Search + Filter */}
       {!isLoading && classes.length > 0 && (
@@ -208,8 +192,8 @@ function ClassCard({ cls, schedule, onDelete, index }: {
   const nextEvent = schedule.upcoming[0]
 
   const quickActions = [
-    { label: 'Attendance',   icon: ClipboardCheck, to: `/attendance?class_id=${cls.id}`,                    color: 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'  },
-    { label: 'Make Paper',   icon: ScrollText,     to: `/papers/generate?class_id=${cls.id}`,               color: 'bg-blue-50 text-blue-600 hover:bg-blue-100'         },
+    { label: 'Attendance',   icon: ClipboardCheck, to: `/attendance?class_id=${cls.id}`,                    color: 'bg-brand-50 text-brand-600 hover:bg-brand-100'      },
+    { label: 'Make Paper',   icon: ScrollText,     to: `/papers/generate?class_id=${cls.id}`,               color: 'bg-brand-50 text-brand-600 hover:bg-brand-100'      },
     { label: 'Assignment',   icon: ClipboardList,  to: `/assignments/new?class_id=${cls.id}`,               color: 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'},
     { label: 'Grade',        icon: CheckSquare,    to: `/grading/new?class_id=${cls.id}`,                   color: 'bg-violet-50 text-violet-600 hover:bg-violet-100'   },
   ]
@@ -290,29 +274,29 @@ function ClassCard({ cls, schedule, onDelete, index }: {
 
         {/* Schedule section */}
         {weeklySlots.length > 0 ? (
-          <div className="bg-blue-50 rounded-xl p-3 mb-4">
-            <p className="text-xs font-semibold text-blue-600 mb-2 flex items-center gap-1">
+          <div className="bg-brand-50 rounded-xl p-3 mb-4">
+            <p className="text-xs font-semibold text-brand-600 mb-2 flex items-center gap-1">
               <Clock className="w-3 h-3" /> Weekly Schedule
             </p>
             <div className="space-y-1.5">
               {weeklySlots.map((e, i) => (
-                <div key={i} className="flex items-center justify-between text-xs text-blue-700">
+                <div key={i} className="flex items-center justify-between text-xs text-brand-700">
                   <span className="font-medium truncate">{e.title}</span>
-                  <span className="text-blue-500 font-mono ml-2 flex-shrink-0">{e.start_time} – {e.end_time}</span>
+                  <span className="text-brand-500 font-mono ml-2 flex-shrink-0">{e.start_time} – {e.end_time}</span>
                 </div>
               ))}
             </div>
           </div>
         ) : nextEvent ? (
-          <div className="bg-blue-50 rounded-xl p-3 mb-4">
-            <p className="text-xs font-semibold text-blue-600 mb-1 flex items-center gap-1">
+          <div className="bg-brand-50 rounded-xl p-3 mb-4">
+            <p className="text-xs font-semibold text-brand-600 mb-1 flex items-center gap-1">
               <Calendar className="w-3 h-3" /> Next Session
             </p>
-            <div className="flex items-center justify-between text-xs text-blue-700">
+            <div className="flex items-center justify-between text-xs text-brand-700">
               <span className="font-medium truncate">{nextEvent.title}</span>
               <span className="font-mono ml-2 flex-shrink-0">{nextEvent.start_time}</span>
             </div>
-            <p className="text-[10px] text-blue-500 mt-0.5">
+            <p className="text-[10px] text-brand-500 mt-0.5">
               {isToday(parseISO(nextEvent.date)) ? 'Today' : format(parseISO(nextEvent.date), 'EEE, MMM d')}
             </p>
           </div>
