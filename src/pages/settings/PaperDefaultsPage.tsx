@@ -38,7 +38,7 @@ export default function PaperDefaultsPage() {
   const { register, handleSubmit, reset, watch, setValue, formState: { isDirty } } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      default_paper_template:    user?.default_paper_template    ?? 'classic',
+      default_paper_template:    user?.default_paper_template    ?? 'formal',
       default_course_name:       user?.default_course_name       ?? '',
       default_exam_duration:     user?.default_exam_duration     ?? '3 Hours',
       default_exam_instructions: user?.default_exam_instructions ?? 'Answer ALL questions. Marks are indicated against each question.',
@@ -49,7 +49,7 @@ export default function PaperDefaultsPage() {
   useEffect(() => {
     if (user) {
       reset({
-        default_paper_template:    user.default_paper_template    ?? 'classic',
+        default_paper_template:    user.default_paper_template    ?? 'formal',
         default_course_name:       user.default_course_name       ?? '',
         default_exam_duration:     user.default_exam_duration     ?? '3 Hours',
         default_exam_instructions: user.default_exam_instructions ?? 'Answer ALL questions. Marks are indicated against each question.',
@@ -79,10 +79,7 @@ export default function PaperDefaultsPage() {
   }
 
   const TEMPLATES = [
-    { key: 'classic',    label: 'Classic',     desc: 'Centered header, ruled sections' },
-    { key: 'university', label: 'University',  desc: 'Two-column formal header' },
-    { key: 'school',     label: 'School',      desc: 'Colorful, student-friendly' },
-    { key: 'minimalist', label: 'Minimalist',  desc: 'Clean, no decorations' },
+    { key: 'formal', label: 'Formal Exam', desc: 'LaTeX-style university layout with logo header' },
   ]
 
   return (

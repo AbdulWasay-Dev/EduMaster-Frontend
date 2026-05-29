@@ -8,7 +8,7 @@ import Placeholder from '@tiptap/extension-placeholder'
 import {
   ArrowLeft, Save, Download, Key, Plus, Trash2, GripVertical,
   ChevronDown, ChevronUp, Settings, CheckCircle2, Eye,
-  BookOpen, GraduationCap, School, AlignLeft,
+  ScrollText,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
@@ -27,18 +27,19 @@ const QUESTION_TYPES: { key: QuestionType; label: string }[] = [
 ]
 
 const TEMPLATES: { key: PaperTemplate; label: string; icon: React.ReactNode }[] = [
-  { key: 'classic', label: 'Classic', icon: <BookOpen className="w-3.5 h-3.5" /> },
-  { key: 'university', label: 'University', icon: <GraduationCap className="w-3.5 h-3.5" /> },
-  { key: 'school', label: 'School', icon: <School className="w-3.5 h-3.5" /> },
-  { key: 'minimalist', label: 'Minimalist', icon: <AlignLeft className="w-3.5 h-3.5" /> },
+  { key: 'formal', label: 'Formal Exam', icon: <ScrollText className="w-3.5 h-3.5" /> },
 ]
 
-const TEMPLATE_COLORS: Record<PaperTemplate, string> = {
-  classic: 'bg-slate-700',
-  university: 'bg-blue-800',
-  school: 'bg-blue-600',
-  minimalist: 'bg-gray-600',
+const TEMPLATE_ALIASES: Record<string, PaperTemplate> = {
+  formal: 'formal',
+  classic: 'formal',
+  university: 'formal',
+  school: 'formal',
+  minimalist: 'formal',
 }
+
+const normalizeTemplate = (value?: string): PaperTemplate =>
+  TEMPLATE_ALIASES[value ?? ''] ?? 'formal'
 
 const STUDENT_FIELD_LABELS: Record<string, string> = {
   name: 'Student Name',
@@ -326,13 +327,21 @@ export default function PaperEditorPage() {
   const [meta, setMeta] = useState({
     title: '',
     institution_name: '',
+    faculty_name: '',
+    department_name: '',
+    program_name: '',
+    session_name: '',
+    logo_left_url: '',
+    logo_right_url: '',
+    teacher_name: '',
     course_name: '',
+    course_code: '',
     exam_date: '',
     duration: '',
     instructions: '',
     student_fields: ['name', 'roll_number'] as string[],
   })
-  const [template, setTemplate] = useState<PaperTemplate>('classic')
+  const [template, setTemplate] = useState<PaperTemplate>('formal')
   const [showSettings, setShowSettings] = useState(false)
   const [showAnswerKey, setShowAnswerKey] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -349,13 +358,21 @@ export default function PaperEditorPage() {
     setMeta({
       title: paper.title ?? '',
       institution_name: paper.institution_name ?? '',
+      faculty_name: paper.faculty_name ?? '',
+      department_name: paper.department_name ?? '',
+      program_name: paper.program_name ?? '',
+      session_name: paper.session_name ?? '',
+      logo_left_url: paper.logo_left_url ?? '',
+      logo_right_url: paper.logo_right_url ?? '',
+      teacher_name: paper.teacher_name ?? '',
       course_name: paper.course_name ?? '',
+      course_code: paper.course_code ?? '',
       exam_date: paper.exam_date ?? '',
       duration: paper.duration ?? '3 Hours',
       instructions: paper.instructions ?? '',
       student_fields: paper.student_fields ?? ['name', 'roll_number'],
     })
-    setTemplate((paper.template ?? 'classic') as PaperTemplate)
+    setTemplate(normalizeTemplate(paper.template))
   }, [paper])
 
   const saveMut = useMutation({
@@ -373,7 +390,21 @@ export default function PaperEditorPage() {
         instructions: meta.instructions,
         // Template & meta go into configuration via backend's update logic
         // We patch them as top-level keys that `update_paper` merges into the record
-        ...(({ institution_name: meta.institution_name, course_name: meta.course_name, exam_date: meta.exam_date, duration: meta.duration, template }) as any),
+        ...(({
+          institution_name: meta.institution_name,
+          faculty_name: meta.faculty_name,
+          department_name: meta.department_name,
+          program_name: meta.program_name,
+          session_name: meta.session_name,
+          logo_left_url: meta.logo_left_url,
+          logo_right_url: meta.logo_right_url,
+          teacher_name: meta.teacher_name,
+          course_name: meta.course_name,
+          course_code: meta.course_code,
+          exam_date: meta.exam_date,
+          duration: meta.duration,
+          template,
+        }) as any),
       } as any)
     },
     onSuccess: () => {
@@ -451,8 +482,14 @@ export default function PaperEditorPage() {
         : [...m.student_fields, f],
     }))
 
-  const headerBg = TEMPLATE_COLORS[template] ?? 'bg-slate-700'
   const totalMarks = questions.reduce((s, q) => s + (q.marks ?? 5), 0)
+  const lineOrValue = (value?: string, fallback = '________________') =>
+    value && value.trim().length ? value : fallback
+  const sessionValue = meta.session_name || meta.exam_date
+  const renderLogo = (url?: string) =>
+    url
+      ? <img src={url} alt="Logo" className="h-full w-full object-contain" />
+      : <span className="text-[10px] text-slate-500">LOGO</span>
 
   if (isLoading) return <div className="flex justify-center py-20"><LoadingSpinner size="lg" /></div>
   if (!paper) return <div className="py-20 text-center text-brand-500">Paper not found</div>
@@ -541,9 +578,49 @@ export default function PaperEditorPage() {
                   className="input text-sm" placeholder="City High School" />
               </div>
               <div>
+                <label className="text-xs font-semibold text-brand-500 mb-1 block">Faculty Name</label>
+                <input value={meta.faculty_name} onChange={e => setMeta(m => ({ ...m, faculty_name: e.target.value }))}
+                  className="input text-sm" placeholder="Faculty of Science" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-brand-500 mb-1 block">Department Name</label>
+                <input value={meta.department_name} onChange={e => setMeta(m => ({ ...m, department_name: e.target.value }))}
+                  className="input text-sm" placeholder="Computer Science" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-brand-500 mb-1 block">Program</label>
+                <input value={meta.program_name} onChange={e => setMeta(m => ({ ...m, program_name: e.target.value }))}
+                  className="input text-sm" placeholder="BS Computer Science" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-brand-500 mb-1 block">Session</label>
+                <input value={meta.session_name} onChange={e => setMeta(m => ({ ...m, session_name: e.target.value }))}
+                  className="input text-sm" placeholder="Spring 2026" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-brand-500 mb-1 block">Left Logo URL</label>
+                <input value={meta.logo_left_url} onChange={e => setMeta(m => ({ ...m, logo_left_url: e.target.value }))}
+                  className="input text-sm" placeholder="https://..." />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-brand-500 mb-1 block">Right Logo URL</label>
+                <input value={meta.logo_right_url} onChange={e => setMeta(m => ({ ...m, logo_right_url: e.target.value }))}
+                  className="input text-sm" placeholder="https://..." />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-brand-500 mb-1 block">Teacher Name</label>
+                <input value={meta.teacher_name} onChange={e => setMeta(m => ({ ...m, teacher_name: e.target.value }))}
+                  className="input text-sm" placeholder="Jane Smith" />
+              </div>
+              <div>
                 <label className="text-xs font-semibold text-brand-500 mb-1 block">Course / Subject</label>
                 <input value={meta.course_name} onChange={e => setMeta(m => ({ ...m, course_name: e.target.value }))}
                   className="input text-sm" placeholder="Biology Grade 10" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-brand-500 mb-1 block">Course Code</label>
+                <input value={meta.course_code} onChange={e => setMeta(m => ({ ...m, course_code: e.target.value }))}
+                  className="input text-sm" placeholder="CSC-201" />
               </div>
               <div>
                 <label className="text-xs font-semibold text-brand-500 mb-1 block">Exam Date</label>
@@ -555,12 +632,12 @@ export default function PaperEditorPage() {
                 <input value={meta.duration} onChange={e => setMeta(m => ({ ...m, duration: e.target.value }))}
                   className="input text-sm" placeholder="3 Hours" />
               </div>
-              <div className="col-span-2">
+              <div className="col-span-2 md:col-span-3 lg:col-span-4">
                 <label className="text-xs font-semibold text-brand-500 mb-1 block">Instructions</label>
                 <textarea value={meta.instructions} onChange={e => setMeta(m => ({ ...m, instructions: e.target.value }))}
                   rows={2} className="input text-sm resize-none" placeholder="Answer ALL questions…" />
               </div>
-              <div className="col-span-2">
+              <div className="col-span-2 md:col-span-3 lg:col-span-4">
                 <label className="text-xs font-semibold text-brand-500 mb-1.5 block">Student Detail Fields</label>
                 <div className="flex flex-wrap gap-1.5">
                   {Object.entries(STUDENT_FIELD_LABELS).map(([k, label]) => (
@@ -614,43 +691,63 @@ export default function PaperEditorPage() {
           <div className="max-w-2xl mx-auto space-y-4">
 
             {/* Paper header preview */}
-            <div className={`rounded-2xl overflow-hidden shadow-sm`}>
-              <div className={`${headerBg} px-6 py-5 text-white`}>
-                <p className="text-lg font-bold text-center leading-tight">
-                  {meta.institution_name || 'Institution Name'}
-                </p>
-                {template === 'university' && (
-                  <p className="text-xs text-center opacity-75 mt-1">Examination Department</p>
-                )}
+            <div className="rounded-2xl border border-brand-100 bg-white shadow-sm p-6 space-y-4">
+              <div className="grid grid-cols-[56px_1fr_56px] items-center gap-4">
+                <div className="h-12 w-12 border border-slate-400 flex items-center justify-center overflow-hidden">
+                  {renderLogo(meta.logo_left_url)}
+                </div>
+                <div className="text-center leading-tight">
+                  <p className="text-base font-bold text-[#0f172a]">{lineOrValue(meta.institution_name, 'UNIVERSITY NAME')}</p>
+                  <p className="text-sm font-semibold text-[#0f172a]">{lineOrValue(meta.faculty_name, 'Faculty Name')}</p>
+                  <p className="text-sm font-semibold text-[#0f172a]">{lineOrValue(meta.department_name, 'Department Name')}</p>
+                </div>
+                <div className="h-12 w-12 border border-slate-400 flex items-center justify-center overflow-hidden">
+                  {renderLogo(meta.logo_right_url)}
+                </div>
               </div>
-              <div className="bg-white px-6 py-4 space-y-3 border border-brand-100 rounded-b-2xl">
-                <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
-                  {[[meta.course_name || 'Course / Subject', 'Course'], [meta.exam_date || 'Date', 'Date'], [meta.duration, 'Duration'], [String(totalMarks), 'Total Marks']].map(([v, label]) => (
-                    <div key={label} className="flex items-center gap-2">
-                      <span className="text-brand-400 text-xs">{label}:</span>
-                      <span className="font-medium text-[#0f172a] text-xs">{v}</span>
+
+              <div className="border border-slate-400 text-xs">
+                <div className="grid grid-cols-2">
+                  <div className="border-b border-r border-slate-400 p-2">
+                    <span className="font-semibold">Program:</span> {lineOrValue(meta.program_name)}
+                  </div>
+                  <div className="border-b border-slate-400 p-2">
+                    <span className="font-semibold">Time Allowed:</span> {lineOrValue(meta.duration, '________')}
+                  </div>
+                  <div className="border-b border-r border-slate-400 p-2">
+                    <span className="font-semibold">Session:</span> {lineOrValue(sessionValue)}
+                  </div>
+                  <div className="border-b border-slate-400 p-2">
+                    <span className="font-semibold">Total Marks:</span> {lineOrValue(totalMarks ? String(totalMarks) : '')}
+                  </div>
+                  <div className="border-b border-r border-slate-400 p-2">
+                    <span className="font-semibold">Examination:</span> {lineOrValue(meta.title || 'Examination', 'Examination')}
+                  </div>
+                  <div className="border-b border-slate-400 p-2">
+                    <span className="font-semibold">Instructor:</span> {lineOrValue(meta.teacher_name)}
+                  </div>
+                  <div className="border-b border-r border-slate-400 p-2">
+                    <span className="font-semibold">Course Title:</span> {lineOrValue(meta.course_name)}
+                  </div>
+                  <div className="border-b border-slate-400 p-2">
+                    <span className="font-semibold">Course Code:</span> {lineOrValue(meta.course_code, '________')}
+                  </div>
+                  <div className="col-span-2 p-2">
+                    <span className="font-semibold">Note:</span> {lineOrValue(meta.instructions || 'Attempt all questions.', 'Attempt all questions.')}
+                  </div>
+                </div>
+              </div>
+
+              {meta.student_fields.length > 0 && (
+                <div className="border border-slate-200 text-xs p-2 grid grid-cols-2 gap-x-6 gap-y-2">
+                  {meta.student_fields.map(f => (
+                    <div key={f} className="flex items-center gap-2">
+                      <span className="font-semibold text-slate-600 whitespace-nowrap">{STUDENT_FIELD_LABELS[f] ?? f}:</span>
+                      <span className="flex-1 border-b border-slate-400 text-transparent">___</span>
                     </div>
                   ))}
                 </div>
-                {/* Student fields */}
-                {meta.student_fields.length > 0 && (
-                  <div className="pt-2 border-t border-brand-100 grid grid-cols-2 gap-x-6 gap-y-2">
-                    {meta.student_fields.map(f => (
-                      <div key={f} className="flex items-center gap-2">
-                        <span className="text-xs text-brand-500 whitespace-nowrap">{STUDENT_FIELD_LABELS[f] ?? f}:</span>
-                        <span className="flex-1 border-b border-brand-300 text-xs text-transparent">___</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {/* Instructions */}
-                {meta.instructions && (
-                  <div className="pt-2 border-t border-brand-100">
-                    <p className="text-xs font-semibold text-brand-600">Instructions:</p>
-                    <p className="text-xs text-brand-700 mt-0.5 leading-relaxed">{meta.instructions}</p>
-                  </div>
-                )}
-              </div>
+              )}
             </div>
 
             {/* Questions */}

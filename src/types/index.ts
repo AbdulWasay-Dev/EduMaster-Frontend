@@ -117,7 +117,7 @@ export type DifficultyLevel = 'easy' | 'medium' | 'hard' | 'mixed'
 export type Difficulty = DifficultyLevel   // alias for convenience
 export type QuestionType = 'mcq' | 'short_answer' | 'long_answer' | 'true_false' | 'fill_blank'
 export type PaperStatus = 'draft' | 'published'
-export type PaperTemplate = 'classic' | 'university' | 'school' | 'minimalist'
+export type PaperTemplate = 'formal'
 
 export interface Question {
   id: string
@@ -152,8 +152,15 @@ export interface Paper {
   // Advanced metadata
   template?: PaperTemplate
   institution_name?: string
+  faculty_name?: string
+  department_name?: string
+  program_name?: string
+  session_name?: string
+  logo_left_url?: string
+  logo_right_url?: string
   teacher_name?: string
   course_name?: string
+  course_code?: string
   exam_date?: string
   duration?: string
   student_fields?: string[]
@@ -180,8 +187,15 @@ export interface PaperGenerationRequest {
   // Template & metadata
   template?: PaperTemplate
   institution_name?: string
+  faculty_name?: string
+  department_name?: string
+  program_name?: string
+  session_name?: string
+  logo_left_url?: string
+  logo_right_url?: string
   teacher_name?: string
   course_name?: string
+  course_code?: string
   exam_date?: string
   duration?: string
   instructions?: string

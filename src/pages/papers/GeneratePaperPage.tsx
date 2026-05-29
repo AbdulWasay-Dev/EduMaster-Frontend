@@ -4,7 +4,7 @@ import { useQuery, useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import {
   ArrowLeft, ArrowRight, Sparkles, CheckCircle, Plus, Minus,
-  BookOpen, GraduationCap, School, AlignLeft,
+  ScrollText,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import PageHeader from '@/components/shared/PageHeader'
@@ -32,32 +32,11 @@ const QUESTION_TYPE_OPTIONS: { key: QuestionType; label: string; icon: string; d
 
 const TEMPLATES: { key: PaperTemplate; label: string; description: string; icon: React.ReactNode; color: string }[] = [
   {
-    key: 'classic',
-    label: 'Classic',
-    description: 'Centered header, ruled sections — the traditional exam layout',
-    icon: <BookOpen className="w-6 h-6" />,
+    key: 'formal',
+    label: 'Formal Exam',
+    description: 'LaTeX-style university layout with logos, exam table, and sections',
+    icon: <ScrollText className="w-6 h-6" />,
     color: 'border-slate-400 bg-slate-50',
-  },
-  {
-    key: 'university',
-    label: 'University / Formal',
-    description: 'Two-column header with logo placeholder, department line',
-    icon: <GraduationCap className="w-6 h-6" />,
-    color: 'border-blue-400 bg-blue-50',
-  },
-  {
-    key: 'school',
-    label: 'School',
-    description: 'Colorful header band — bright and student-friendly',
-    icon: <School className="w-6 h-6" />,
-    color: 'border-blue-400 bg-blue-50',
-  },
-  {
-    key: 'minimalist',
-    label: 'Minimalist',
-    description: 'Clean sans-serif with no decorations — modern and crisp',
-    icon: <AlignLeft className="w-6 h-6" />,
-    color: 'border-gray-300 bg-gray-50',
   },
 ]
 
@@ -69,6 +48,146 @@ const STUDENT_FIELD_OPTIONS = [
   { key: 'father_name', label: "Father's Name" },
   { key: 'signature', label: 'Signature' },
 ]
+
+const TEMPLATE_ALIASES: Record<string, PaperTemplate> = {
+  formal: 'formal',
+  classic: 'formal',
+  university: 'formal',
+  school: 'formal',
+  minimalist: 'formal',
+}
+
+const normalizeTemplate = (value?: string): PaperTemplate =>
+  TEMPLATE_ALIASES[value ?? ''] ?? 'formal'
+
+type TemplatePreviewData = {
+  institutionName?: string
+  facultyName?: string
+  departmentName?: string
+  programName?: string
+  sessionName?: string
+  logoLeftUrl?: string
+  logoRightUrl?: string
+  examination?: string
+  instructor?: string
+  courseTitle?: string
+  courseCode?: string
+  timeAllowed?: string
+  totalMarks?: number
+  note?: string
+}
+
+function FormalTemplatePreview({ data, compact = false }: { data: TemplatePreviewData; compact?: boolean }) {
+  const line = (value?: string, fallback = '________________') =>
+    value && value.trim().length ? value : fallback
+  const cellPad = compact ? 'p-1' : 'p-1.5'
+  const logoSize = compact ? 'h-7 w-7 text-[7px]' : 'h-10 w-10 text-[9px]'
+  const headerCols = compact ? 'grid-cols-[28px_1fr_28px]' : 'grid-cols-[44px_1fr_44px]'
+  const titleSize = compact ? 'text-[11px]' : 'text-sm'
+  const subTitleSize = compact ? 'text-[9px]' : 'text-xs'
+  const tableText = compact ? 'text-[9px]' : 'text-xs'
+  const sectionTitle = compact ? 'text-[10px]' : 'text-xs'
+  const renderLogo = (url?: string) =>
+    url
+      ? <img src={url} alt="Logo" className="h-full w-full object-contain" />
+      : 'LOGO'
+
+  return (
+    <div className={`rounded-2xl border border-slate-200 bg-white shadow-sm ${compact ? 'p-3' : 'p-5'} text-slate-800`}>
+      <div className={`grid ${headerCols} items-center gap-2`}>
+        <div className={`flex items-center justify-center border border-slate-400 ${logoSize} text-slate-500 overflow-hidden`}>
+          {renderLogo(data.logoLeftUrl)}
+        </div>
+        <div className="text-center leading-tight">
+          <div className={`${titleSize} font-bold`}>{line(data.institutionName, 'UNIVERSITY NAME')}</div>
+          <div className={`${subTitleSize} font-semibold`}>{line(data.facultyName, 'Faculty Name')}</div>
+          <div className={`${subTitleSize} font-semibold`}>{line(data.departmentName, 'Department Name')}</div>
+        </div>
+        <div className={`flex items-center justify-center border border-slate-400 ${logoSize} text-slate-500 overflow-hidden`}>
+          {renderLogo(data.logoRightUrl)}
+        </div>
+      </div>
+
+      <div className={`mt-3 border border-slate-400 ${tableText}`}>
+        <div className="grid grid-cols-2">
+          <div className={`border-b border-r border-slate-400 ${cellPad}`}>
+            <span className="font-semibold">Program:</span> {line(data.programName)}
+          </div>
+          <div className={`border-b border-slate-400 ${cellPad}`}>
+            <span className="font-semibold">Time Allowed:</span> {line(data.timeAllowed, '________')}
+          </div>
+          <div className={`border-b border-r border-slate-400 ${cellPad}`}>
+            <span className="font-semibold">Session:</span> {line(data.sessionName)}
+          </div>
+          <div className={`border-b border-slate-400 ${cellPad}`}>
+            <span className="font-semibold">Total Marks:</span> {line(data.totalMarks ? String(data.totalMarks) : '')}
+          </div>
+          <div className={`border-b border-r border-slate-400 ${cellPad}`}>
+            <span className="font-semibold">Examination:</span> {line(data.examination, '______________')}
+          </div>
+          <div className={`border-b border-slate-400 ${cellPad}`}>
+            <span className="font-semibold">Instructor:</span> {line(data.instructor)}
+          </div>
+          <div className={`border-b border-r border-slate-400 ${cellPad}`}>
+            <span className="font-semibold">Course Title:</span> {line(data.courseTitle)}
+          </div>
+          <div className={`border-b border-slate-400 ${cellPad}`}>
+            <span className="font-semibold">Course Code:</span> {line(data.courseCode, '________')}
+          </div>
+          <div className={`col-span-2 ${cellPad}`}>
+            <span className="font-semibold">Note:</span> {line(data.note, 'Attempt all questions.')}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-3">
+        <div className={`text-center font-bold ${sectionTitle}`}>SECTION -- A : SHORT QUESTIONS</div>
+        <div className={`mt-1 border border-slate-400 ${tableText}`}>
+          <div className="grid grid-cols-[32px_1fr_38px_38px] border-b border-slate-400 font-semibold bg-slate-50">
+            <div className={cellPad}>Q No.</div>
+            <div className={cellPad}>Questions</div>
+            <div className={cellPad}>Marks</div>
+            <div className={cellPad}>CLOs</div>
+          </div>
+          {[1, 2, 3].map(i => (
+            <div key={i} className="grid grid-cols-[32px_1fr_38px_38px] border-b border-slate-200">
+              <div className={cellPad}>{i}</div>
+              <div className={cellPad}>______________________________</div>
+              <div className={cellPad}>__</div>
+              <div className={cellPad}>__</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-3">
+        <div className={`text-center font-bold ${sectionTitle}`}>SECTION -- B : LONG QUESTIONS</div>
+        <div className={`mt-1 border border-slate-400 ${tableText}`}>
+          <div className="grid grid-cols-[32px_1fr_38px_38px] border-b border-slate-400 font-semibold bg-slate-50">
+            <div className={cellPad}>Q No.</div>
+            <div className={cellPad}>Questions</div>
+            <div className={cellPad}>Marks</div>
+            <div className={cellPad}>CLOs</div>
+          </div>
+          {[4, 5].map(i => (
+            <div key={i} className="grid grid-cols-[32px_1fr_38px_38px] border-b border-slate-200">
+              <div className={cellPad}>{i}</div>
+              <div className={cellPad}>__________________________________</div>
+              <div className={cellPad}>__</div>
+              <div className={cellPad}>__</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className={`mt-3 grid grid-cols-2 gap-2 ${tableText}`}>
+        <div><span className="font-semibold">Instructor Signature:</span> _____________</div>
+        <div><span className="font-semibold">HOD Signature:</span> _____________</div>
+      </div>
+      <div className={`mt-2 text-center font-semibold ${tableText}`}>--- Best of Luck ---</div>
+    </div>
+  )
+}
 
 type CountMode = 'per_type' | 'total'
 
@@ -87,8 +206,15 @@ type WizardState = {
   // Details step
   title: string
   institution_name: string
+  faculty_name: string
+  department_name: string
+  program_name: string
+  session_name: string
+  logo_left_url: string
+  logo_right_url: string
   teacher_name: string
   course_name: string
+  course_code: string
   exam_date: string
   duration: string
   instructions: string
@@ -104,11 +230,18 @@ const createDefaultForm = (user?: User | null): WizardState => ({
   total_count: 10,
   question_types: ['mcq', 'short_answer'],
   difficulty: 'medium',
-  template: user?.default_paper_template ?? 'classic',
+  template: normalizeTemplate(user?.default_paper_template),
   title: '',
   institution_name: user?.school_name ?? '',
+  faculty_name: '',
+  department_name: user?.department ?? '',
+  program_name: '',
+  session_name: '',
+  logo_left_url: '',
+  logo_right_url: '',
   teacher_name: user?.name ?? '',
   course_name: user?.default_course_name ?? '',
+  course_code: '',
   exam_date: new Date().toISOString().split('T')[0],
   duration: user?.default_exam_duration ?? '3 Hours',
   instructions: user?.default_exam_instructions ?? 'Answer ALL questions. Marks are indicated against each question.',
@@ -149,10 +282,17 @@ export default function GeneratePaperPage() {
   useEffect(() => {
     setForm(current => ({
       ...current,
-      template: current.template || user?.default_paper_template || 'classic',
+      template: normalizeTemplate(current.template || user?.default_paper_template),
       institution_name: current.institution_name || user?.school_name || '',
+      faculty_name: current.faculty_name || '',
+      department_name: current.department_name || user?.department || '',
+      program_name: current.program_name || '',
+      session_name: current.session_name || '',
+      logo_left_url: current.logo_left_url || '',
+      logo_right_url: current.logo_right_url || '',
       teacher_name: current.teacher_name || user?.name || '',
       course_name: current.course_name || user?.default_course_name || '',
+      course_code: current.course_code || '',
       duration: current.duration || user?.default_exam_duration || '3 Hours',
       instructions: current.instructions || user?.default_exam_instructions || 'Answer ALL questions. Marks are indicated against each question.',
       student_fields: current.student_fields.length
@@ -186,6 +326,25 @@ export default function GeneratePaperPage() {
     setForm(f => ({ ...f, [k]: v }))
 
   const totalCountFromTypeCounts = Object.values(form.question_type_counts).reduce((a, b) => a + b, 0)
+  const estimatedTotalMarks = form.count_mode === 'per_type'
+    ? totalCountFromTypeCounts * 5
+    : form.total_count * 5
+  const previewData: TemplatePreviewData = {
+    institutionName: form.institution_name,
+    facultyName: form.faculty_name,
+    departmentName: form.department_name,
+    programName: form.program_name,
+    sessionName: form.session_name || form.exam_date,
+    logoLeftUrl: form.logo_left_url,
+    logoRightUrl: form.logo_right_url,
+    examination: form.title || 'Examination',
+    instructor: form.teacher_name,
+    courseTitle: form.course_name,
+    courseCode: form.course_code,
+    timeAllowed: form.duration,
+    totalMarks: estimatedTotalMarks,
+    note: form.instructions,
+  }
 
   const canNext = (): boolean => {
     if (step === 0) return form.document_ids.length > 0
@@ -228,8 +387,15 @@ export default function GeneratePaperPage() {
       difficulty_level: form.difficulty,
       template: form.template,
       institution_name: form.institution_name || undefined,
+      faculty_name: form.faculty_name || undefined,
+      department_name: form.department_name || undefined,
+      program_name: form.program_name || undefined,
+      session_name: form.session_name || undefined,
+      logo_left_url: form.logo_left_url || undefined,
+      logo_right_url: form.logo_right_url || undefined,
       teacher_name: form.teacher_name || undefined,
       course_name: form.course_name || undefined,
+      course_code: form.course_code || undefined,
       exam_date: form.exam_date || undefined,
       duration: form.duration || undefined,
       instructions: form.instructions || undefined,
@@ -418,25 +584,31 @@ export default function GeneratePaperPage() {
           {step === 2 && (
             <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
               <p className="text-sm text-brand-600">Choose a PDF template for your exam paper. You can change it any time from the editor.</p>
-              <div className="grid grid-cols-2 gap-3">
-                {TEMPLATES.map(tpl => (
-                  <button
-                    key={tpl.key}
-                    onClick={() => update('template', tpl.key)}
-                    className={`relative p-4 rounded-2xl border-2 text-left transition-all ${form.template === tpl.key ? `${tpl.color} border-opacity-100 ring-2 ring-brand-400` : 'border-brand-100 hover:border-brand-300 bg-white'}`}
-                  >
-                    {form.template === tpl.key && (
-                      <span className="absolute top-2 right-2 w-5 h-5 bg-brand-500 rounded-full flex items-center justify-center">
-                        <CheckCircle className="w-3 h-3 text-white" />
-                      </span>
-                    )}
-                    <div className={`mb-2 ${form.template === tpl.key ? 'text-brand-600' : 'text-brand-400'}`}>
-                      {tpl.icon}
-                    </div>
-                    <p className="font-semibold text-sm text-[#0f172a]">{tpl.label}</p>
-                    <p className="text-xs text-brand-500 mt-1 leading-relaxed">{tpl.description}</p>
-                  </button>
-                ))}
+              <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-4">
+                <div className="space-y-3">
+                  {TEMPLATES.map(tpl => (
+                    <button
+                      key={tpl.key}
+                      onClick={() => update('template', tpl.key)}
+                      className={`relative p-4 rounded-2xl border-2 text-left transition-all ${form.template === tpl.key ? `${tpl.color} border-opacity-100 ring-2 ring-brand-400` : 'border-brand-100 hover:border-brand-300 bg-white'}`}
+                    >
+                      {form.template === tpl.key && (
+                        <span className="absolute top-2 right-2 w-5 h-5 bg-brand-500 rounded-full flex items-center justify-center">
+                          <CheckCircle className="w-3 h-3 text-white" />
+                        </span>
+                      )}
+                      <div className={`mb-2 ${form.template === tpl.key ? 'text-brand-600' : 'text-brand-400'}`}>
+                        {tpl.icon}
+                      </div>
+                      <p className="font-semibold text-sm text-[#0f172a]">{tpl.label}</p>
+                      <p className="text-xs text-brand-500 mt-1 leading-relaxed">{tpl.description}</p>
+                    </button>
+                  ))}
+                </div>
+                <div className="space-y-2">
+                  <p className="text-xs text-brand-500">Template Preview</p>
+                  <FormalTemplatePreview data={previewData} compact />
+                </div>
               </div>
             </motion.div>
           )}
@@ -458,8 +630,36 @@ export default function GeneratePaperPage() {
                   <input value={form.teacher_name} onChange={e => update('teacher_name', e.target.value)} className="input" placeholder="e.g. Jane Smith" />
                 </div>
                 <div>
+                  <label className="label">Faculty Name</label>
+                  <input value={form.faculty_name} onChange={e => update('faculty_name', e.target.value)} className="input" placeholder="e.g. Faculty of Science" />
+                </div>
+                <div>
+                  <label className="label">Department Name</label>
+                  <input value={form.department_name} onChange={e => update('department_name', e.target.value)} className="input" placeholder="e.g. Computer Science" />
+                </div>
+                <div>
+                  <label className="label">Program</label>
+                  <input value={form.program_name} onChange={e => update('program_name', e.target.value)} className="input" placeholder="e.g. BS Computer Science" />
+                </div>
+                <div>
+                  <label className="label">Session</label>
+                  <input value={form.session_name} onChange={e => update('session_name', e.target.value)} className="input" placeholder="e.g. Spring 2026" />
+                </div>
+                <div>
+                  <label className="label">Left Logo URL</label>
+                  <input value={form.logo_left_url} onChange={e => update('logo_left_url', e.target.value)} className="input" placeholder="https://..." />
+                </div>
+                <div>
+                  <label className="label">Right Logo URL</label>
+                  <input value={form.logo_right_url} onChange={e => update('logo_right_url', e.target.value)} className="input" placeholder="https://..." />
+                </div>
+                <div>
                   <label className="label">Course / Subject Name</label>
                   <input value={form.course_name} onChange={e => update('course_name', e.target.value)} className="input" placeholder="e.g. Biology Grade 10" />
+                </div>
+                <div>
+                  <label className="label">Course Code</label>
+                  <input value={form.course_code} onChange={e => update('course_code', e.target.value)} className="input" placeholder="e.g. CSC-201" />
                 </div>
                 <div>
                   <label className="label">Exam Date</label>
@@ -476,7 +676,7 @@ export default function GeneratePaperPage() {
               </div>
               <div>
                 <label className="label">Student Detail Fields</label>
-                <p className="text-xs text-brand-500 mb-2">These fields will appear as fill-in boxes on the exam paper.</p>
+                <p className="text-xs text-brand-500 mb-2">These fields are saved for answer sheets and any template headers that support them.</p>
                 <div className="flex flex-wrap gap-2">
                   {STUDENT_FIELD_OPTIONS.map(({ key, label }) => (
                     <button
@@ -524,8 +724,13 @@ export default function GeneratePaperPage() {
                         ? ['Questions', Object.entries(form.question_type_counts).filter(([, v]) => v > 0).map(([k, v]) => `${v} ${k.replace('_', ' ')}`).join(', ') || '(none)']
                         : ['Questions', `${form.total_count} · ${form.question_types.join(', ')}`],
                       ['Institution', form.institution_name || '—'],
+                      ['Faculty', form.faculty_name || '—'],
+                      ['Department', form.department_name || '—'],
+                      ['Program', form.program_name || '—'],
+                      ['Session', form.session_name || form.exam_date || '—'],
                       ['Teacher', form.teacher_name || '—'],
                       ['Course', form.course_name || '—'],
+                      ['Course Code', form.course_code || '—'],
                       ['Date', form.exam_date || '—'],
                       ['Duration', form.duration],
                     ].map(([k, v]) => (
