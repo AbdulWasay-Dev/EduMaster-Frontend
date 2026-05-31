@@ -156,8 +156,6 @@ export interface Paper {
   department_name?: string
   program_name?: string
   session_name?: string
-  logo_left_url?: string
-  logo_right_url?: string
   teacher_name?: string
   course_name?: string
   course_code?: string
@@ -191,8 +189,6 @@ export interface PaperGenerationRequest {
   department_name?: string
   program_name?: string
   session_name?: string
-  logo_left_url?: string
-  logo_right_url?: string
   teacher_name?: string
   course_name?: string
   course_code?: string

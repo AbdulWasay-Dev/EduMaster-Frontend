@@ -1,5 +1,23 @@
 import api from '@/lib/axios'
+import { getDocumentDisplayName, isLikelyInternalId } from '@/lib/displayNames'
 import type { Document, DocumentChunk } from '@/types'
+
+function normalizeDocument(doc: Document): Document {
+  const displayName = getDocumentDisplayName(doc)
+  const safeTitle = doc.title && !isLikelyInternalId(doc.title, doc.id)
+    ? doc.title
+    : displayName
+  const safeOriginalFilename = doc.original_filename && !isLikelyInternalId(doc.original_filename, doc.id)
+    ? doc.original_filename
+    : displayName
+
+  return {
+    ...doc,
+    title: safeTitle,
+    filename: displayName,
+    original_filename: safeOriginalFilename,
+  }
+}
 
 export async function uploadDocument(subjectId: string, file: File): Promise<Document> {
   const formData = new FormData()
@@ -8,18 +26,19 @@ export async function uploadDocument(subjectId: string, file: File): Promise<Doc
   const { data } = await api.post<Document>('/documents/upload', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   })
-  return data
+  return normalizeDocument(data)
 }
 
 export async function listDocuments(subjectId?: string): Promise<Document[]> {
   const params = subjectId ? { subject_id: subjectId } : {}
   const { data } = await api.get<Document[] | { documents?: Document[] }>('/documents/', { params })
-  return Array.isArray(data) ? data : ((data as { documents?: Document[] }).documents ?? [])
+  const documents = Array.isArray(data) ? data : ((data as { documents?: Document[] }).documents ?? [])
+  return documents.map(normalizeDocument)
 }
 
 export async function getDocument(id: string): Promise<Document> {
   const { data } = await api.get<Document>(`/documents/${id}`)
-  return data
+  return normalizeDocument(data)
 }
 
 export async function getDocumentChunks(id: string): Promise<DocumentChunk[]> {

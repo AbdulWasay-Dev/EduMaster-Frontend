@@ -1,4 +1,5 @@
 import api from '@/lib/axios'
+import { getDocumentDisplayName, isLikelyInternalId } from '@/lib/displayNames'
 import type {
   StudentDashboard,
   StudentAssignmentListItem,
@@ -46,7 +47,27 @@ export async function getMySubjects() {
 
 export async function getSubjectDocuments(subjectId: string) {
   const { data } = await api.get(`/student/subjects/${subjectId}/documents`)
-  return Array.isArray(data) ? data : []
+  if (!Array.isArray(data)) return []
+
+  return data.map((doc) => {
+    const displayName = getDocumentDisplayName({
+      id: doc.id,
+      title: doc.title,
+      filename: doc.filename ?? doc.file_name,
+      original_filename: doc.original_filename ?? doc.file_name,
+    })
+    const safeOriginalFilename = doc.original_filename && !isLikelyInternalId(doc.original_filename, doc.id)
+      ? doc.original_filename
+      : displayName
+
+    return {
+      ...doc,
+      title: doc.title && !isLikelyInternalId(doc.title, doc.id) ? doc.title : displayName,
+      filename: displayName,
+      file_name: displayName,
+      original_filename: safeOriginalFilename,
+    }
+  })
 }
 
 export async function studentRAGQuery(question: string, subjectId: string) {

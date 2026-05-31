@@ -14,6 +14,7 @@ import DifficultyPicker from '@/components/forms/DifficultyPicker'
 import { listSubjects } from '@/lib/api/subjects'
 import { listDocuments } from '@/lib/api/documents'
 import { generatePaper } from '@/lib/api/papers'
+import { getDocumentDisplayName } from '@/lib/displayNames'
 import { useAuthStore } from '@/store/authStore'
 import {
   type PaperGenerationRequest, type QuestionType,
@@ -66,8 +67,6 @@ type TemplatePreviewData = {
   departmentName?: string
   programName?: string
   sessionName?: string
-  logoLeftUrl?: string
-  logoRightUrl?: string
   examination?: string
   instructor?: string
   courseTitle?: string
@@ -81,31 +80,17 @@ function FormalTemplatePreview({ data, compact = false }: { data: TemplatePrevie
   const line = (value?: string, fallback = '________________') =>
     value && value.trim().length ? value : fallback
   const cellPad = compact ? 'p-1' : 'p-1.5'
-  const logoSize = compact ? 'h-7 w-7 text-[7px]' : 'h-10 w-10 text-[9px]'
-  const headerCols = compact ? 'grid-cols-[28px_1fr_28px]' : 'grid-cols-[44px_1fr_44px]'
   const titleSize = compact ? 'text-[11px]' : 'text-sm'
   const subTitleSize = compact ? 'text-[9px]' : 'text-xs'
   const tableText = compact ? 'text-[9px]' : 'text-xs'
   const sectionTitle = compact ? 'text-[10px]' : 'text-xs'
-  const renderLogo = (url?: string) =>
-    url
-      ? <img src={url} alt="Logo" className="h-full w-full object-contain" />
-      : 'LOGO'
 
   return (
     <div className={`rounded-2xl border border-slate-200 bg-white shadow-sm ${compact ? 'p-3' : 'p-5'} text-slate-800`}>
-      <div className={`grid ${headerCols} items-center gap-2`}>
-        <div className={`flex items-center justify-center border border-slate-400 ${logoSize} text-slate-500 overflow-hidden`}>
-          {renderLogo(data.logoLeftUrl)}
-        </div>
-        <div className="text-center leading-tight">
-          <div className={`${titleSize} font-bold`}>{line(data.institutionName, 'UNIVERSITY NAME')}</div>
-          <div className={`${subTitleSize} font-semibold`}>{line(data.facultyName, 'Faculty Name')}</div>
-          <div className={`${subTitleSize} font-semibold`}>{line(data.departmentName, 'Department Name')}</div>
-        </div>
-        <div className={`flex items-center justify-center border border-slate-400 ${logoSize} text-slate-500 overflow-hidden`}>
-          {renderLogo(data.logoRightUrl)}
-        </div>
+      <div className="text-center leading-tight">
+        <div className={`${titleSize} font-bold`}>{line(data.institutionName, 'UNIVERSITY NAME')}</div>
+        <div className={`${subTitleSize} font-semibold`}>{line(data.facultyName, 'Faculty Name')}</div>
+        <div className={`${subTitleSize} font-semibold`}>{line(data.departmentName, 'Department Name')}</div>
       </div>
 
       <div className={`mt-3 border border-slate-400 ${tableText}`}>
@@ -210,8 +195,6 @@ type WizardState = {
   department_name: string
   program_name: string
   session_name: string
-  logo_left_url: string
-  logo_right_url: string
   teacher_name: string
   course_name: string
   course_code: string
@@ -237,8 +220,6 @@ const createDefaultForm = (user?: User | null): WizardState => ({
   department_name: user?.department ?? '',
   program_name: '',
   session_name: '',
-  logo_left_url: '',
-  logo_right_url: '',
   teacher_name: user?.name ?? '',
   course_name: user?.default_course_name ?? '',
   course_code: '',
@@ -288,8 +269,6 @@ export default function GeneratePaperPage() {
       department_name: current.department_name || user?.department || '',
       program_name: current.program_name || '',
       session_name: current.session_name || '',
-      logo_left_url: current.logo_left_url || '',
-      logo_right_url: current.logo_right_url || '',
       teacher_name: current.teacher_name || user?.name || '',
       course_name: current.course_name || user?.default_course_name || '',
       course_code: current.course_code || '',
@@ -335,8 +314,6 @@ export default function GeneratePaperPage() {
     departmentName: form.department_name,
     programName: form.program_name,
     sessionName: form.session_name || form.exam_date,
-    logoLeftUrl: form.logo_left_url,
-    logoRightUrl: form.logo_right_url,
     examination: form.title || 'Examination',
     instructor: form.teacher_name,
     courseTitle: form.course_name,
@@ -345,6 +322,12 @@ export default function GeneratePaperPage() {
     totalMarks: estimatedTotalMarks,
     note: form.instructions,
   }
+  const selectedDocumentNames = docs
+    .filter(doc => form.document_ids.includes(doc.id))
+    .map(doc => getDocumentDisplayName(doc))
+  const selectedDocumentSummary = selectedDocumentNames.length
+    ? selectedDocumentNames.join(', ')
+    : `${form.document_ids.length} selected`
 
   const canNext = (): boolean => {
     if (step === 0) return form.document_ids.length > 0
@@ -391,8 +374,6 @@ export default function GeneratePaperPage() {
       department_name: form.department_name || undefined,
       program_name: form.program_name || undefined,
       session_name: form.session_name || undefined,
-      logo_left_url: form.logo_left_url || undefined,
-      logo_right_url: form.logo_right_url || undefined,
       teacher_name: form.teacher_name || undefined,
       course_name: form.course_name || undefined,
       course_code: form.course_code || undefined,
@@ -646,14 +627,6 @@ export default function GeneratePaperPage() {
                   <input value={form.session_name} onChange={e => update('session_name', e.target.value)} className="input" placeholder="e.g. Spring 2026" />
                 </div>
                 <div>
-                  <label className="label">Left Logo URL</label>
-                  <input value={form.logo_left_url} onChange={e => update('logo_left_url', e.target.value)} className="input" placeholder="https://..." />
-                </div>
-                <div>
-                  <label className="label">Right Logo URL</label>
-                  <input value={form.logo_right_url} onChange={e => update('logo_right_url', e.target.value)} className="input" placeholder="https://..." />
-                </div>
-                <div>
                   <label className="label">Course / Subject Name</label>
                   <input value={form.course_name} onChange={e => update('course_name', e.target.value)} className="input" placeholder="e.g. Biology Grade 10" />
                 </div>
@@ -717,7 +690,7 @@ export default function GeneratePaperPage() {
                   <div className="space-y-1.5">
                     {[
                       ['Title', form.title || '(not set)'],
-                      ['Documents', `${form.document_ids.length} selected`],
+                      ['Documents', selectedDocumentSummary],
                       ['Template', TEMPLATES.find(t => t.key === form.template)?.label ?? form.template],
                       ['Difficulty', form.difficulty],
                       form.count_mode === 'per_type'

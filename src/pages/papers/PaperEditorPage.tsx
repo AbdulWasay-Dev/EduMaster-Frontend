@@ -331,8 +331,6 @@ export default function PaperEditorPage() {
     department_name: '',
     program_name: '',
     session_name: '',
-    logo_left_url: '',
-    logo_right_url: '',
     teacher_name: '',
     course_name: '',
     course_code: '',
@@ -362,8 +360,6 @@ export default function PaperEditorPage() {
       department_name: paper.department_name ?? '',
       program_name: paper.program_name ?? '',
       session_name: paper.session_name ?? '',
-      logo_left_url: paper.logo_left_url ?? '',
-      logo_right_url: paper.logo_right_url ?? '',
       teacher_name: paper.teacher_name ?? '',
       course_name: paper.course_name ?? '',
       course_code: paper.course_code ?? '',
@@ -396,13 +392,12 @@ export default function PaperEditorPage() {
           department_name: meta.department_name,
           program_name: meta.program_name,
           session_name: meta.session_name,
-          logo_left_url: meta.logo_left_url,
-          logo_right_url: meta.logo_right_url,
           teacher_name: meta.teacher_name,
           course_name: meta.course_name,
           course_code: meta.course_code,
           exam_date: meta.exam_date,
           duration: meta.duration,
+          student_fields: meta.student_fields,
           template,
         }) as any),
       } as any)
@@ -486,10 +481,6 @@ export default function PaperEditorPage() {
   const lineOrValue = (value?: string, fallback = '________________') =>
     value && value.trim().length ? value : fallback
   const sessionValue = meta.session_name || meta.exam_date
-  const renderLogo = (url?: string) =>
-    url
-      ? <img src={url} alt="Logo" className="h-full w-full object-contain" />
-      : <span className="text-[10px] text-slate-500">LOGO</span>
 
   if (isLoading) return <div className="flex justify-center py-20"><LoadingSpinner size="lg" /></div>
   if (!paper) return <div className="py-20 text-center text-brand-500">Paper not found</div>
@@ -598,16 +589,6 @@ export default function PaperEditorPage() {
                   className="input text-sm" placeholder="Spring 2026" />
               </div>
               <div>
-                <label className="text-xs font-semibold text-brand-500 mb-1 block">Left Logo URL</label>
-                <input value={meta.logo_left_url} onChange={e => setMeta(m => ({ ...m, logo_left_url: e.target.value }))}
-                  className="input text-sm" placeholder="https://..." />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-brand-500 mb-1 block">Right Logo URL</label>
-                <input value={meta.logo_right_url} onChange={e => setMeta(m => ({ ...m, logo_right_url: e.target.value }))}
-                  className="input text-sm" placeholder="https://..." />
-              </div>
-              <div>
                 <label className="text-xs font-semibold text-brand-500 mb-1 block">Teacher Name</label>
                 <input value={meta.teacher_name} onChange={e => setMeta(m => ({ ...m, teacher_name: e.target.value }))}
                   className="input text-sm" placeholder="Jane Smith" />
@@ -692,18 +673,10 @@ export default function PaperEditorPage() {
 
             {/* Paper header preview */}
             <div className="rounded-2xl border border-brand-100 bg-white shadow-sm p-6 space-y-4">
-              <div className="grid grid-cols-[56px_1fr_56px] items-center gap-4">
-                <div className="h-12 w-12 border border-slate-400 flex items-center justify-center overflow-hidden">
-                  {renderLogo(meta.logo_left_url)}
-                </div>
-                <div className="text-center leading-tight">
-                  <p className="text-base font-bold text-[#0f172a]">{lineOrValue(meta.institution_name, 'UNIVERSITY NAME')}</p>
-                  <p className="text-sm font-semibold text-[#0f172a]">{lineOrValue(meta.faculty_name, 'Faculty Name')}</p>
-                  <p className="text-sm font-semibold text-[#0f172a]">{lineOrValue(meta.department_name, 'Department Name')}</p>
-                </div>
-                <div className="h-12 w-12 border border-slate-400 flex items-center justify-center overflow-hidden">
-                  {renderLogo(meta.logo_right_url)}
-                </div>
+              <div className="text-center leading-tight">
+                <p className="text-base font-bold text-[#0f172a]">{lineOrValue(meta.institution_name, 'UNIVERSITY NAME')}</p>
+                <p className="text-sm font-semibold text-[#0f172a]">{lineOrValue(meta.faculty_name, 'Faculty Name')}</p>
+                <p className="text-sm font-semibold text-[#0f172a]">{lineOrValue(meta.department_name, 'Department Name')}</p>
               </div>
 
               <div className="border border-slate-400 text-xs">

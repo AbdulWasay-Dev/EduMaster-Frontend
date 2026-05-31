@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Send, Plus, Bot, User, BookOpen, Trash2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -9,6 +9,8 @@ import { useAuthStore } from '@/store/authStore'
 import AIThinking from '@/components/feedback/AIThinking'
 import { queryRAG } from '@/lib/api/rag'
 import { listSubjects } from '@/lib/api/subjects'
+import { listDocuments } from '@/lib/api/documents'
+import { getDocumentDisplayName, getRAGSourceDisplayName } from '@/lib/displayNames'
 import { getInitials, formatDate } from '@/lib/utils'
 
 export default function AIAssistantPage() {
@@ -20,8 +22,13 @@ export default function AIAssistantPage() {
 
   const { sessions, activeSessionId, createSession, addMessage, addAIResponse, setActiveSession } = useChatStore()
   const { data: subjects = [] } = useQuery({ queryKey: ['subjects'], queryFn: () => listSubjects() })
+  const { data: documents = [] } = useQuery({ queryKey: ['documents'], queryFn: () => listDocuments() })
 
   const activeSession = sessions.find(s => s.id === activeSessionId)
+  const documentNameMap = useMemo(
+    () => new Map(documents.map(doc => [doc.id, getDocumentDisplayName(doc)])),
+    [documents],
+  )
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -175,12 +182,18 @@ export default function AIAssistantPage() {
                     {msg.sources && msg.sources.length > 0 && (
                       <div className="mt-3 pt-2 border-t border-brand-200 space-y-1">
                         <p className="text-xs font-semibold text-brand-500">Sources:</p>
-                        {msg.sources.map((s, si) => (
-                          <div key={si} className="text-xs text-brand-600 flex items-start gap-1">
-                            <BookOpen className="w-3 h-3 mt-0.5 shrink-0 text-brand-400" />
-                            <span>{s.document_name || s.document_id} {s.page_number ? `(p. ${s.page_number})` : ''}</span>
-                          </div>
-                        ))}
+                        {msg.sources.map((s, si) => {
+                          const sourceName = getRAGSourceDisplayName(
+                            s,
+                            s.document_id ? documentNameMap.get(s.document_id) ?? 'Document source' : 'Document source',
+                          )
+                          return (
+                            <div key={si} className="text-xs text-brand-600 flex items-start gap-1">
+                              <BookOpen className="w-3 h-3 mt-0.5 shrink-0 text-brand-400" />
+                              <span>{sourceName} {s.page_number ? `(p. ${s.page_number})` : ''}</span>
+                            </div>
+                          )
+                        })}
                       </div>
                     )}
                   </div>
