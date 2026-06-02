@@ -377,11 +377,16 @@ export type SubmissionStatus = 'submitted' | 'graded' | 'late'
 export interface AssignmentSubmission {
   id: string
   assignment_id: string
+  assignment_title?: string
+  assignment_due_date?: string
   student_account_id: string
   student_name?: string
   student_email?: string
   roll_number?: string
   source?: string
+  class_name?: string
+  subject_id?: string
+  subject_name?: string
   submission_text: string
   attachment_url?: string
   submission_files?: { name: string; url: string }[]
@@ -395,6 +400,22 @@ export interface AssignmentSubmission {
   ai_rubric_breakdown?: Record<string, any>
   teacher_remarks?: string
   graded_at?: string
+}
+
+export interface AssignmentEmailLog {
+  id: string
+  assignment_id?: string | null
+  assignment_title?: string | null
+  student_account_id?: string | null
+  student_name?: string | null
+  student_email?: string | null
+  email_from?: string | null
+  email_subject?: string | null
+  email_body?: string | null
+  attachment_paths?: string[]
+  processed_at?: string | null
+  status: 'processed' | 'failed' | 'skipped' | string
+  notes?: string | null
 }
 
 // ─── Student Portal specific ─────────────────────────────────────────────────
@@ -429,6 +450,7 @@ export interface StudentScore {
 }
 
 export interface AssignmentAnalytics {
+  total_students?: number
   total_submissions: number
   graded_count: number
   average_score: number | null

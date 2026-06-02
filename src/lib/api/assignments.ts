@@ -1,5 +1,5 @@
 import api from '@/lib/axios'
-import type { Assignment, AssignmentSubmission, AssignmentAnalytics } from '@/types'
+import type { Assignment, AssignmentSubmission, AssignmentAnalytics, AssignmentEmailLog } from '@/types'
 
 export interface CreateAssignmentPayload {
   title: string
@@ -160,7 +160,7 @@ export async function fetchEmailSubmissions(assignmentId: string): Promise<{ ema
   return data
 }
 
-export async function getEmailLogs(assignmentId: string): Promise<unknown[]> {
-  const { data } = await api.get(`/assignments/${assignmentId}/email-logs`)
+export async function getEmailLogs(assignmentId: string): Promise<AssignmentEmailLog[]> {
+  const { data } = await api.get<AssignmentEmailLog[]>(`/assignments/${assignmentId}/email-logs`)
   return Array.isArray(data) ? data : []
 }

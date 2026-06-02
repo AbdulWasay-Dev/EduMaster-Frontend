@@ -20,7 +20,7 @@ const schema = z.object({
   description: z.string().optional(),
   instructions: z.string().optional(),
   total_marks: z.coerce.number().min(1, 'At least 1 mark').default(10),
-  due_date: z.string().optional(),
+  due_date: z.string().min(1, 'Deadline is required'),
   auto_grade: z.boolean().default(true),
   grading_rubric: z.string().optional(),
   topic_hint: z.string().optional(),
@@ -114,7 +114,6 @@ export default function CreateAssignmentPage() {
 
   const onSubmit = (data: FormData) => {
     const payload: any = { ...data }
-    if (!payload.due_date) delete payload.due_date
     if (!payload.topic_hint) delete payload.topic_hint
     createMut.mutate(payload)
   }
@@ -126,9 +125,13 @@ export default function CreateAssignmentPage() {
         <button onClick={() => navigate(-1)} className="p-2 bg-white border border-brand-100 text-brand-500 rounded-xl hover:bg-brand-50 transition-colors shadow-sm">
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <div>
+        <div className="hidden">
           <h1 className="text-2xl font-bold text-[#0f172a]">New Assignment</h1>
           <p className="text-sm text-brand-500">Create an assignment — let AI write the instructions for you</p>
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold text-[#0f172a]">New Assignment</h1>
+          <p className="text-sm text-brand-500">Create an assignment and let AI write the instructions for you</p>
         </div>
       </div>
 
@@ -145,7 +148,7 @@ export default function CreateAssignmentPage() {
               <input
                 {...register('title')}
                 className="input"
-                placeholder="e.g. Chapter 5 – Photosynthesis Essay"
+                placeholder="e.g. Chapter 5 - Photosynthesis Essay"
               />
               {errors.title && <p className="text-xs text-red-500 mt-1">{errors.title.message}</p>}
             </div>
@@ -208,8 +211,9 @@ export default function CreateAssignmentPage() {
             </div>
 
             <div>
-              <label className="label">Due Date (Optional)</label>
+              <label className="label">Deadline *</label>
               <input type="datetime-local" {...register('due_date')} className="input" />
+              {errors.due_date && <p className="text-xs text-red-500 mt-1">{errors.due_date.message}</p>}
             </div>
           </div>
         </div>

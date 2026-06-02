@@ -1,16 +1,35 @@
 import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
-import { X, CheckCircle2, User, FileText, AlertCircle, Edit3 } from 'lucide-react'
+import { X, CheckCircle2, User, FileText, AlertCircle, Edit3, BookOpen, Users, CalendarDays, Mail, UploadCloud, Clock } from 'lucide-react'
 import { toast } from 'sonner'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import { overrideSubmissionGrade } from '@/lib/api/assignments'
 import type { Assignment, AssignmentSubmission } from '@/types'
+import { cn } from '@/lib/utils'
 
 interface SubmissionDetailModalProps {
   submission: AssignmentSubmission | undefined
   assignment: Assignment | undefined
   onClose: () => void
   onOverrideSuccess: () => void
+}
+
+function formatDateTime(value?: string | null, fallback = 'Not recorded') {
+  if (!value) return fallback
+  return new Date(value).toLocaleString([], {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  })
+}
+
+function getSourceMeta(source?: string) {
+  const value = (source || 'student_portal').toLowerCase()
+  if (value === 'email') return { label: 'Email sync', className: 'bg-blue-50 text-blue-700 border-blue-200', icon: Mail }
+  if (value === 'manual') return { label: 'Manual upload', className: 'bg-violet-50 text-violet-700 border-violet-200', icon: UploadCloud }
+  return { label: 'Student portal', className: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: User }
 }
 
 export default function SubmissionDetailModal({ submission, assignment, onClose, onOverrideSuccess }: SubmissionDetailModalProps) {
@@ -33,6 +52,15 @@ export default function SubmissionDetailModal({ submission, assignment, onClose,
 
   if (!submission || !assignment) return null
 
+  const sourceMeta = getSourceMeta(submission.source)
+  const SourceIcon = sourceMeta.icon
+  const assignmentTitle = submission.assignment_title || assignment.title
+  const className = submission.class_name || assignment.class_name || 'Class not resolved'
+  const subjectName = submission.subject_name || assignment.subject_name || 'Subject not resolved'
+  const deadline = submission.assignment_due_date || assignment.due_date
+  const submittedLate = !!submission.submitted_at && !!deadline && new Date(submission.submitted_at).getTime() > new Date(deadline).getTime()
+  const submissionFiles = (submission.submission_files || []) as Array<{ name?: string; url?: string } | string>
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden relative animate-in fade-in zoom-in-95 duration-200">
@@ -42,9 +70,15 @@ export default function SubmissionDetailModal({ submission, assignment, onClose,
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-brand-100 to-brand-50 flex items-center justify-center text-brand-600">
               <User className="w-6 h-6" />
             </div>
-            <div>
+            <div className="hidden">
               <h2 className="text-lg font-bold text-[#0f172a]">{submission.student_name}</h2>
               <p className="text-sm text-brand-500">{submission.student_email} • Submitted: {submission.submitted_at ? new Date(submission.submitted_at).toLocaleString() : '—'}</p>
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-[#0f172a]">{submission.student_name || 'Student'}</h2>
+              <p className="text-sm text-brand-500">
+                {submission.student_email || submission.roll_number || 'No student contact'} | Submitted: {formatDateTime(submission.submitted_at)}
+              </p>
             </div>
           </div>
           <button onClick={onClose} className="p-2 text-brand-400 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-colors">
@@ -53,6 +87,45 @@ export default function SubmissionDetailModal({ submission, assignment, onClose,
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 space-y-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="rounded-xl border border-brand-100 bg-white p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-brand-500 flex items-center gap-1.5">
+                <FileText className="w-3.5 h-3.5" /> Assignment
+              </p>
+              <p className="font-semibold text-[#0f172a] mt-2 truncate">{assignmentTitle}</p>
+            </div>
+            <div className="rounded-xl border border-brand-100 bg-white p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-brand-500 flex items-center gap-1.5">
+                <Users className="w-3.5 h-3.5" /> Class
+              </p>
+              <p className="font-semibold text-[#0f172a] mt-2 truncate">{className}</p>
+            </div>
+            <div className="rounded-xl border border-brand-100 bg-white p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-brand-500 flex items-center gap-1.5">
+                <BookOpen className="w-3.5 h-3.5" /> Subject
+              </p>
+              <p className="font-semibold text-[#0f172a] mt-2 truncate">{subjectName}</p>
+            </div>
+            <div className="rounded-xl border border-brand-100 bg-white p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-brand-500 flex items-center gap-1.5">
+                <CalendarDays className="w-3.5 h-3.5" /> Deadline
+              </p>
+              <p className="font-semibold text-[#0f172a] mt-2">{formatDateTime(deadline, 'No deadline')}</p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <span className={cn('inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full border', sourceMeta.className)}>
+              <SourceIcon className="w-3 h-3" /> {sourceMeta.label}
+            </span>
+            <span className={cn(
+              'inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full border',
+              submittedLate ? 'bg-red-50 text-red-700 border-red-200' : 'bg-slate-50 text-slate-600 border-slate-200',
+            )}>
+              <Clock className="w-3 h-3" /> {submittedLate ? 'Submitted late' : 'Submission timing ok'}
+            </span>
+          </div>
+
           {/* Main Content Grid */}
           <div className="grid md:grid-cols-3 gap-6">
             
@@ -66,15 +139,20 @@ export default function SubmissionDetailModal({ submission, assignment, onClose,
                   {submission.submission_text || <span className="text-slate-400 italic">No text provided.</span>}
                 </div>
                 
-                {submission.submission_files && submission.submission_files.length > 0 && (
+                {submissionFiles.length > 0 && (
                   <div className="mt-4 pt-4 border-t border-brand-50">
                     <h4 className="text-xs font-semibold text-brand-600 mb-2 uppercase tracking-wider">Attachments</h4>
                     <div className="flex flex-col gap-2">
-                      {submission.submission_files.map((file, i) => (
-                        <a key={i} href={file.url} target="_blank" rel="noreferrer" className="text-sm text-blue-600 hover:underline flex items-center gap-1">
-                          <FileText className="w-4 h-4" /> Attachment {i + 1}
-                        </a>
-                      ))}
+                      {submissionFiles.map((file, i) => {
+                        const href = typeof file === 'string' ? file : file.url
+                        const label = typeof file === 'string' ? (file.split(/[\\/]/).pop() || `Attachment ${i + 1}`) : (file.name || `Attachment ${i + 1}`)
+
+                        return (
+                          <a key={i} href={href} target="_blank" rel="noreferrer" className="text-sm text-blue-600 hover:underline flex items-center gap-1">
+                            <FileText className="w-4 h-4" /> {label}
+                          </a>
+                        )
+                      })}
                     </div>
                   </div>
                 )}

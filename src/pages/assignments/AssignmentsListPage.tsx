@@ -105,7 +105,7 @@ export default function AssignmentsListPage() {
       <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center bg-white p-4 rounded-2xl border border-brand-100 shadow-sm">
         <div className="relative flex-1 max-w-xs">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-brand-400" />
-          <input type="text" placeholder="Search assignments, classes…"
+          <input type="text" placeholder="Search assignments or classes"
             value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
             className="input pl-9 w-full bg-brand-50 border-transparent focus:bg-white text-sm" />
         </div>
@@ -176,11 +176,9 @@ export default function AssignmentsListPage() {
                           <span className="inline-flex items-center gap-1 text-xs text-brand-500">
                             <ScrollText className="w-3 h-3" /> {a.total_marks} Marks
                           </span>
-                          {a.due_date && (
-                            <span className="inline-flex items-center gap-1 text-xs text-brand-600 font-medium">
-                              <CalendarDays className="w-3 h-3" /> Due: {new Date(a.due_date).toLocaleDateString()}
-                            </span>
-                          )}
+                          <span className="inline-flex items-center gap-1 text-xs text-brand-600 font-medium">
+                            <CalendarDays className="w-3 h-3" /> {a.due_date ? `Due: ${new Date(a.due_date).toLocaleDateString()}` : 'No deadline'}
+                          </span>
                         </div>
                       </div>
                     </Link>
