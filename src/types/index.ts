@@ -367,6 +367,9 @@ export interface Assignment {
   auto_grade?: boolean
   grading_rubric?: string
   attachment_url?: string
+  attachment_filename?: string
+  email_submission_code?: string
+  email_subject_syntax?: string
   created_at: string
   updated_at?: string
 }
@@ -406,6 +409,11 @@ export interface AssignmentEmailLog {
   id: string
   assignment_id?: string | null
   assignment_title?: string | null
+  assignment_code?: string | null
+  class_id?: string | null
+  class_name?: string | null
+  subject_id?: string | null
+  subject_name?: string | null
   student_account_id?: string | null
   student_name?: string | null
   student_email?: string | null

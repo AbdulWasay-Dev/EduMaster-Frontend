@@ -176,6 +176,11 @@ export default function AssignmentsListPage() {
                           <span className="inline-flex items-center gap-1 text-xs text-brand-500">
                             <ScrollText className="w-3 h-3" /> {a.total_marks} Marks
                           </span>
+                          {a.attachment_url && (
+                            <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">
+                              <FileText className="w-3 h-3" /> PDF ready
+                            </span>
+                          )}
                           <span className="inline-flex items-center gap-1 text-xs text-brand-600 font-medium">
                             <CalendarDays className="w-3 h-3" /> {a.due_date ? `Due: ${new Date(a.due_date).toLocaleDateString()}` : 'No deadline'}
                           </span>

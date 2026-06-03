@@ -6,6 +6,7 @@ import {
   ArrowLeft, CheckCircle2, XCircle, Zap, User, Mail, UploadCloud,
   FileText, BarChart3, Settings, AlertCircle, PlayCircle,
   BookOpen, Users, CalendarDays, Clock, Inbox, RefreshCw,
+  Download, Copy,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
@@ -13,6 +14,7 @@ import {
   getAssignment, getAssignmentSubmissions, getAssignmentAnalytics,
   publishAssignment, closeAssignment, gradeSubmission, gradeAllSubmissions,
   fetchEmailSubmissions, manualUploadSubmission, getEmailConfig, getEmailLogs,
+  regenerateAssignmentPdf,
 } from '@/lib/api/assignments'
 import { listStudents } from '@/lib/api/students'
 import { listClasses } from '@/lib/api/classes'
@@ -48,6 +50,14 @@ function getDueState(dueDate?: string | null) {
   }
   if (absDays <= 1) return { label: 'Due today', tone: 'amber', isOverdue: false }
   return { label: `${absDays} days left`, tone: absDays <= 3 ? 'amber' : 'emerald', isOverdue: false }
+}
+
+function getBackendFileUrl(path?: string | null) {
+  if (!path) return ''
+  if (/^https?:\/\//i.test(path)) return path
+  const apiBase = import.meta.env.VITE_API_URL ?? `http://${window.location.hostname}:8010/api/v1`
+  const backendBase = apiBase.replace(/\/api\/v1\/?$/, '')
+  return `${backendBase}${path.startsWith('/') ? '' : '/'}${path}`
 }
 
 function getSourceMeta(source?: string) {
@@ -170,6 +180,16 @@ export default function AssignmentDetailPage() {
     }
   })
 
+  const regeneratePdfMut = useMutation({
+    mutationFn: () => regenerateAssignmentPdf(id!),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['assignment', id] })
+      queryClient.invalidateQueries({ queryKey: ['assignments'] })
+      toast.success('Assignment PDF generated')
+    },
+    onError: () => toast.error('Could not generate assignment PDF'),
+  })
+
   if (isLoading) return <div className="flex items-center justify-center h-64"><LoadingSpinner size="lg" /></div>
   if (!assignment) return <div className="text-center py-16 text-brand-400">Assignment not found.</div>
 
@@ -183,6 +203,17 @@ export default function AssignmentDetailPage() {
   const dueState = getDueState(assignment.due_date)
   const processedEmailCount = emailLogs.filter(log => log.status === 'processed').length
   const skippedEmailCount = emailLogs.filter(log => log.status === 'skipped' || log.status === 'failed').length
+  const assignmentPdfUrl = getBackendFileUrl(assignment.attachment_url)
+  const emailSubjectSyntax = assignment.email_subject_syntax || `[${assignment.email_submission_code || 'ASG-CODE'}] ${assignment.title}`
+
+  const copyEmailSubject = async () => {
+    try {
+      await navigator.clipboard.writeText(emailSubjectSyntax)
+      toast.success('Email subject copied')
+    } catch {
+      toast.error('Could not copy email subject')
+    }
+  }
 
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
@@ -244,6 +275,24 @@ export default function AssignmentDetailPage() {
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
+            <button onClick={copyEmailSubject} className="btn-secondary flex items-center gap-2">
+              <Copy className="w-4 h-4" /> Copy Subject
+            </button>
+            {assignmentPdfUrl ? (
+              <a href={assignmentPdfUrl} target="_blank" rel="noreferrer" download={assignment.attachment_filename}
+                className="btn-secondary flex items-center gap-2">
+                <Download className="w-4 h-4" /> Download PDF
+              </a>
+            ) : (
+              <button
+                onClick={() => regeneratePdfMut.mutate()}
+                disabled={regeneratePdfMut.isPending}
+                className="btn-secondary flex items-center gap-2"
+              >
+                {regeneratePdfMut.isPending ? <LoadingSpinner size="sm" /> : <Download className="w-4 h-4" />}
+                Generate PDF
+              </button>
+            )}
             {assignment.status === 'draft' && (
               <button onClick={() => publishMut.mutate()} className="btn-primary flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4" /> Publish
@@ -266,7 +315,7 @@ export default function AssignmentDetailPage() {
       </div>
 
       {/* Assignment control summary */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-3">
         <div className="bg-white rounded-2xl border border-brand-100 p-4 shadow-sm">
           <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-brand-500 mb-3">
             <FileText className="w-3.5 h-3.5" /> Assignment
@@ -313,6 +362,14 @@ export default function AssignmentDetailPage() {
           </div>
           <p className="font-bold text-[#0f172a]">{submittedCount}/{rosterCount || '-'} submitted</p>
           <p className="text-xs text-brand-500 mt-1">{submissionRate}% coverage | {ungradedCount} ungraded | {lateCount} late</p>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-brand-100 p-4 shadow-sm">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-brand-500 mb-3">
+            <Mail className="w-3.5 h-3.5" /> Email Code
+          </div>
+          <p className="font-bold text-[#0f172a] truncate">{assignment.email_submission_code || 'ASG-CODE'}</p>
+          <p className="text-xs text-brand-500 mt-1 truncate">{emailSubjectSyntax}</p>
         </div>
       </div>
 
@@ -525,7 +582,7 @@ export default function AssignmentDetailPage() {
                     <Mail className="w-4 h-4 text-brand-500" /> Email sync visibility
                   </h3>
                   <p className="text-sm text-brand-500 mt-1">
-                    Shows which inbox messages were synced into this assignment and which were skipped or failed.
+                    Students should use {emailSubjectSyntax}; synced rows are mapped to this assignment, class, and subject.
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
@@ -599,6 +656,12 @@ export default function AssignmentDetailPage() {
                             <div className="flex flex-wrap items-center gap-2 mt-3">
                               <span className="inline-flex items-center gap-1 text-xs font-medium text-brand-600 bg-brand-50 border border-brand-100 px-2 py-0.5 rounded-full">
                                 <FileText className="w-3 h-3" /> {log.assignment_title || assignment.title}
+                              </span>
+                              <span className="inline-flex items-center gap-1 text-xs font-medium text-brand-600 bg-brand-50 border border-brand-100 px-2 py-0.5 rounded-full">
+                                <Users className="w-3 h-3" /> {log.class_name || className || 'Class not resolved'}
+                              </span>
+                              <span className="inline-flex items-center gap-1 text-xs font-medium text-brand-600 bg-brand-50 border border-brand-100 px-2 py-0.5 rounded-full">
+                                <BookOpen className="w-3 h-3" /> {log.subject_name || subjectName || 'Subject not resolved'}
                               </span>
                               <span className="inline-flex items-center gap-1 text-xs font-medium text-brand-600 bg-brand-50 border border-brand-100 px-2 py-0.5 rounded-full">
                                 <Users className="w-3 h-3" /> {log.student_name || log.student_email || 'No student match'}

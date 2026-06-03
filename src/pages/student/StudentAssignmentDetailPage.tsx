@@ -2,10 +2,18 @@ import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Clock, CheckCircle2, Send } from 'lucide-react'
+import { ArrowLeft, Clock, CheckCircle2, Send, Download } from 'lucide-react'
 import { toast } from 'sonner'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import { getStudentAssignment, submitAssignment } from '@/lib/api/student-portal'
+
+function getBackendFileUrl(path?: string | null) {
+  if (!path) return ''
+  if (/^https?:\/\//i.test(path)) return path
+  const apiBase = import.meta.env.VITE_API_URL ?? `http://${window.location.hostname}:8010/api/v1`
+  const backendBase = apiBase.replace(/\/api\/v1\/?$/, '')
+  return `${backendBase}${path.startsWith('/') ? '' : '/'}${path}`
+}
 
 export default function StudentAssignmentDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -44,6 +52,7 @@ export default function StudentAssignmentDetailPage() {
   const hasSubmission = !!assignment.submission
   const isGraded = assignment.submission?.status === 'graded'
   const canSubmit = assignment.status === 'published' && !isGraded
+  const assignmentPdfUrl = getBackendFileUrl(assignment.attachment_url)
 
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
@@ -68,6 +77,18 @@ export default function StudentAssignmentDetailPage() {
           <div className="prose prose-sm max-w-none text-slate-700 whitespace-pre-wrap">
             {assignment.instructions}
           </div>
+        </div>
+      )}
+
+      {assignmentPdfUrl && (
+        <div className="bg-white rounded-xl border border-brand-100 p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 className="text-sm font-semibold text-slate-700">Assignment PDF</h2>
+            <p className="text-sm text-slate-500 mt-1">Download the generated assignment sheet before writing your answer.</p>
+          </div>
+          <a href={assignmentPdfUrl} target="_blank" rel="noreferrer" className="btn-primary inline-flex items-center justify-center gap-2">
+            <Download className="w-4 h-4" /> Download PDF
+          </a>
         </div>
       )}
 

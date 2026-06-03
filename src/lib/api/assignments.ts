@@ -11,6 +11,10 @@ export interface CreateAssignmentPayload {
   due_date?: string
   grading_rubric?: string
   auto_grade?: boolean
+  attachment_url?: string
+  attachment_filename?: string
+  generate_pdf?: boolean
+  generated_outline?: GeneratedContent
 }
 
 export interface EmailConfig {
@@ -24,9 +28,18 @@ export interface EmailConfig {
 }
 
 export interface GeneratedContent {
+  assignment_name?: string
   description: string
   instructions: string
   grading_rubric: string
+  learning_objectives?: string[]
+  tasks?: { title: string; details: string; marks?: number | string | null }[]
+  deliverables?: string[]
+  submission_format?: string
+  email_subject_syntax?: string
+  assignment_type?: string
+  difficulty_level?: string
+  estimated_duration?: string | null
 }
 
 export async function generateAssignmentContent(payload: {
@@ -35,6 +48,11 @@ export async function generateAssignmentContent(payload: {
   class_name?: string
   total_marks?: number
   topic_hint?: string
+  assignment_type?: string
+  difficulty_level?: string
+  estimated_duration?: string
+  deliverables?: string[]
+  requirements?: string
 }): Promise<GeneratedContent> {
   const { data } = await api.post<GeneratedContent>('/assignments/generate-content', payload)
   return data
@@ -81,6 +99,11 @@ export async function uploadAssignmentAttachment(id: string, file: File): Promis
   const { data } = await api.post<Assignment>(`/assignments/${id}/upload-attachment`, form, {
     headers: { 'Content-Type': 'multipart/form-data' },
   })
+  return data
+}
+
+export async function regenerateAssignmentPdf(id: string): Promise<Assignment> {
+  const { data } = await api.post<Assignment>(`/assignments/${id}/generate-pdf`)
   return data
 }
 
