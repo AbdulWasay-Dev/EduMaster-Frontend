@@ -2,8 +2,13 @@ import axios from 'axios'
 import { useAuthStore } from '@/store/authStore'
 import { useStudentAuthStore } from '@/store/studentAuthStore'
 
+const defaultApiBaseUrl =
+  typeof window === 'undefined'
+    ? 'http://localhost:8010/api/v1'
+    : `http://${window.location.hostname}:8010/api/v1`
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:8010/api/v1',
+  baseURL: import.meta.env.VITE_API_URL ?? defaultApiBaseUrl,
   timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
