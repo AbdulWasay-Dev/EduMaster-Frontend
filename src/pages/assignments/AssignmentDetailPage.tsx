@@ -61,10 +61,10 @@ function getBackendFileUrl(path?: string | null) {
 }
 
 function getSourceMeta(source?: string) {
-  const value = (source || 'student_portal').toLowerCase()
+  const value = (source || 'manual').toLowerCase()
   if (value === 'email') return { label: 'Email sync', className: 'bg-blue-50 text-blue-700 border-blue-200', icon: Mail }
   if (value === 'manual') return { label: 'Manual upload', className: 'bg-violet-50 text-violet-700 border-violet-200', icon: UploadCloud }
-  return { label: 'Student portal', className: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: User }
+  return { label: 'Class roster', className: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: Users }
 }
 
 function getEmailStatusMeta(status?: string) {
@@ -204,7 +204,8 @@ export default function AssignmentDetailPage() {
   const processedEmailCount = emailLogs.filter(log => log.status === 'processed').length
   const skippedEmailCount = emailLogs.filter(log => log.status === 'skipped' || log.status === 'failed').length
   const assignmentPdfUrl = getBackendFileUrl(assignment.attachment_url)
-  const emailSubjectSyntax = assignment.email_subject_syntax || `[${assignment.email_submission_code || 'ASG-CODE'}] ${assignment.title}`
+  const emailCodeTemplate = assignment.email_submission_code || 'ASG-CODE'
+  const emailSubjectSyntax = assignment.email_subject_syntax || `[${emailCodeTemplate}] ${assignment.title}`
 
   const copyEmailSubject = async () => {
     try {
@@ -453,7 +454,7 @@ export default function AssignmentDetailPage() {
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-semibold text-[#0f172a] truncate">{sub.student_name || 'Student'}</p>
                             <div className="hidden">
-                              <p className="text-xs text-brand-500 truncate max-w-xs">{sub.student_email || sub.roll_number}</p>
+                              <p className="text-xs text-brand-500 truncate max-w-xs">{sub.student_email || 'No registered email'}</p>
                               <span className="text-xs text-brand-300">•</span>
                               <p className="text-xs text-brand-400 capitalize">{sub.source || 'direct'} submission</p>
                             </div>
@@ -465,7 +466,7 @@ export default function AssignmentDetailPage() {
                               return (
                                 <div className="flex flex-wrap items-center gap-2 mt-2">
                                   <span className="text-xs text-brand-500 truncate max-w-xs">
-                                    {sub.student_email || sub.roll_number || 'No student email'}
+                                    {sub.student_email || 'No registered email'}
                                   </span>
                                   <span className={cn('inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full border', sourceMeta.className)}>
                                     <SourceIcon className="w-3 h-3" /> {sourceMeta.label}
@@ -527,7 +528,7 @@ export default function AssignmentDetailPage() {
                     </div>
                     <h3 className="text-lg font-medium text-brand-900 mb-1">No submissions yet</h3>
                     <p className="text-brand-500 text-sm max-w-sm mx-auto">
-                      Students can submit directly, or you can fetch emails, or upload them manually.
+                      Fetch email submissions from roster emails or upload a student's work manually.
                     </p>
                   </div>
                 )}
@@ -582,7 +583,7 @@ export default function AssignmentDetailPage() {
                     <Mail className="w-4 h-4 text-brand-500" /> Email sync visibility
                   </h3>
                   <p className="text-sm text-brand-500 mt-1">
-                    Students should use {emailSubjectSyntax}; synced rows are mapped to this assignment, class, and subject.
+                    Students should use {emailSubjectSyntax} and send it from the email address saved in the class roster; synced rows are mapped to this assignment, class, and subject by that email.
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">

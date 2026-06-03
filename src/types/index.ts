@@ -382,7 +382,7 @@ export interface AssignmentSubmission {
   assignment_id: string
   assignment_title?: string
   assignment_due_date?: string
-  student_account_id: string
+  student_id?: string | null
   student_name?: string
   student_email?: string
   roll_number?: string
@@ -414,9 +414,10 @@ export interface AssignmentEmailLog {
   class_name?: string | null
   subject_id?: string | null
   subject_name?: string | null
-  student_account_id?: string | null
+  student_id?: string | null
   student_name?: string | null
   student_email?: string | null
+  student_roll_number?: string | null
   email_from?: string | null
   email_subject?: string | null
   email_body?: string | null

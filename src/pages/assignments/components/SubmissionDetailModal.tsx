@@ -26,10 +26,10 @@ function formatDateTime(value?: string | null, fallback = 'Not recorded') {
 }
 
 function getSourceMeta(source?: string) {
-  const value = (source || 'student_portal').toLowerCase()
+  const value = (source || 'manual').toLowerCase()
   if (value === 'email') return { label: 'Email sync', className: 'bg-blue-50 text-blue-700 border-blue-200', icon: Mail }
   if (value === 'manual') return { label: 'Manual upload', className: 'bg-violet-50 text-violet-700 border-violet-200', icon: UploadCloud }
-  return { label: 'Student portal', className: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: User }
+  return { label: 'Class roster', className: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: Users }
 }
 
 export default function SubmissionDetailModal({ submission, assignment, onClose, onOverrideSuccess }: SubmissionDetailModalProps) {
@@ -77,7 +77,7 @@ export default function SubmissionDetailModal({ submission, assignment, onClose,
             <div>
               <h2 className="text-lg font-bold text-[#0f172a]">{submission.student_name || 'Student'}</h2>
               <p className="text-sm text-brand-500">
-                {submission.student_email || submission.roll_number || 'No student contact'} | Submitted: {formatDateTime(submission.submitted_at)}
+                {submission.student_email || 'No registered email'} | Submitted: {formatDateTime(submission.submitted_at)}
               </p>
             </div>
           </div>

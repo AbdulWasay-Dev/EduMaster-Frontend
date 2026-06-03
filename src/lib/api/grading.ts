@@ -69,6 +69,22 @@ export async function listSubmissions(paperId?: string): Promise<Submission[]> {
   return Array.isArray(data) ? data : ((data as { submissions?: Submission[] }).submissions ?? [])
 }
 
+export async function exportPaperClassReport(paperId: string, format: 'pdf' | 'csv' = 'pdf', classId?: string): Promise<Blob> {
+  const { data } = await api.get(`/papers/${paperId}/grading-report`, {
+    responseType: 'blob',
+    params: classId ? { format, class_id: classId } : { format },
+  })
+  return data as Blob
+}
+
+export async function sendPaperGradingReport(
+  paperId: string,
+  payload: { class_id?: string; student_id?: string; recipient_email?: string },
+): Promise<{ status: string; message: string }> {
+  const { data } = await api.post(`/papers/${paperId}/grading-report/send`, payload)
+  return data
+}
+
 export async function getSubmission(id: string): Promise<Submission> {
   const { data } = await api.get<Submission>(`/grading/${id}`)
   return data

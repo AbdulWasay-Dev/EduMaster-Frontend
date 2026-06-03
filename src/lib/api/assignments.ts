@@ -23,6 +23,11 @@ export interface EmailConfig {
   app_password: string
   imap_host?: string
   imap_port?: number
+  smtp_host?: string
+  smtp_port?: number
+  smtp_use_tls?: boolean
+  smtp_use_ssl?: boolean
+  from_name?: string | null
   is_active?: boolean
   last_fetched_at?: string | null
 }
@@ -142,12 +147,12 @@ export async function gradeAllSubmissions(assignmentId: string): Promise<{ grade
 
 export async function manualUploadSubmission(
   assignmentId: string,
-  studentAccountId: string,
+  studentId: string,
   submissionText?: string,
   file?: File,
 ): Promise<AssignmentSubmission> {
   const form = new FormData()
-  form.append('student_account_id', studentAccountId)
+  form.append('student_id', studentId)
   if (submissionText) form.append('submission_text', submissionText)
   if (file) form.append('file', file)
   const { data } = await api.post<AssignmentSubmission>(`/assignments/${assignmentId}/manual-upload`, form, {

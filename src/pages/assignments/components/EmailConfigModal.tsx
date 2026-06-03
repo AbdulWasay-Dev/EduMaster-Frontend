@@ -13,6 +13,11 @@ const schema = z.object({
   app_password: z.string().min(1, 'App password required'),
   imap_host: z.string().min(1, 'IMAP host required').default('imap.gmail.com'),
   imap_port: z.coerce.number().default(993),
+  smtp_host: z.string().min(1, 'SMTP host required').default('smtp.gmail.com'),
+  smtp_port: z.coerce.number().default(587),
+  smtp_use_tls: z.boolean().default(true),
+  smtp_use_ssl: z.boolean().default(false),
+  from_name: z.string().optional().nullable(),
   is_active: z.boolean().default(true),
 })
 
@@ -27,7 +32,15 @@ export default function EmailConfigModal({ onClose }: { onClose: () => void }) {
 
   const { register, handleSubmit, formState: { errors }, reset, getValues } = useForm<EmailConfig>({
     resolver: zodResolver(schema),
-    defaultValues: { imap_host: 'imap.gmail.com', imap_port: 993, is_active: true }
+    defaultValues: {
+      imap_host: 'imap.gmail.com',
+      imap_port: 993,
+      smtp_host: 'smtp.gmail.com',
+      smtp_port: 587,
+      smtp_use_tls: true,
+      smtp_use_ssl: false,
+      is_active: true,
+    }
   })
 
   useEffect(() => {
@@ -52,10 +65,10 @@ export default function EmailConfigModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden relative animate-in fade-in zoom-in-95 duration-200">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative animate-in fade-in zoom-in-95 duration-200">
         <div className="flex items-center justify-between p-4 border-b border-brand-50">
           <h2 className="text-lg font-semibold text-[#0f172a] flex items-center gap-2">
-            <Mail className="w-5 h-5 text-brand-500" /> Email Sync Config
+            <Mail className="w-5 h-5 text-brand-500" /> Email Sync & SMTP Config
           </h2>
           <button onClick={onClose} className="p-1.5 text-brand-400 hover:text-brand-600 rounded-lg hover:bg-brand-50 transition-colors">
             <X className="w-5 h-5" />
@@ -68,7 +81,7 @@ export default function EmailConfigModal({ onClose }: { onClose: () => void }) {
           <form onSubmit={handleSubmit((data) => saveMut.mutate(data))} className="p-5 space-y-4">
             <div className="bg-brand-50 p-3 rounded-lg border border-brand-100 text-sm text-brand-700 flex gap-2">
               <AlertCircle className="w-4 h-4 text-brand-500 shrink-0 mt-0.5" />
-              <p>Configure IMAP to allow EduMaster to automatically fetch student assignment submissions sent to your email.</p>
+              <p>Configure IMAP for assignment submission sync and SMTP for sending attendance and grading reports.</p>
             </div>
 
             <div>
@@ -95,9 +108,37 @@ export default function EmailConfigModal({ onClose }: { onClose: () => void }) {
               </div>
             </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="md:col-span-2">
+                <label className="label">SMTP Host</label>
+                <input {...register('smtp_host')} className="input" />
+                {errors.smtp_host && <p className="text-xs text-red-500 mt-1">{errors.smtp_host.message}</p>}
+              </div>
+              <div>
+                <label className="label">SMTP Port</label>
+                <input {...register('smtp_port')} type="number" className="input" />
+              </div>
+            </div>
+
+            <div>
+              <label className="label">Sender Name</label>
+              <input {...register('from_name')} className="input" placeholder="EduMaster Reports" />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <label className="flex items-center gap-2 cursor-pointer rounded-lg border border-brand-100 px-3 py-2">
+                <input type="checkbox" {...register('smtp_use_tls')} className="rounded border-brand-300 text-brand-600 focus:ring-brand-500" />
+                <span className="text-sm font-medium text-brand-700">Use SMTP STARTTLS</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer rounded-lg border border-brand-100 px-3 py-2">
+                <input type="checkbox" {...register('smtp_use_ssl')} className="rounded border-brand-300 text-brand-600 focus:ring-brand-500" />
+                <span className="text-sm font-medium text-brand-700">Use SMTP SSL</span>
+              </label>
+            </div>
+
             <label className="flex items-center gap-2 cursor-pointer mt-2">
               <input type="checkbox" {...register('is_active')} className="rounded border-brand-300 text-brand-600 focus:ring-brand-500" />
-              <span className="text-sm font-medium text-brand-700">Enable email fetching</span>
+              <span className="text-sm font-medium text-brand-700">Enable email sync and report sending</span>
             </label>
 
             {testResult && (

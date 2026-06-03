@@ -62,7 +62,11 @@ export default function ManualUploadModal({ assignmentId, students, onClose, onS
             >
               <option value="">-- Choose student --</option>
               {students.map((s) => (
-                <option key={s.id} value={s.id}>{s.full_name || s.email} {s.roll_number ? `(${s.roll_number})` : ''}</option>
+                <option key={s.id} value={s.id}>
+                  {s.full_name || s.name || s.student_name || s.email || 'Student'}
+                  {s.roll_number || s.student_id ? ` - ${s.roll_number || s.student_id}` : ''}
+                  {s.email ? ` (${s.email})` : ''}
+                </option>
               ))}
             </select>
           </div>

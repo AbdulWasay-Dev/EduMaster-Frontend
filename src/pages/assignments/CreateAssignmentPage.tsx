@@ -208,7 +208,7 @@ export default function CreateAssignmentPage() {
       estimated_duration,
       assignment_name: assignmentFields.title,
       email_subject_syntax: generatedContent?.email_subject_syntax ?? `[ASG-CODE] ${assignmentFields.title}`,
-      submission_format: generatedContent?.submission_format ?? 'Submit one PDF or document file with your completed work.',
+      submission_format: generatedContent?.submission_format ?? 'Submit one PDF or document file. If submitting by email, send it from the email address your teacher added to the class roster and use the exact assignment code in the subject.',
     }
 
     createMut.mutate({

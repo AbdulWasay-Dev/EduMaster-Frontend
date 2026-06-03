@@ -5,20 +5,35 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Plus, CheckSquare, Search,
   Users, BookOpen, Clock, CheckCircle2,
-  FileText, ChevronRight, Scan,
+  FileText, ChevronRight, Scan, Download, FileSpreadsheet, Mail, Send,
 } from 'lucide-react'
+import { toast } from 'sonner'
 import GradeCircle from '@/components/shared/GradeCircle'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
-import { listSubmissions } from '@/lib/api/grading'
+import { exportPaperClassReport, listSubmissions, sendPaperGradingReport } from '@/lib/api/grading'
 import { listClasses } from '@/lib/api/classes'
 import { listPapers } from '@/lib/api/papers'
+import { listStudents } from '@/lib/api/students'
 import { formatDate, gradeLabel, gradeColor } from '@/lib/utils'
-import type { Submission, Class, Paper } from '@/types'
+import type { Submission, Class, Paper, Student } from '@/types'
 
 const STATUS_CONFIG = {
   graded:  { label: 'Graded',  color: 'bg-emerald-100 text-emerald-700 border-emerald-200', dot: 'bg-emerald-500' },
   pending: { label: 'Pending', color: 'bg-amber-100 text-amber-700 border-amber-200',       dot: 'bg-amber-500'   },
   review:  { label: 'Review',  color: 'bg-violet-100 text-violet-700 border-violet-200',    dot: 'bg-violet-500'  },
+}
+
+function safeFileName(value: string) {
+  return value.replace(/[^a-z0-9._-]+/gi, '_').replace(/^_+|_+$/g, '').slice(0, 120) || 'class_report'
+}
+
+function downloadBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(url)
 }
 
 export default function GradingOverviewPage() {
@@ -28,6 +43,10 @@ export default function GradingOverviewPage() {
   const [classFilter,  setClassFilter]  = useState(searchParams.get('class_id') ?? '')
   const [paperFilter,  setPaperFilter]  = useState(searchParams.get('paper_id') ?? '')
   const [search,       setSearch]       = useState('')
+  const [downloadingReport, setDownloadingReport] = useState<'pdf' | 'csv' | null>(null)
+  const [reportRecipientEmail, setReportRecipientEmail] = useState('')
+  const [reportStudentId, setReportStudentId] = useState('')
+  const [sendingReport, setSendingReport] = useState(false)
 
   const { data: submissions = [], isLoading } = useQuery<Submission[]>({
     queryKey: ['submissions'],
@@ -38,6 +57,13 @@ export default function GradingOverviewPage() {
 
   const paperMap = useMemo(() => Object.fromEntries(papers.map(p => [p.id, p.title])), [papers])
   const classMap = useMemo(() => Object.fromEntries(classes.map(c => [c.id, c.name])), [classes])
+  const selectedReportPaper = useMemo(() => papers.find(p => p.id === paperFilter), [papers, paperFilter])
+  const reportClassId = classFilter || selectedReportPaper?.class_id || ''
+  const { data: reportStudents = [] } = useQuery<Student[]>({
+    queryKey: ['students', reportClassId],
+    queryFn: () => listStudents(reportClassId),
+    enabled: !!reportClassId,
+  })
 
   const getPaperTitle = (s: Submission) => s.paper_title || paperMap[s.paper_id] || '—'
   const getClassName  = (s: Submission) => classMap[s.class_id ?? ''] || null
@@ -61,6 +87,52 @@ export default function GradingOverviewPage() {
     }
     return true
   }), [submissions, statusFilter, classFilter, paperFilter, search, paperMap])
+  const reportSubmissionCount = paperFilter ? submissions.filter(s => s.paper_id === paperFilter).length : 0
+
+  const handleExportReport = async (format: 'pdf' | 'csv') => {
+    if (!paperFilter) {
+      toast.error('Select a paper first')
+      return
+    }
+    const paperTitle = selectedReportPaper?.title || 'paper'
+    const reportClassId = classFilter || selectedReportPaper?.class_id || undefined
+    setDownloadingReport(format)
+    try {
+      const blob = await exportPaperClassReport(paperFilter, format, reportClassId)
+      downloadBlob(blob, `${safeFileName(paperTitle)}_class_report.${format}`)
+      toast.success(`${format.toUpperCase()} report downloaded`)
+    } catch {
+      toast.error('Report download failed')
+    } finally {
+      setDownloadingReport(null)
+    }
+  }
+
+  const handleSendReport = async () => {
+    if (!paperFilter) {
+      toast.error('Select a paper first')
+      return
+    }
+    if (!reportStudentId && !reportRecipientEmail.trim()) {
+      toast.error('Enter an email address or select a student')
+      return
+    }
+    setSendingReport(true)
+    try {
+      const result = await sendPaperGradingReport(paperFilter, {
+        class_id: reportClassId || undefined,
+        student_id: reportStudentId || undefined,
+        recipient_email: reportRecipientEmail.trim() || undefined,
+      })
+      toast.success(result.message || 'Grading report sent')
+      setReportRecipientEmail('')
+      setReportStudentId('')
+    } catch (err: any) {
+      toast.error(err.response?.data?.detail || 'Grading report email failed')
+    } finally {
+      setSendingReport(false)
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -105,6 +177,92 @@ export default function GradingOverviewPage() {
         </div>
       </div>
 
+      {/* Selected-paper report */}
+      <div className="bg-white border border-brand-100 rounded-xl p-5 shadow-sm">
+        <div className="flex flex-col xl:flex-row xl:items-start justify-between gap-4">
+          <div className="min-w-0">
+            <h2 className="section-title mb-1 flex items-center gap-2">
+              <Download className="w-4 h-4 text-brand-500" /> Class Result Report
+            </h2>
+            <p className="text-sm text-brand-500 truncate">
+              {selectedReportPaper
+                ? `${selectedReportPaper.title}${selectedReportPaper.class_id ? ` - ${classMap[selectedReportPaper.class_id] ?? 'Class'}` : ''} - ${reportSubmissionCount} submitted`
+                : 'Select a paper for the report'}
+            </p>
+          </div>
+          <div className="space-y-2 w-full xl:w-auto">
+            <div className="flex flex-col sm:flex-row gap-2">
+              <div className="relative min-w-[240px]">
+                <BookOpen className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-400 pointer-events-none" />
+                <select
+                  value={paperFilter}
+                  onChange={e => { setPaperFilter(e.target.value); setReportStudentId('') }}
+                  className="input pl-9 text-sm appearance-none pr-8 w-full"
+                >
+                  <option value="">Choose paper</option>
+                  {papers.map(p => (
+                    <option key={p.id} value={p.id}>
+                      {p.title}{p.class_id ? ` - ${classMap[p.class_id] ?? 'Class'}` : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <button
+                onClick={() => handleExportReport('pdf')}
+                disabled={!paperFilter || downloadingReport !== null}
+                className="btn-primary flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {downloadingReport === 'pdf' ? <LoadingSpinner size="sm" /> : <Download className="w-4 h-4" />}
+                PDF
+              </button>
+              <button
+                onClick={() => handleExportReport('csv')}
+                disabled={!paperFilter || downloadingReport !== null}
+                className="btn-secondary flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {downloadingReport === 'csv' ? <LoadingSpinner size="sm" /> : <FileSpreadsheet className="w-4 h-4" />}
+                CSV
+              </button>
+            </div>
+            <div className="flex flex-col lg:flex-row gap-2">
+              <div className="relative min-w-[210px]">
+                <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-400 pointer-events-none" />
+                <select
+                  value={reportStudentId}
+                  onChange={e => setReportStudentId(e.target.value)}
+                  disabled={!reportClassId}
+                  className="input pl-9 text-sm appearance-none pr-8 w-full disabled:bg-brand-50"
+                >
+                  <option value="">Whole class report</option>
+                  {reportStudents.map(student => (
+                    <option key={student.id} value={student.id}>
+                      {student.student_name || student.name}{student.student_id || student.roll_number ? ` - ${student.student_id || student.roll_number}` : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="relative flex-1 min-w-[230px]">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-400 pointer-events-none" />
+                <input
+                  value={reportRecipientEmail}
+                  onChange={e => setReportRecipientEmail(e.target.value)}
+                  className="input pl-9 text-sm w-full"
+                  placeholder="Email, or leave blank for selected student"
+                />
+              </div>
+              <button
+                onClick={handleSendReport}
+                disabled={!paperFilter || sendingReport}
+                className="btn-secondary flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {sendingReport ? <LoadingSpinner size="sm" /> : <Send className="w-4 h-4" />}
+                Send PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Filters */}
       {submissions.length > 0 && (
         <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center flex-wrap">
@@ -115,7 +273,7 @@ export default function GradingOverviewPage() {
           </div>
           <div className="relative">
             <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-400 pointer-events-none" />
-            <select value={classFilter} onChange={e => setClassFilter(e.target.value)}
+            <select value={classFilter} onChange={e => { setClassFilter(e.target.value); setReportStudentId('') }}
               className="input pl-9 text-sm appearance-none pr-8 min-w-[150px]">
               <option value="">All Classes</option>
               {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -123,7 +281,7 @@ export default function GradingOverviewPage() {
           </div>
           <div className="relative">
             <BookOpen className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-400 pointer-events-none" />
-            <select value={paperFilter} onChange={e => setPaperFilter(e.target.value)}
+            <select value={paperFilter} onChange={e => { setPaperFilter(e.target.value); setReportStudentId('') }}
               className="input pl-9 text-sm appearance-none pr-8 min-w-[160px]">
               <option value="">All Papers</option>
               {papers.map(p => <option key={p.id} value={p.id}>{p.title}</option>)}

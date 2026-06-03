@@ -146,3 +146,41 @@ export async function getStudentsSummary(
   })
   return data
 }
+
+export async function exportAttendanceClassReport(
+  class_id: string,
+  subject_id: string,
+  format: 'pdf' | 'csv' = 'pdf',
+  start_date?: string,
+  end_date?: string,
+): Promise<Blob> {
+  const { data } = await api.get('/attendance/reports/class', {
+    responseType: 'blob',
+    params: { class_id, subject_id, format, start_date, end_date },
+  })
+  return data as Blob
+}
+
+export async function sendAttendanceClassReport(payload: {
+  class_id: string
+  subject_id: string
+  recipient_email: string
+  start_date?: string
+  end_date?: string
+  format?: 'pdf' | 'csv'
+}): Promise<{ status: string; message: string }> {
+  const { data } = await api.post('/attendance/reports/class/send', payload)
+  return data
+}
+
+export async function sendAttendanceStudentReport(payload: {
+  class_id: string
+  subject_id: string
+  student_id: string
+  recipient_email?: string
+  start_date?: string
+  end_date?: string
+}): Promise<{ status: string; message: string }> {
+  const { data } = await api.post('/attendance/reports/student/send', payload)
+  return data
+}

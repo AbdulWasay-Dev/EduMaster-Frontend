@@ -16,7 +16,7 @@ type TabId = 'take' | 'records' | 'students' | 'analytics'
 const TABS: { id: TabId; label: string; icon: React.ReactNode; desc: string }[] = [
   { id: 'take',      label: 'Take Attendance', icon: <ClipboardCheck className="w-4 h-4" />, desc: 'Mark daily attendance' },
   { id: 'records',   label: 'All Records',     icon: <History className="w-4 h-4" />,        desc: 'Browse history' },
-  { id: 'students',  label: 'Student Reports', icon: <Users className="w-4 h-4" />,           desc: 'Per-student breakdown' },
+  { id: 'students',  label: 'Reports',         icon: <Users className="w-4 h-4" />,           desc: 'Class and student reports' },
   { id: 'analytics', label: 'Analytics',       icon: <BarChart3 className="w-4 h-4" />,       desc: 'Trends & insights' },
 ]
 
