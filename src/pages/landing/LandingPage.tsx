@@ -6,7 +6,7 @@ import {
   Users, FileText, Sparkles, ChevronDown, BarChart3, Mail,
   GraduationCap,
 } from 'lucide-react'
-import AnimatedTestimonials from '@/components/ui/testimonial'
+import { TestimonialsColumn, type TestimonialColumnItem } from '@/components/ui/testimonials-columns-1'
 import { LogoCarousel } from '@/components/ui/logo-carousel'
 import './landing.css'
 
@@ -58,38 +58,66 @@ const FEATURES = [
   },
 ]
 
-const TESTIMONIALS = [
+const TESTIMONIALS: TestimonialColumnItem[] = [
   {
-    quote: 'EduMaster cut my grading time by 80%. What used to take an entire Sunday now takes 20 minutes. The OCR grading is incredibly accurate.',
-    name: 'Sarah Kennedy',
-    designation: 'Biology Teacher, Springfield HS',
-    src: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=500&auto=format&fit=crop',
+    text: 'EduMaster reduced our paper checking from full evenings to one review session. The OCR grading gives useful feedback that I can quickly adjust before returning marks.',
+    image: 'https://ui-avatars.com/api/?name=Ayesha+Khan&background=0A66C2&color=fff&size=128&bold=true',
+    name: 'Ayesha Khan',
+    role: 'Biology Teacher, Lahore Grammar School',
   },
   {
-    quote: 'The AI paper generator is incredible. I create differentiated exams for different ability groups instantly. The scheduling system keeps my entire department organized.',
-    name: 'James Rodriguez',
-    designation: 'Math Department Head',
-    src: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=500&auto=format&fit=crop',
+    text: 'The paper generator is the feature our department uses the most. I upload chapters, select question types, and get a structured exam draft in minutes.',
+    image: 'https://ui-avatars.com/api/?name=Bilal+Ahmed&background=0859A6&color=fff&size=128&bold=true',
+    name: 'Bilal Ahmed',
+    role: 'Mathematics Lecturer, Government College Faisalabad',
   },
   {
-    quote: 'The RAG assistant answers questions directly from my textbooks. Combined with auto-grading assignments, I\'ve reclaimed hours every single week.',
-    name: 'Maria Lopez',
-    designation: 'Chemistry Teacher',
-    src: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=500&auto=format&fit=crop',
+    text: 'The AI assistant answers from my own notes instead of giving generic replies. It is especially helpful when students ask for chapter summaries before tests.',
+    image: 'https://ui-avatars.com/api/?name=Sana+Malik&background=073D72&color=fff&size=128&bold=true',
+    name: 'Sana Malik',
+    role: 'Chemistry Teacher, Karachi Public School',
   },
   {
-    quote: 'The attendance tracking with heatmaps changed how I identify struggling students. I can intervene weeks earlier than before. Truly a game-changer.',
-    name: 'David Chen',
-    designation: 'English Teacher, Lincoln Academy',
-    src: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=500&auto=format&fit=crop',
+    text: 'Attendance reports made parent meetings easier. I can show trends clearly and identify students who need support before their performance drops.',
+    image: 'https://ui-avatars.com/api/?name=Hassan+Raza&background=0A66C2&color=fff&size=128&bold=true',
+    name: 'Hassan Raza',
+    role: 'Class Coordinator, Beaconhouse Rawalpindi',
   },
   {
-    quote: 'Assignment auto-collection via email saved my sanity. Students just email their work and it\'s graded by the time I check. The ROI was immediate.',
-    name: 'Fatima Al-Rashid',
-    designation: 'Physics Teacher, Central High',
-    src: 'https://images.unsplash.com/photo-1557053910-d9eadeed1c58?q=80&w=500&auto=format&fit=crop',
+    text: 'Email assignment collection is a quiet lifesaver. Submissions are organized in one place, and the grading draft helps me focus on final teacher judgment.',
+    image: 'https://ui-avatars.com/api/?name=Fatima+Noor&background=0859A6&color=fff&size=128&bold=true',
+    name: 'Fatima Noor',
+    role: 'Physics Teacher, Islamabad Model College',
+  },
+  {
+    text: 'I use EduMaster to create short quizzes after each lecture. The question mix is balanced, and editing the final paper is much faster than starting from scratch.',
+    image: 'https://ui-avatars.com/api/?name=Usman+Sheikh&background=073D72&color=fff&size=128&bold=true',
+    name: 'Usman Sheikh',
+    role: 'Computer Science Instructor, FAST Lahore',
+  },
+  {
+    text: 'The document library keeps our course material usable. Once notes are uploaded, the AI chat can explain topics and pull references for lesson planning.',
+    image: 'https://ui-avatars.com/api/?name=Maham+Javed&background=0A66C2&color=fff&size=128&bold=true',
+    name: 'Maham Javed',
+    role: 'English Teacher, The City School Multan',
+  },
+  {
+    text: 'For board exam preparation, EduMaster helps me generate practice papers quickly and keep difficulty consistent across different sections.',
+    image: 'https://ui-avatars.com/api/?name=Zain+Qureshi&background=0859A6&color=fff&size=128&bold=true',
+    name: 'Zain Qureshi',
+    role: 'Senior Teacher, Allied School Peshawar',
+  },
+  {
+    text: 'Our admin team likes the dashboard because it connects papers, submissions, attendance, and class progress. It feels built for how schools actually work.',
+    image: 'https://ui-avatars.com/api/?name=Nimra+Asif&background=073D72&color=fff&size=128&bold=true',
+    name: 'Nimra Asif',
+    role: 'Academic Coordinator, Roots International Karachi',
   },
 ]
+
+const FIRST_TESTIMONIAL_COLUMN = TESTIMONIALS.slice(0, 3)
+const SECOND_TESTIMONIAL_COLUMN = TESTIMONIALS.slice(3, 6)
+const THIRD_TESTIMONIAL_COLUMN = TESTIMONIALS.slice(6, 9)
 
 function FAQItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false)
@@ -184,7 +212,7 @@ export default function LandingPage() {
           <motion.div variants={stagger} initial="hidden" animate="show" className="max-w-[800px] mx-auto text-center space-y-6">
             <motion.div variants={fadeUp}>
               <span className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-white/90 text-[12px] font-semibold px-5 py-2.5 rounded-full border border-white/10">
-                <Sparkles className="w-3.5 h-3.5" /> AI assistant for teachers and classrooms
+                <Sparkles className="w-3.5 h-3.5" /> AI assistant for teachers
               </span>
             </motion.div>
             <motion.h1 variants={fadeUp} className="text-[44px] md:text-[60px] font-extrabold leading-[1.08] tracking-[-0.03em] text-white">
@@ -201,24 +229,6 @@ export default function LandingPage() {
           </motion.div>
         </div>
 
-        {/* Trust strip inside hero at bottom */}
-        <div className="hero-trust">
-          <div className="hero-trust-label">Built around daily teacher workflows</div>
-          <div className="hero-trust-items">
-            {[
-              { v: '2,500+', l: 'Teachers' },
-              { v: '180K+', l: 'Papers' },
-              { v: '500K+', l: 'Graded' },
-              { v: '95%', l: 'Time Saved' },
-              { v: '4.9★', l: 'Rating' },
-            ].map(s => (
-              <div key={s.l} className="hero-trust-item">
-                <div className="val">{s.v}</div>
-                <div className="lbl">{s.l}</div>
-              </div>
-            ))}
-          </div>
-        </div>
       </section>
       </div>
 
@@ -317,13 +327,31 @@ export default function LandingPage() {
 
 
       {/* ── TESTIMONIALS ── */}
-      <section id="testimonials" className="py-16 px-6">
-        <div className="max-w-[1140px] mx-auto">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-4">
-            <p className="text-[#0A66C2] font-semibold text-[13px] uppercase tracking-widest mb-3">Customer Testimonials</p>
-            <h2 className="text-[40px] font-extrabold text-[#0f172a] tracking-tight">Real Results. Real Educators.</h2>
+      <section id="testimonials" className="relative overflow-hidden bg-white px-6 py-24">
+        <div className="mx-auto max-w-[1140px]">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true }}
+            className="mx-auto flex max-w-[560px] flex-col items-center text-center"
+          >
+            <div className="rounded-lg border border-brand-100 bg-brand-50 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-[#0A66C2]">
+              Demo Testimonials
+            </div>
+            <h2 className="mt-5 text-[36px] font-extrabold tracking-tight text-[#0f172a] md:text-[44px]">
+              Trusted by Educators
+            </h2>
+            <p className="mt-4 text-[16px] leading-relaxed text-[#5a7a9e]">
+              Teachers and academic coordinators use EduMaster to plan lessons, generate papers, grade submissions, and keep classes organized.
+            </p>
           </motion.div>
-          <AnimatedTestimonials testimonials={TESTIMONIALS} autoplay />
+
+          <div className="mx-auto mt-12 flex max-h-[740px] justify-center gap-6 overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_18%,black_82%,transparent)]">
+            <TestimonialsColumn testimonials={FIRST_TESTIMONIAL_COLUMN} duration={15} />
+            <TestimonialsColumn testimonials={SECOND_TESTIMONIAL_COLUMN} className="hidden md:block" duration={19} />
+            <TestimonialsColumn testimonials={THIRD_TESTIMONIAL_COLUMN} className="hidden lg:block" duration={17} />
+          </div>
         </div>
       </section>
 
