@@ -257,6 +257,7 @@ export interface RAGSource {
   document_name: string
   document_title?: string
   chunk_text: string
+  chunk_index?: number
   relevance_score: number
   page_number?: number
 }

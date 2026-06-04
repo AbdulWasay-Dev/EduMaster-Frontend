@@ -5,6 +5,8 @@ export interface RAGQueryPayload {
   query: string
   subject_id?: string
   document_ids?: string[]
+  use_documents?: boolean
+  include_sources?: boolean
   top_k?: number
 }
 

@@ -1,18 +1,29 @@
 import { create } from 'zustand'
 import type { ChatMessage } from '@/types'
 
-interface ChatSession {
+export type ChatMode = 'documents' | 'general'
+
+export interface ChatSession {
   id: string
   title: string
+  mode: ChatMode
   subjectId?: string
+  documentIds: string[]
   messages: ChatMessage[]
   createdAt: string
+}
+
+export interface ChatSessionConfig {
+  mode?: ChatMode
+  subjectId?: string
+  documentIds?: string[]
+  title?: string
 }
 
 interface ChatState {
   sessions: ChatSession[]
   activeSessionId: string | null
-  createSession: (subjectId?: string) => string
+  createSession: (config?: ChatSessionConfig) => string
   addMessage: (sessionId: string, message: ChatMessage) => void
   addAIResponse: (sessionId: string, message: ChatMessage) => void
   setActiveSession: (id: string) => void
@@ -23,12 +34,15 @@ export const useChatStore = create<ChatState>((set) => ({
   sessions: [],
   activeSessionId: null,
 
-  createSession: (subjectId) => {
+  createSession: (config = {}) => {
     const id = `session-${Date.now()}`
+    const mode = config.mode ?? (config.subjectId ? 'documents' : 'general')
     const session: ChatSession = {
       id,
-      title: 'New Chat',
-      subjectId,
+      title: config.title ?? (mode === 'general' ? 'General Chat' : 'Document Chat'),
+      mode,
+      subjectId: config.subjectId,
+      documentIds: config.documentIds ?? [],
       messages: [],
       createdAt: new Date().toISOString(),
     }
